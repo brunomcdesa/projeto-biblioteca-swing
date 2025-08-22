@@ -7,5 +7,9 @@
     </content>
     <orderEntry type="jdk" jdkName="corretto-1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="postgresql" level="project" />
+    <orderEntry type="library" name="hibernate.c3p0" level="project" />
+    <orderEntry type="library" name="datanucleus.javax.persistence" level="project" />
+    <orderEntry type="library" name="projectlombok.lombok" level="project" />
   </component>
 </module>

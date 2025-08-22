@@ -1,15 +1,35 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+/**
+ * Classe Main do projeto
+ * <p>
+ * Esta classe é responsável inicializar o projeto
+ * rodando todo o fluxo das telas e também iniciando a conexão com o banco de dados
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        System.out.println("--- INICIANDO HIBERNATE PARA CRIAR O SCHEMA DO BANCO ---");
+        EntityManagerFactory entityManager = null;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        try {
+            entityManager = Persistence.createEntityManagerFactory("biblioteca-unit");
+
+            System.out.println("Schema do banco de dados verificado/criado com sucesso!");
+            System.out.println("As tabelas foram criadas/atualizadas com sucesso!.");
+        } catch (Exception ex) {
+            System.err.println("Falha ao inicializar o Hibernate e criar o schema.");
+            System.out.println(ex.getMessage());
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+                System.out.println("EntityManagerFactory fechado.");
+            }
         }
+
+        System.out.println("--- PROCESSO FINALIZADO ---");
     }
 }
