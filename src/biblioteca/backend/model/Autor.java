@@ -1,4 +1,4 @@
-package backend.model;
+package biblioteca.backend.model;
 
 import lombok.*;
 

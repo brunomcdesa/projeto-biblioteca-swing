@@ -1,7 +1,6 @@
-package backend.model;
+package biblioteca.backend.model;
 
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
  * @version 1.0
  */
 @Getter
-@Slf4j
 @Setter
 @Entity
 @Builder
