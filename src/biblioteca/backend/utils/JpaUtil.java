@@ -53,5 +53,4 @@ public class JpaUtil {
             log.info("Entity manager fechado com sucesso..");
         }
     }
-
 }

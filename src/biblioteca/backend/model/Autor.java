@@ -1,5 +1,6 @@
 package biblioteca.backend.model;
 
+import biblioteca.backend.dto.AutorRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
  * <p>
  * Esta classe é responsável por realizar o mapeamento
  * e representar os dados da tabela AUTOR, do banco de dados.
- *
  *
  * @author Bruno Cardoso
  * @version 1.0
@@ -45,9 +45,19 @@ public class Autor {
      */
     @ManyToMany
     @JoinTable(name = "LIVRO_AUTOR", joinColumns = {
-        @JoinColumn(name = "FK_AUTOR", referencedColumnName = "ID",
-            foreignKey = @ForeignKey(name = "FK_AUTOR"))}, inverseJoinColumns = {
-        @JoinColumn(name = "FK_LIVRO", referencedColumnName = "ID",
-            foreignKey = @ForeignKey(name = "FK_LIVRO"))})
+            @JoinColumn(name = "FK_AUTOR", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_AUTOR"))}, inverseJoinColumns = {
+            @JoinColumn(name = "FK_LIVRO", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_LIVRO"))})
     private List<Livro> livros;
+
+    /**
+     * Método responsável por realizar a conversão de um AutorRequest em uma entidade Autor.
+     */
+    public static Autor converterDeRequet(AutorRequest autorRequest) {
+        return Autor.builder()
+                .nome(autorRequest.getNome())
+                .idade(autorRequest.getIdade())
+                .build();
+    }
 }
