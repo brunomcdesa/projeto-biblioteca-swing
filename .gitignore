@@ -11,8 +11,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
-*.war
 *.nar
 *.ear
 *.zip
@@ -24,6 +22,3 @@ hs_err_pid*
 replay_pid*
 
 .idea
-
-# Excessões
-!lib/
