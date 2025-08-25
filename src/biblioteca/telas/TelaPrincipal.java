@@ -2,6 +2,7 @@ package biblioteca.telas;
 
 import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.autor.TelaGerenciaAutor;
+import biblioteca.telas.editora.TelaGerenciaEditora;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import static java.awt.Font.BOLD;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -25,6 +27,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public class TelaPrincipal extends JFrame {
 
     private JButton botaoGerenciaAutor;
+    private JButton botaoGerenciaEditora;
 
     public TelaPrincipal() {
         super("Biblioteca");
@@ -61,10 +64,13 @@ public class TelaPrincipal extends JFrame {
         painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 
         botaoGerenciaAutor = new JButton("Gerenciar Autores");
-
-        painelBotoes.add(botaoGerenciaAutor);
+        botaoGerenciaEditora = new JButton("Gerenciar Editoras");
 
         botaoGerenciaAutor.setAlignmentX(CENTER_ALIGNMENT);
+        botaoGerenciaEditora.setAlignmentX(CENTER_ALIGNMENT);
+
+        painelBotoes.add(botaoGerenciaAutor);
+        painelBotoes.add(botaoGerenciaEditora);
 
         painelPrincipal.add(painelBotoes);
     }
@@ -74,15 +80,27 @@ public class TelaPrincipal extends JFrame {
      */
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoDoBotaoGerenciarAutores();
+        this.configurarAcaoDoBotaoGerenciarEditoras();
     }
 
     /**
-     * Adiciona um listener para interceptar o evento de listagem de Autores.
+     * Adiciona um listener para interceptar o evento de gerenciar Autores.
      */
     private void configurarAcaoDoBotaoGerenciarAutores() {
         botaoGerenciaAutor.addActionListener(listener -> {
             TelaGerenciaAutor telaGerenciaAutor = new TelaGerenciaAutor(this);
             telaGerenciaAutor.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de gerenciar Editoras.
+     */
+    private void configurarAcaoDoBotaoGerenciarEditoras() {
+        botaoGerenciaEditora.addActionListener(listener -> {
+            TelaGerenciaEditora telaGerenciaEditora = new TelaGerenciaEditora(this);
+            telaGerenciaEditora.setVisible(true);
             this.setVisible(false);
         });
     }

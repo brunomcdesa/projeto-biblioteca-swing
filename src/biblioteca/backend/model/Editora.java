@@ -1,5 +1,7 @@
 package biblioteca.backend.model;
 
+import biblioteca.backend.dto.AutorRequest;
+import biblioteca.backend.dto.EditoraRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,4 +37,22 @@ public class Editora {
 
     @Column(name = "CNPJ")
     private String cnpj;
+
+    /**
+     * Método responsável por realizar a conversão de um EditoraRequest em uma entidade Editora.
+     */
+    public static Editora converterDeRequet(EditoraRequest editoraRequest) {
+        return Editora.builder()
+                .nome(editoraRequest.getNome())
+                .cnpj(editoraRequest.getCnpj())
+                .build();
+    }
+
+    /**
+     * Método responsável por atualizar os dados da entidade Autor, de acordo com os novos dados da request.
+     */
+    public void atualizarDados(EditoraRequest request) {
+        this.setNome(request.getNome());
+        this.setCnpj(request.getCnpj());
+    }
 }
