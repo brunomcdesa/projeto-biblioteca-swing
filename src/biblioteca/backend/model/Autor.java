@@ -60,4 +60,12 @@ public class Autor {
                 .idade(autorRequest.getIdade())
                 .build();
     }
+
+    /**
+     * Método responsável por atualizar os dados da entidade Autor, de acordo com os novos dados da request.
+     */
+    public void atualizarDados(AutorRequest request) {
+        this.setNome(request.getNome());
+        this.setIdade(request.getIdade());
+    }
 }

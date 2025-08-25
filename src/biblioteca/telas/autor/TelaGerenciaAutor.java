@@ -37,9 +37,7 @@ public class TelaGerenciaAutor extends JFrame {
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
         painelPrincipal.setBorder(createEmptyBorder(20, 20, 20, 20));
 
-        JPanel painelBotoes = new JPanel();
-        this.aplicarConfiguracoesVisuaisBotoes(painelBotoes);
-        painelPrincipal.add(painelBotoes);
+        this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
         add(painelPrincipal);
         setSize(800, 500);
@@ -72,7 +70,7 @@ public class TelaGerenciaAutor extends JFrame {
      */
     private void configurarAcaoDoBotaoCadastroAutor() {
         botaoIrParaCadastroAutor.addActionListener(listener -> {
-            TelaCadastroAutor telaCadastroAutor = new TelaCadastroAutor(this);
+            TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this);
             telaCadastroAutor.setVisible(true);
             this.setVisible(false);
         });
@@ -91,21 +89,24 @@ public class TelaGerenciaAutor extends JFrame {
     /**
      * Adiciona configurações visuais dos botoes da tela.
      */
-    private void aplicarConfiguracoesVisuaisBotoes(JPanel painelBotoes) {
+    private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
+        JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 
         botaoListarAutores = new JButton("Listar Autores");
         botaoIrParaCadastroAutor = new JButton("Cadastrar Novo Autor");
         botaoVoltar = new JButton("Voltar");
 
-        botaoListarAutores.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botaoIrParaCadastroAutor.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botaoVoltar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botaoListarAutores.setAlignmentX(CENTER_ALIGNMENT);
+        botaoIrParaCadastroAutor.setAlignmentX(CENTER_ALIGNMENT);
+        botaoVoltar.setAlignmentX(CENTER_ALIGNMENT);
 
         painelBotoes.add(botaoListarAutores);
         painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
         painelBotoes.add(botaoIrParaCadastroAutor);
         painelBotoes.add(Box.createRigidArea(new Dimension(0, 300)));
         painelBotoes.add(botaoVoltar);
+
+        painelPrincipal.add(painelBotoes);
     }
 }

@@ -45,14 +45,28 @@ public class TelaPrincipal extends JFrame {
         label.setFont(new Font("Arial", BOLD, 18));
         painelPrincipal.add(label, NORTH);
 
-        JPanel painelBotoes = new JPanel();
-        this.aplicarConfiguracoesVisuaisBotoes(painelBotoes);
-        painelPrincipal.add(botaoGerenciaAutor);
+        this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
         add(painelPrincipal);
         setSize(800, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    /**
+     * Adiciona configurações visuais dos botoes da tela.
+     */
+    private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
+        JPanel painelBotoes = new JPanel();
+        painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
+
+        botaoGerenciaAutor = new JButton("Gerenciar Autores");
+
+        painelBotoes.add(botaoGerenciaAutor);
+
+        botaoGerenciaAutor.setAlignmentX(CENTER_ALIGNMENT);
+
+        painelPrincipal.add(painelBotoes);
     }
 
     /**
@@ -83,13 +97,5 @@ public class TelaPrincipal extends JFrame {
                 JpaUtil.fecharConexao();
             }
         });
-    }
-
-    private void aplicarConfiguracoesVisuaisBotoes(JPanel painelBotoes) {
-        painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
-
-        botaoGerenciaAutor = new JButton("Gerenciar Autores");
-
-        painelBotoes.add(botaoGerenciaAutor);
     }
 }

@@ -2,11 +2,13 @@ package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.IAutorDAO;
 import biblioteca.backend.model.Autor;
-import biblioteca.backend.utils.JpaUtil;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
+
+import static biblioteca.backend.utils.JpaUtil.getEntityManager;
 
 /**
  * Classe responsável por implementar a lógica das transações realizadas no banco de dados, na tabela Autor.
@@ -17,26 +19,25 @@ import java.util.List;
 @Log
 public class AutorDAOImpl implements IAutorDAO {
 
-    private final EntityManager entityManager = JpaUtil.getEntityManager();
-
     /**
      * Método responsável por salvar/atualizar um Autor no banco de dados.
      */
     @Override
     public void salvar(Autor autor) {
+        EntityManager entityManager = getEntityManager();
         try {
-            this.iniciarTransacao();
+            this.iniciarTransacao(entityManager);
             if (autor.getId() == null) {
                 entityManager.persist(autor);
             } else {
                 entityManager.merge(autor);
             }
-            this.commitarTransacao();
+            this.commitarTransacao(entityManager);
         } catch (Exception e) {
-            this.desfazerAlteracoesTransacao();
+            this.desfazerAlteracoesTransacao(entityManager);
             log.severe(e.getMessage());
         } finally {
-            this.fecharTransacao();
+            this.fecharTransacao(entityManager);
         }
     }
 
@@ -45,28 +46,47 @@ public class AutorDAOImpl implements IAutorDAO {
      */
     @Override
     public List<Autor> listarTodos() {
+        EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery("SELECT a FROM Autor a ORDER BY a.id", Autor.class)
                     .getResultList();
         } finally {
-            this.fecharTransacao();
+            this.fecharTransacao(entityManager);
         }
     }
 
+    /**
+     * Método responsável por listar um Autor de acordo com o ID dele no banco de dados.
+     */
+    @Override
+    public Optional<Autor> findById(Integer id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT a FROM Autor a where a.id = :id",
+                            Autor.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (Exception ex) {
+            return Optional.empty();
+        } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
 
-    private void iniciarTransacao() {
+    private void iniciarTransacao(EntityManager entityManager) {
         entityManager.getTransaction().begin();
     }
 
-    private void commitarTransacao() {
+    private void commitarTransacao(EntityManager entityManager) {
         entityManager.getTransaction().commit();
     }
 
-    private void desfazerAlteracoesTransacao() {
+    private void desfazerAlteracoesTransacao(EntityManager entityManager) {
         entityManager.getTransaction().rollback();
     }
 
-    private void fecharTransacao() {
+    private void fecharTransacao(EntityManager entityManager) {
         entityManager.close();
     }
 }

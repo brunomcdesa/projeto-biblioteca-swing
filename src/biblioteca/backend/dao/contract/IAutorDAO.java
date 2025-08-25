@@ -3,6 +3,7 @@ package biblioteca.backend.dao.contract;
 import biblioteca.backend.model.Autor;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface responsável por definir os métodos que farão operações no banco de dados.
@@ -15,4 +16,6 @@ public interface IAutorDAO {
     void salvar(Autor autor);
 
     List<Autor> listarTodos();
+
+    Optional<Autor> findById(Integer id);
 }

@@ -4,6 +4,7 @@ import biblioteca.backend.dao.contract.IAutorDAO;
 import biblioteca.backend.dao.impl.AutorDAOImpl;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
+import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Autor;
 
 import java.util.List;
@@ -45,5 +46,27 @@ public class AutorService {
         return autorDAO.listarTodos().stream()
                 .map(AutorResponse::converterDeAutor)
                 .collect(toList());
+    }
+
+    /**
+     * Método responsável por editar um autor específico, de acordo com os novos dados da request.
+     */
+    public void editar(Integer id, AutorRequest request) {
+        Autor autor = this.findById(id);
+        autor.atualizarDados(request);
+
+        autorDAO.salvar(autor);
+    }
+
+    /**
+     * Método responsável por buscar um Autor pelo ID dele.
+     * <p>
+     * Caso não encontre nenhum Autor com o mesmo ID, será lançado uma excepion.
+     *
+     * @return um Autor.
+     */
+    private Autor findById(Integer id) {
+        return autorDAO.findById(id)
+                .orElseThrow(() -> new NaoEncontradoException("Autor não encontrado."));
     }
 }

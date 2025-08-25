@@ -58,4 +58,8 @@ public class AutorTable extends AbstractTableModel {
         this.autores = autores;
         fireTableDataChanged();
     }
+
+    public AutorResponse getAutor(int index) {
+        return autores.get(index);
+    }
 }
