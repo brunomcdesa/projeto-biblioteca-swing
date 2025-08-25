@@ -33,9 +33,9 @@ public class AutorDAOImpl implements IAutorDAO {
                 entityManager.merge(autor);
             }
             this.commitarTransacao(entityManager);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             this.desfazerAlteracoesTransacao(entityManager);
-            log.severe(e.getMessage());
+            log.severe(ex.getMessage());
         } finally {
             this.fecharTransacao(entityManager);
         }
@@ -70,6 +70,29 @@ public class AutorDAOImpl implements IAutorDAO {
         } catch (Exception ex) {
             return Optional.empty();
         } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por deletar um Autor de acordo com o ID dele no banco de dados.
+     */
+    @Override
+    public void deletar(Integer id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            this.iniciarTransacao(entityManager);
+
+            entityManager.createQuery("DELETE FROM Autor a WHERE a.id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate();
+
+            this.commitarTransacao(entityManager);
+        } catch (Exception ex) {
+            this.desfazerAlteracoesTransacao(entityManager);
+            log.severe(ex.getMessage());
+        }
+        finally {
             this.fecharTransacao(entityManager);
         }
     }

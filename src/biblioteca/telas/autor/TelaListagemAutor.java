@@ -32,6 +32,7 @@ public class TelaListagemAutor extends JFrame {
     private AutorTable autorTable;
     private JButton botaoAtualizar;
     private JButton botaoVoltar;
+    private JButton botaoDeletar;
     private JButton botaoEditar;
 
     public TelaListagemAutor(JFrame telaAnterior) {
@@ -72,9 +73,11 @@ public class TelaListagemAutor extends JFrame {
         botaoEditar = new JButton("Editar");
         botaoAtualizar = new JButton("Atualizar");
         botaoVoltar = new JButton("Voltar");
+        botaoDeletar = new JButton("Remover");
 
         painelBotoes.add(botaoVoltar);
         painelBotoes.add(botaoAtualizar);
+        painelBotoes.add(botaoDeletar);
         painelBotoes.add(botaoEditar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
@@ -87,6 +90,7 @@ public class TelaListagemAutor extends JFrame {
         this.configurarAcaoBotaoVoltar();
         this.configurarAcaoBotaoAtualizar();
         this.configurarAcaoEditar();
+        this.configurarAcaoBotaoDeletar();
     }
 
     /**
@@ -118,18 +122,42 @@ public class TelaListagemAutor extends JFrame {
             int linhaSelecionada = tabela.getSelectedRow();
 
             if (linhaSelecionada == -1) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecione um autor para editar.",
+                showMessageDialog(this, "Por favor, selecione um autor para editar.",
                         "Nenhum autor selecionado", WARNING_MESSAGE);
                 return;
             }
 
             AutorResponse autor = autorTable.getAutor(linhaSelecionada);
-            log.info("Autor selecionado: " + autor);
             TelaFormularioAutor formulario = new TelaFormularioAutor(this, autor);
             formulario.setVisible(true);
         });
     }
 
+    /**
+     * Efetua a configuração da ação do botão de deletar,
+     * para que a linha selecionada seja deletada do banco de dados.
+     */
+    private void configurarAcaoBotaoDeletar() {
+        botaoDeletar.addActionListener(listener -> {
+            try {
+                int linhaSelecionada = tabela.getSelectedRow();
+
+                if (linhaSelecionada == -1) {
+                    showMessageDialog(this, "Por favor, selecione um autor para deletar.",
+                            "Nenhum autor selecionado", WARNING_MESSAGE);
+                    return;
+                }
+
+                AutorResponse autor = autorTable.getAutor(linhaSelecionada);
+
+                autorService.deletar(autor.getId());
+                showMessageDialog(this, "Autor deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
+                log.severe(ex.getMessage());
+            }
+        });
+    }
 
     /**
      * Efetua a busca dos dados da listagem.

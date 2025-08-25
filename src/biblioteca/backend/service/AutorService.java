@@ -59,6 +59,13 @@ public class AutorService {
     }
 
     /**
+     * Método responsável por deletar um autor específico do banco de dados.
+     */
+    public void deletar(Integer id) {
+        autorDAO.deletar(id);
+    }
+
+    /**
      * Método responsável por buscar um Autor pelo ID dele.
      * <p>
      * Caso não encontre nenhum Autor com o mesmo ID, será lançado uma excepion.

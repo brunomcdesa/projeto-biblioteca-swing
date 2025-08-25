@@ -3,7 +3,6 @@ package biblioteca.telas.autor;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.service.AutorService;
-import lombok.extern.java.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +25,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * @author Bruno Cardoso
  * @version 1.0
  */
-@Log
 public class TelaFormularioAutor extends JFrame {
 
     private final JFrame telaAnterior;
@@ -43,7 +41,6 @@ public class TelaFormularioAutor extends JFrame {
 
     public TelaFormularioAutor(JFrame telaAnterior, AutorResponse autor) {
         super(autor == null ? "Cadastro de Autor" : "Editar Autor");
-        log.info("Autor para editar: " + autor);
         this.telaAnterior = telaAnterior;
         this.autorService = new AutorService();
 

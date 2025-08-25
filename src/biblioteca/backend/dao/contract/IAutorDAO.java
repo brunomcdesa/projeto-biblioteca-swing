@@ -18,4 +18,6 @@ public interface IAutorDAO {
     List<Autor> listarTodos();
 
     Optional<Autor> findById(Integer id);
+
+    void deletar(Integer id);
 }
