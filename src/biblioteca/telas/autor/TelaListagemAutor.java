@@ -28,13 +28,13 @@ public class TelaListagemAutor extends JFrame {
 
     private final JFrame telaAnterior;
     private final AutorService autorService;
-
-    private JTable tabela;
-    private AutorTable autorTable;
-    private JButton botaoAtualizar;
-    private JButton botaoVoltar;
-    private JButton botaoDeletar;
-    private JButton botaoEditar;
+    private final JButton botaoAtualizar = new JButton("Atualizar");
+    private final JButton botaoVoltar = new JButton("Voltar");
+    private final JButton botaoDeletar = new JButton("Deletar");
+    private final JButton botaoEditar = new JButton("Editar");
+    private final JButton botaoCadastrar = new JButton("Cadastrar");
+    private final AutorTable autorTable = new AutorTable();
+    private final JTable tabela = new JTable(autorTable);
 
     public TelaListagemAutor(JFrame telaAnterior) {
         super("Listagem de Autores");
@@ -53,9 +53,6 @@ public class TelaListagemAutor extends JFrame {
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
         painelPrincipal.setBorder(createEmptyBorder(10, 10, 10, 10));
 
-        autorTable = new AutorTable();
-        tabela = new JTable(autorTable);
-
         JScrollPane scrollPane = new JScrollPane(tabela);
         painelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
@@ -71,15 +68,12 @@ public class TelaListagemAutor extends JFrame {
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
         JPanel painelBotoes = new JPanel(new FlowLayout(RIGHT));
-        botaoEditar = new JButton("Editar");
-        botaoAtualizar = new JButton("Atualizar");
-        botaoVoltar = new JButton("Voltar");
-        botaoDeletar = new JButton("Remover");
 
         painelBotoes.add(botaoVoltar);
         painelBotoes.add(botaoAtualizar);
         painelBotoes.add(botaoDeletar);
         painelBotoes.add(botaoEditar);
+        painelBotoes.add(botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -92,6 +86,7 @@ public class TelaListagemAutor extends JFrame {
         this.configurarAcaoBotaoAtualizar();
         this.configurarAcaoEditar();
         this.configurarAcaoBotaoDeletar();
+        this.configurarAcaoBotaoCadastrar();
     }
 
     /**
@@ -153,6 +148,17 @@ public class TelaListagemAutor extends JFrame {
                 showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
+        });
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de cadastro de Autor.
+     */
+    private void configurarAcaoBotaoCadastrar() {
+        botaoCadastrar.addActionListener(listener -> {
+            TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this);
+            telaCadastroAutor.setVisible(true);
+            this.setVisible(false);
         });
     }
 

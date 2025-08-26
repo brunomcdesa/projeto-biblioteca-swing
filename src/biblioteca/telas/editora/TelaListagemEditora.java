@@ -24,6 +24,7 @@ public class TelaListagemEditora extends JFrame {
     private final JButton botaoVoltar = new JButton("Voltar");
     private final JButton botaoDeletar = new JButton("Deletar");
     private final JButton botaoEditar = new JButton("Editar");
+    private final JButton botaoCadastrar = new JButton("Cadastrar");
     private final EditoraTable editoraTable = new EditoraTable();
     private final JTable tabela = new JTable(editoraTable);
 
@@ -65,6 +66,7 @@ public class TelaListagemEditora extends JFrame {
         painelBotoes.add(botaoAtualizar);
         painelBotoes.add(botaoDeletar);
         painelBotoes.add(botaoEditar);
+        painelBotoes.add(botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -75,8 +77,9 @@ public class TelaListagemEditora extends JFrame {
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoBotaoVoltar();
         this.configurarAcaoBotaoAtualizar();
-        this.configurarAcaoEditar();
+        this.configurarAcaoBotaoEditar();
         this.configurarAcaoBotaoDeletar();
+        this.configurarAcaoBotaoCadastrar();
     }
 
     /**
@@ -103,7 +106,7 @@ public class TelaListagemEditora extends JFrame {
      * Efetua a configuração da ação do botão de editar,
      * para que a linha selecionada seja editada.
      */
-    private void configurarAcaoEditar() {
+    private void configurarAcaoBotaoEditar() {
         botaoEditar.addActionListener(listener -> {
             int linhaSelecionada = tabela.getSelectedRow();
             boolean isLinhaValida = validarLinhaSelecionada(linhaSelecionada, this,
@@ -139,6 +142,17 @@ public class TelaListagemEditora extends JFrame {
                 showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
+        });
+    }
+
+    /**
+     * Efetua a configuração da ação do botão de cadastrar, para que redirecione para o formulário de cadastro.
+     */
+    private void configurarAcaoBotaoCadastrar() {
+        botaoCadastrar.addActionListener(listener -> {
+            TelaFormularioEditora formularioEditora = new TelaFormularioEditora(this);
+            formularioEditora.setVisible(true);
+            this.setVisible(false);
         });
     }
 

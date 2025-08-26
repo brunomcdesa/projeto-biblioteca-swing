@@ -1,8 +1,8 @@
 package biblioteca.telas;
 
 import biblioteca.backend.utils.JpaUtil;
-import biblioteca.telas.autor.TelaGerenciaAutor;
-import biblioteca.telas.editora.TelaGerenciaEditora;
+import biblioteca.telas.autor.TelaListagemAutor;
+import biblioteca.telas.editora.TelaListagemEditora;
 
 import javax.swing.*;
 import java.awt.*;
@@ -85,8 +85,8 @@ public class TelaPrincipal extends JFrame {
      */
     private void configurarAcaoDoBotaoGerenciarAutores() {
         botaoGerenciaAutor.addActionListener(listener -> {
-            TelaGerenciaAutor telaGerenciaAutor = new TelaGerenciaAutor(this);
-            telaGerenciaAutor.setVisible(true);
+            TelaListagemAutor telaListageAutor = new TelaListagemAutor(this);
+            telaListageAutor.setVisible(true);
             this.setVisible(false);
         });
     }
@@ -96,8 +96,8 @@ public class TelaPrincipal extends JFrame {
      */
     private void configurarAcaoDoBotaoGerenciarEditoras() {
         botaoGerenciaEditora.addActionListener(listener -> {
-            TelaGerenciaEditora telaGerenciaEditora = new TelaGerenciaEditora(this);
-            telaGerenciaEditora.setVisible(true);
+            TelaListagemEditora telaListagemEditora = new TelaListagemEditora(this);
+            telaListagemEditora.setVisible(true);
             this.setVisible(false);
         });
     }
