@@ -2,6 +2,10 @@ package biblioteca.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Classe utilitária para operações e validações de Strings.
  * <p>
@@ -44,5 +48,9 @@ public class StringUtils {
      */
     public static boolean isCnpjValido(String cnpj) {
         return isNotBlank(cnpj) && cnpj.matches("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$");
+    }
+
+    public static String formatarData(LocalDate data) {
+        return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }

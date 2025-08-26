@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static biblioteca.utils.FormUtils.criarBotao;
 import static biblioteca.utils.FormUtils.validarLinhaSelecionada;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
@@ -28,11 +29,11 @@ public class TelaListagemAutor extends JFrame {
 
     private final JFrame telaAnterior;
     private final AutorService autorService;
-    private final JButton botaoAtualizar = new JButton("Atualizar");
-    private final JButton botaoVoltar = new JButton("Voltar");
-    private final JButton botaoDeletar = new JButton("Deletar");
-    private final JButton botaoEditar = new JButton("Editar");
-    private final JButton botaoCadastrar = new JButton("Cadastrar");
+    private final JButton botaoAtualizar = criarBotao("Atualizar");
+    private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoDeletar = criarBotao("Deletar");
+    private final JButton botaoEditar = criarBotao("Editar");
+    private final JButton botaoCadastrar = criarBotao("Cadastrar");
     private final AutorTable autorTable = new AutorTable();
     private final JTable tabela = new JTable(autorTable);
 

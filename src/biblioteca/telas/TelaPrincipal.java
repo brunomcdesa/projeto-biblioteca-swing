@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static biblioteca.utils.FormUtils.criarBotao;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.Font.BOLD;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -26,9 +27,9 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  */
 public class TelaPrincipal extends JFrame {
 
-    private final JButton botaoGerenciaLivro = new JButton("Gerenciar Livros");
-    private final JButton botaoGerenciaAutor = new JButton("Gerenciar Autores");
-    private final JButton botaoGerenciaEditora = new JButton("Gerenciar Editoras");
+    private final JButton botaoGerenciaLivro = criarBotao("Gerenciar Livros");
+    private final JButton botaoGerenciaAutor = criarBotao("Gerenciar Autores");
+    private final JButton botaoGerenciaEditora = criarBotao("Gerenciar Editoras");
 
     public TelaPrincipal() {
         super("Biblioteca");

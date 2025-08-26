@@ -1,10 +1,14 @@
 package biblioteca.utils;
 
 
+import biblioteca.backend.dto.EditoraResponse;
 import lombok.experimental.UtilityClass;
 
 import javax.swing.*;
 
+import java.awt.*;
+
+import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -31,5 +35,23 @@ public class FormUtils {
             return false;
         }
         return true;
+    }
+
+    public static JButton criarBotao(String texto) {
+        return new JButton(texto);
+    }
+
+    public static JLabel criarLabel(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        return label;
+    }
+
+    public static JTextField formatarTextField(JTextField textField, String text) {
+        textField = new JTextField(text);
+        textField.setPreferredSize(new Dimension(250, 30));
+
+        return textField;
     }
 }

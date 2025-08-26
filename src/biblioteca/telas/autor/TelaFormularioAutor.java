@@ -7,6 +7,7 @@ import biblioteca.backend.service.AutorService;
 import javax.swing.*;
 import java.awt.*;
 
+import static biblioteca.utils.FormUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
 import static java.awt.BorderLayout.*;
@@ -28,8 +29,8 @@ public class TelaFormularioAutor extends JFrame {
 
     private final JFrame telaAnterior;
     private final AutorService autorService;
-    private final JButton botaoSalvar = new JButton("Salvar");
-    private final JButton botaoVoltar = new JButton("Voltar");
+    private final JButton botaoSalvar = criarBotao("Salvar");
+    private final JButton botaoVoltar = criarBotao("Voltar");
 
     private JTextField campoNome;
     private JTextField campoIdade;
@@ -69,24 +70,24 @@ public class TelaFormularioAutor extends JFrame {
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, AutorResponse autor) {
         JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
-        JLabel labelNome = new JLabel("Nome:");
-        labelNome.setHorizontalAlignment(SwingConstants.CENTER);
-        campoNome = new JTextField(mapNullComBackup(autor, AutorResponse::getNome, ""));
-        campoNome.setPreferredSize(new Dimension(250, 30));
-        JLabel labelIdade = new JLabel("Idade:");
-        labelIdade.setHorizontalAlignment(SwingConstants.CENTER);
-        campoIdade = new JTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
-        campoIdade.setPreferredSize(new Dimension(250, 30));
+
+        this.configurarCamposFormulario(autor, painelFormulario);
+        JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        painelContainer.add(painelFormulario);
+        painelPrincipal.add(painelContainer, CENTER);
+    }
+
+    private void configurarCamposFormulario(AutorResponse autor, JPanel painelFormulario) {
+        JLabel labelNome = criarLabel("Nome:");
+        JTextField campoNome = formatarTextField(this.campoNome, mapNullComBackup(autor, AutorResponse::getNome, ""));
+        JLabel labelIdade = criarLabel("Idade:");
+        JTextField campoIdade = formatarTextField(this.campoIdade, mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
 
         painelFormulario.add(labelNome);
         painelFormulario.add(campoNome);
         painelFormulario.add(labelIdade);
         painelFormulario.add(campoIdade);
-
-        JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        painelContainer.add(painelFormulario);
-        painelPrincipal.add(painelContainer, CENTER);
     }
 
     /**

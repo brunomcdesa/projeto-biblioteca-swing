@@ -7,6 +7,8 @@ import biblioteca.backend.service.EditoraService;
 import javax.swing.*;
 import java.awt.*;
 
+import static biblioteca.utils.FormUtils.criarLabel;
+import static biblioteca.utils.FormUtils.formatarTextField;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
 import static biblioteca.utils.StringUtils.isCnpjValido;
@@ -70,25 +72,24 @@ public class TelaFormularioEditora extends JFrame {
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, EditoraResponse editora) {
         JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
 
-        JLabel labelNome = new JLabel("Nome:");
-        labelNome.setHorizontalAlignment(SwingConstants.CENTER);
-        campoNome = new JTextField(mapNullComBackup(editora, EditoraResponse::getNome, ""));
-        campoNome.setPreferredSize(new Dimension(250, 30));
-
-        JLabel labelCnpj = new JLabel("Cnpj:");
-        labelCnpj.setHorizontalAlignment(SwingConstants.CENTER);
-        campoCnpj = new JTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
-        campoCnpj.setPreferredSize(new Dimension(250, 30));
-
-        painelFormulario.add(labelNome);
-        painelFormulario.add(campoNome);
-        painelFormulario.add(labelCnpj);
-        painelFormulario.add(campoCnpj);
+        this.configurarCamposFormulario(editora, painelFormulario);
 
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         painelContainer.add(painelFormulario);
         painelPrincipal.add(painelContainer, CENTER);
+    }
+
+    private void configurarCamposFormulario(EditoraResponse editora, JPanel painelFormulario) {
+        JLabel labelNome = criarLabel("Nome:");
+        JTextField campoNome = formatarTextField(this.campoNome, mapNullComBackup(editora, EditoraResponse::getNome, ""));
+        JLabel labelCnpj = criarLabel("Cnpj:");
+        JTextField campoCnpj = formatarTextField(this.campoCnpj, mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
+
+        painelFormulario.add(labelNome);
+        painelFormulario.add(campoNome);
+        painelFormulario.add(labelCnpj);
+        painelFormulario.add(campoCnpj);
     }
 
     /**
