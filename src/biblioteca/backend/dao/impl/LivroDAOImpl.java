@@ -1,7 +1,8 @@
 package biblioteca.backend.dao.impl;
 
-import biblioteca.backend.dao.contract.IAutorDAO;
-import biblioteca.backend.model.Autor;
+import biblioteca.backend.dao.contract.ILivroDAO;
+import biblioteca.backend.enums.EGenero;
+import biblioteca.backend.model.Livro;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
@@ -11,27 +12,18 @@ import java.util.Optional;
 import static biblioteca.backend.utils.JpaUtil.getEntityManager;
 import static java.util.Collections.emptyList;
 
-/**
- * Classe responsável por implementar a lógica das transações realizadas no banco de dados, na tabela Autor.
- *
- * @author Bruno Cardoso
- * @version 1.0
- */
 @Log
-public class AutorDAOImpl implements IAutorDAO {
+public class LivroDAOImpl implements ILivroDAO {
 
-    /**
-     * Método responsável por salvar/atualizar um Autor no banco de dados.
-     */
     @Override
-    public void salvar(Autor autor) {
+    public void salvar(Livro livro) {
         EntityManager entityManager = getEntityManager();
         try {
             this.iniciarTransacao(entityManager);
-            if (autor.getId() == null) {
-                entityManager.persist(autor);
+            if (livro.getId() == null) {
+                entityManager.persist(livro);
             } else {
-                entityManager.merge(autor);
+                entityManager.merge(livro);
             }
             this.commitarTransacao(entityManager);
         } catch (Exception ex) {
@@ -42,32 +34,30 @@ public class AutorDAOImpl implements IAutorDAO {
         }
     }
 
-    /**
-     * Método responsável por listar todos os Autores salvos no banco de dados.
-     */
     @Override
-    public List<Autor> listarTodos() {
+    public List<Livro> listarTodos() {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT a FROM Autor a ORDER BY a.id",
-                            Autor.class)
+                            "SELECT DISTINCT l FROM Livro l "
+                                    + "LEFT JOIN FETCH l.editora "
+                                    + "LEFT JOIN FETCH l.autores "
+                                    + "LEFT JOIN FETCH l.livrosParecidos "
+                                    + "ORDER BY l.id",
+                            Livro.class)
                     .getResultList();
         } finally {
             this.fecharTransacao(entityManager);
         }
     }
 
-    /**
-     * Método responsável por listar um Autor de acordo com o ID dele no banco de dados.
-     */
     @Override
-    public Optional<Autor> findById(Integer id) {
+    public Optional<Livro> findById(Integer id) {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT a FROM Autor a where a.id = :id",
-                            Autor.class)
+                            "SELECT l FROM Livro l where l.id = :id",
+                            Livro.class)
                     .setParameter("id", id)
                     .getSingleResult());
         } catch (Exception ex) {
@@ -77,9 +67,6 @@ public class AutorDAOImpl implements IAutorDAO {
         }
     }
 
-    /**
-     * Método responsável por deletar um Autor de acordo com o ID dele no banco de dados.
-     */
     @Override
     public void deletar(Integer id) {
         EntityManager entityManager = getEntityManager();
@@ -87,7 +74,7 @@ public class AutorDAOImpl implements IAutorDAO {
             this.iniciarTransacao(entityManager);
 
             entityManager.createQuery(
-                            "DELETE FROM Autor a WHERE a.id = :id")
+                            "DELETE FROM Livro l WHERE l.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 
@@ -101,13 +88,13 @@ public class AutorDAOImpl implements IAutorDAO {
     }
 
     @Override
-    public List<Autor> findByIdIn(List<Integer> ids) {
+    public List<Livro> findByGenero(EGenero genero) {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT a FROM Autor a WHERE a.id IN(:ids)",
-                            Autor.class)
-                    .setParameter("ids", ids)
+                            "SELECT l FROM Livro l where l.genero = :genero",
+                            Livro.class)
+                    .setParameter("genero", genero)
                     .getResultList();
         } catch (Exception ex) {
             return emptyList();

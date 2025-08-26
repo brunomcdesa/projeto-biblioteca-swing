@@ -3,6 +3,7 @@ package biblioteca.telas;
 import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.autor.TelaListagemAutor;
 import biblioteca.telas.editora.TelaListagemEditora;
+import biblioteca.telas.livro.TelaListagemLivro;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  */
 public class TelaPrincipal extends JFrame {
 
+    private final JButton botaoGerenciaLivro = new JButton("Gerenciar Livros");
     private final JButton botaoGerenciaAutor = new JButton("Gerenciar Autores");
     private final JButton botaoGerenciaEditora = new JButton("Gerenciar Editoras");
 
@@ -62,9 +64,12 @@ public class TelaPrincipal extends JFrame {
         JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 
+        botaoGerenciaLivro.setAlignmentX(CENTER_ALIGNMENT);
         botaoGerenciaAutor.setAlignmentX(CENTER_ALIGNMENT);
         botaoGerenciaEditora.setAlignmentX(CENTER_ALIGNMENT);
 
+        painelBotoes.add(botaoGerenciaLivro);
+        painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
         painelBotoes.add(botaoGerenciaAutor);
         painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
         painelBotoes.add(botaoGerenciaEditora);
@@ -78,6 +83,7 @@ public class TelaPrincipal extends JFrame {
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoDoBotaoGerenciarAutores();
         this.configurarAcaoDoBotaoGerenciarEditoras();
+        this.configurarAcaoDoBotaoGerenciarLivros();
     }
 
     /**
@@ -98,6 +104,17 @@ public class TelaPrincipal extends JFrame {
         botaoGerenciaEditora.addActionListener(listener -> {
             TelaListagemEditora telaListagemEditora = new TelaListagemEditora(this);
             telaListagemEditora.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de gerenciar Livros.
+     */
+    private void configurarAcaoDoBotaoGerenciarLivros() {
+        botaoGerenciaLivro.addActionListener(listener -> {
+            TelaListagemLivro telaListagemLivro = new TelaListagemLivro(this);
+            telaListagemLivro.setVisible(true);
             this.setVisible(false);
         });
     }

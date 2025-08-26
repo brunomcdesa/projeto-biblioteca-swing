@@ -1,8 +1,8 @@
-package biblioteca.telas.editora;
+package biblioteca.telas.livro;
 
-import biblioteca.backend.dto.EditoraResponse;
-import biblioteca.backend.service.EditoraService;
-import biblioteca.telas.editora.table.EditoraTable;
+import biblioteca.backend.dto.LivroResponse;
+import biblioteca.backend.service.LivroService;
+import biblioteca.telas.livro.table.LivroTable;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
@@ -16,23 +16,22 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.*;
 
 @Log
-public class TelaListagemEditora extends JFrame {
+public class TelaListagemLivro extends JFrame {
 
     private final JFrame telaAnterior;
-    private final EditoraService editoraService;
+    private final LivroService livroService;
     private final JButton botaoAtualizar = new JButton("Atualizar");
     private final JButton botaoVoltar = new JButton("Voltar");
     private final JButton botaoDeletar = new JButton("Deletar");
     private final JButton botaoEditar = new JButton("Editar");
     private final JButton botaoCadastrar = new JButton("Cadastrar");
-    private final EditoraTable editoraTable = new EditoraTable();
-    private final JTable tabela = new JTable(editoraTable);
+    private final LivroTable livroTable = new LivroTable();
+    private final JTable tabela = new JTable(livroTable);
 
-
-    public TelaListagemEditora(JFrame telaAnterior) {
-        super("Listagem de Editoras");
+    public TelaListagemLivro(JFrame telaAnterior) {
+        super("Listagem de Livros");
         this.telaAnterior = telaAnterior;
-        this.editoraService = new EditoraService();
+        this.livroService = new LivroService();
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -110,11 +109,11 @@ public class TelaListagemEditora extends JFrame {
         botaoEditar.addActionListener(listener -> {
             int linhaSelecionada = tabela.getSelectedRow();
             boolean isLinhaValida = validarLinhaSelecionada(linhaSelecionada, this,
-                    "Por favor, selecione uma editora para editar.", "Nenhuma editora selecionado");
+                    "Por favor, selecione um livro para editar.", "Nenhum livro selecionado");
 
             if (isLinhaValida) {
-                EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
-                TelaFormularioEditora formulario = new TelaFormularioEditora(this, editora);
+                LivroResponse livro = livroTable.getLivro(linhaSelecionada);
+                TelaFormularioLivro formulario = new TelaFormularioLivro(this, livro);
                 formulario.setVisible(true);
                 this.setVisible(false);
             }
@@ -130,16 +129,16 @@ public class TelaListagemEditora extends JFrame {
             try {
                 int linhaSelecionada = tabela.getSelectedRow();
                 boolean isLinhaValida = validarLinhaSelecionada(linhaSelecionada, this,
-                        "Por favor, selecione uma editora para deletar.", "Nenhuma editora selecionada");
+                        "Por favor, selecione um livro para deletar.", "Nenhum livro selecionado");
 
                 if (isLinhaValida) {
-                    EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
+                    LivroResponse livro = livroTable.getLivro(linhaSelecionada);
 
-                    editoraService.deletar(editora.getId());
-                    showMessageDialog(this, "Editora deletada com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                    livroService.deletar(livro.getId());
+                    showMessageDialog(this, "Livro deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
-                showMessageDialog(this, "Erro ao deletar editora do banco de dados.", "Erro", ERROR_MESSAGE);
+                showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
         });
@@ -150,8 +149,8 @@ public class TelaListagemEditora extends JFrame {
      */
     private void configurarAcaoBotaoCadastrar() {
         botaoCadastrar.addActionListener(listener -> {
-            TelaFormularioEditora formularioEditora = new TelaFormularioEditora(this);
-            formularioEditora.setVisible(true);
+            TelaFormularioLivro formularioLivro = new TelaFormularioLivro(this);
+            formularioLivro.setVisible(true);
             this.setVisible(false);
         });
     }
@@ -161,10 +160,10 @@ public class TelaListagemEditora extends JFrame {
      */
     private void carregarDados() {
         try {
-            List<EditoraResponse> editoras = editoraService.listarTodos();
-            editoraTable.setEditoras(editoras);
+            List<LivroResponse> livros = livroService.listarTodos();
+            livroTable.setLivros(livros);
         } catch (Exception ex) {
-            showMessageDialog(this, "Erro ao carregar editoras do banco de dados.", "Erro", ERROR_MESSAGE);
+            showMessageDialog(this, "Erro ao carregar livros do banco de dados.", "Erro", ERROR_MESSAGE);
             log.severe(ex.getMessage());
         }
     }

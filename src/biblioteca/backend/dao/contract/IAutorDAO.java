@@ -20,4 +20,6 @@ public interface IAutorDAO {
     Optional<Autor> findById(Integer id);
 
     void deletar(Integer id);
+
+    List<Autor> findByIdIn(List<Integer> id);
 }

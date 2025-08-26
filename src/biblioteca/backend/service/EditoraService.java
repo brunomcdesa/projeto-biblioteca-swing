@@ -33,7 +33,7 @@ public class EditoraService {
      * e salvar esta nova entidade no banco de dados.
      */
     public void salvar(EditoraRequest editoraRequest) {
-        Editora autor = Editora.converterDeRequet(editoraRequest);
+        Editora autor = Editora.converterDeRequest(editoraRequest);
         editoraDAO.salvar(autor);
     }
 
@@ -72,7 +72,7 @@ public class EditoraService {
      *
      * @return uma Editora.
      */
-    private Editora findById(Integer id) {
+    public Editora findById(Integer id) {
         return editoraDAO.findById(id)
                 .orElseThrow(() -> new NaoEncontradoException("Editora não encontrada."));
     }

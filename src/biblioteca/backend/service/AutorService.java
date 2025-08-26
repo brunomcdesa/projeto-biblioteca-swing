@@ -7,7 +7,9 @@ import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Autor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -33,7 +35,7 @@ public class AutorService {
      * e salvar esta nova entidade no banco de dados.
      */
     public void salvar(AutorRequest autorRequest) {
-        Autor autor = Autor.converterDeRequet(autorRequest);
+        Autor autor = Autor.converterDeRequest(autorRequest);
         autorDAO.salvar(autor);
     }
 
@@ -75,5 +77,9 @@ public class AutorService {
     private Autor findById(Integer id) {
         return autorDAO.findById(id)
                 .orElseThrow(() -> new NaoEncontradoException("Autor não encontrado."));
+    }
+
+    public Set<Autor> findByIdIn(List<Integer> autoresIds) {
+        return new HashSet<>(autorDAO.findByIdIn(autoresIds));
     }
 }

@@ -54,7 +54,7 @@ public class Autor {
     /**
      * Método responsável por realizar a conversão de um AutorRequest em uma entidade Autor.
      */
-    public static Autor converterDeRequet(AutorRequest autorRequest) {
+    public static Autor converterDeRequest(AutorRequest autorRequest) {
         return Autor.builder()
                 .nome(autorRequest.getNome())
                 .idade(autorRequest.getIdade())

@@ -1,11 +1,16 @@
 package biblioteca.backend.model;
 
+import biblioteca.backend.dto.LivroRequest;
+import biblioteca.backend.enums.EGenero;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -37,7 +42,14 @@ public class Livro {
     private String titulo;
 
     @Column(name = "DATA_PUBLICACAO")
-    private LocalDateTime dataPublicacao;
+    private LocalDate dataPublicacao;
+
+    @Column(name = "ISBN")
+    private String isbn;
+
+    @Enumerated(STRING)
+    @Column(name = "GENERO")
+    private EGenero genero;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "FK_EDITORA", referencedColumnName = "ID",
@@ -50,5 +62,50 @@ public class Livro {
             foreignKey = @ForeignKey(name = "FK_LIVRO"))}, inverseJoinColumns = {
         @JoinColumn(name = "FK_AUTOR", referencedColumnName = "ID",
             foreignKey = @ForeignKey(name = "FK_AUTOR"))})
-    private List<Autor> autores;
+    private Set<Autor> autores;
+
+    @ManyToMany
+    @JoinTable(
+            name = "LIVRO_PARECIDO",
+            joinColumns = @JoinColumn(name = "LIVRO_ID", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_LIVRO_ORIGEM")),
+            inverseJoinColumns = @JoinColumn(name = "LIVRO_PARECIDO_ID", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_LIVRO_PARECIDO")))
+    private Set<Livro> livrosParecidos;
+
+    public static Livro montarLivro(LivroRequest livroRequest, Editora editora, Set<Autor> autores,
+                                    Set<Livro> livrosParecidos) {
+        return Livro.builder()
+                .titulo(livroRequest.getTitulo())
+                .dataPublicacao(livroRequest.getDataPublicacao())
+                .genero(livroRequest.getGenero())
+                .isbn(livroRequest.getIsbn())
+                .editora(editora)
+                .autores(autores)
+                .livrosParecidos(livrosParecidos)
+                .build();
+    }
+
+    public List<String> getNomesAutores() {
+        return autores.stream()
+                .map(Autor::getNome)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getTitulosLivrosParecidos() {
+        return livrosParecidos.stream()
+                .map(Livro::getTitulo)
+                .collect(Collectors.toList());
+    }
+
+    public void atualizarDados(LivroRequest request, Editora editora, Set<Autor> autores,
+                               Set<Livro> livrosParecidos) {
+        this.setTitulo(request.getTitulo());
+        this.setDataPublicacao(request.getDataPublicacao());
+        this.setIsbn(request.getIsbn());
+        this.setGenero(request.getGenero());
+        this.setEditora(editora);
+        this.setAutores(autores);
+        this.setLivrosParecidos(livrosParecidos);
+    }
 }
