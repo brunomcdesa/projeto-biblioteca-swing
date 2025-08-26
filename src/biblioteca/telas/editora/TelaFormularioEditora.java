@@ -1,60 +1,60 @@
-package biblioteca.telas.autor;
+package biblioteca.telas.editora;
 
-import biblioteca.backend.dto.AutorRequest;
-import biblioteca.backend.dto.AutorResponse;
-import biblioteca.backend.service.AutorService;
+import biblioteca.backend.dto.EditoraRequest;
+import biblioteca.backend.dto.EditoraResponse;
+import biblioteca.backend.service.EditoraService;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
+import static biblioteca.utils.StringUtils.isCnpjValido;
 import static java.awt.BorderLayout.*;
 import static java.awt.FlowLayout.RIGHT;
 import static javax.swing.BorderFactory.createEmptyBorder;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.*;
 
 /**
- * Tela de cadastro de Autor.
+ * Tela de cadastro de Editora.
  * <p>
- * Esta classe é responsável por renderizar a tela referente a o cadastro de Autor,
- * onde vai ser mostrado os campos para que um novo autor seja cadastrado no sistema.
+ * Esta classe é responsável por renderizar a tela referente a o cadastro de Editora,
+ * onde vai ser mostrado os campos para que uma nova editora seja cadastrada no sistema.
  *
  * @author Bruno Cardoso
  * @version 1.0
  */
-public class TelaFormularioAutor extends JFrame {
+public class TelaFormularioEditora extends JFrame {
 
     private final JFrame telaAnterior;
-    private final AutorService autorService;
+    private final EditoraService editoraService;
     private final JButton botaoSalvar = new JButton("Salvar");
     private final JButton botaoVoltar = new JButton("Voltar");
 
     private JTextField campoNome;
-    private JTextField campoIdade;
+    private JTextField campoCnpj;
 
-    public TelaFormularioAutor(JFrame telaAnterior) {
+    public TelaFormularioEditora(JFrame telaAnterior) {
         this(telaAnterior, null);
     }
 
-    public TelaFormularioAutor(JFrame telaAnterior, AutorResponse autor) {
-        super(autor == null ? "Cadastro de Autor" : "Editar Autor");
+    public TelaFormularioEditora(JFrame telaAnterior, EditoraResponse editora) {
+        super("Cadastrar Editora");
         this.telaAnterior = telaAnterior;
-        this.autorService = new AutorService();
+        this.editoraService = new EditoraService();
 
-        this.inicializarComponentes(autor);
-        this.configurarAcoesDosBotoes(autor);
+        this.inicializarComponentes(editora);
+        this.configurarAcoesDosBotoes(editora);
     }
 
     /**
      * Inicializa e configura os componentes visuais da tela.
      */
-    private void inicializarComponentes(AutorResponse autor) {
+    private void inicializarComponentes(EditoraResponse editora) {
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 20));
         painelPrincipal.setBorder(createEmptyBorder(50, 50, 50, 50));
         painelPrincipal.add(new JLabel("Preencha os dados do autor:", SwingConstants.CENTER), NORTH);
-        this.aplicarConfiguracoesFormulario(painelPrincipal, autor);
+        this.aplicarConfiguracoesFormulario(painelPrincipal, editora);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
 
@@ -67,21 +67,23 @@ public class TelaFormularioAutor extends JFrame {
     /**
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
-    private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, AutorResponse autor) {
+    private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, EditoraResponse editora) {
         JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
+
         JLabel labelNome = new JLabel("Nome:");
         labelNome.setHorizontalAlignment(SwingConstants.CENTER);
-        campoNome = new JTextField(mapNullComBackup(autor, AutorResponse::getNome, ""));
+        campoNome = new JTextField(mapNullComBackup(editora, EditoraResponse::getNome, ""));
         campoNome.setPreferredSize(new Dimension(250, 30));
-        JLabel labelIdade = new JLabel("Idade:");
-        labelIdade.setHorizontalAlignment(SwingConstants.CENTER);
-        campoIdade = new JTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
-        campoIdade.setPreferredSize(new Dimension(250, 30));
+
+        JLabel labelCnpj = new JLabel("Cnpj:");
+        labelCnpj.setHorizontalAlignment(SwingConstants.CENTER);
+        campoCnpj = new JTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
+        campoCnpj.setPreferredSize(new Dimension(250, 30));
 
         painelFormulario.add(labelNome);
         painelFormulario.add(campoNome);
-        painelFormulario.add(labelIdade);
-        painelFormulario.add(campoIdade);
+        painelFormulario.add(labelCnpj);
+        painelFormulario.add(campoCnpj);
 
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -103,9 +105,9 @@ public class TelaFormularioAutor extends JFrame {
     /**
      * Configura todas as ações dos botões da tela.
      */
-    private void configurarAcoesDosBotoes(AutorResponse autor) {
+    private void configurarAcoesDosBotoes(EditoraResponse editora) {
         this.configurarAcaoBotaoVoltar();
-        this.configurarAcaoBotaoSalvar(autor);
+        this.configurarAcaoBotaoSalvar(editora);
     }
 
     /**
@@ -119,38 +121,37 @@ public class TelaFormularioAutor extends JFrame {
     }
 
     /**
-     * Configura a ação de salvar um novo Autor ou de editar um autor.
-     * Envia os dados para a service de Autor, para salvar no banco de dados.
+     * Configura a ação de salvar uma nova editora ou de editar uma editora.
+     * Envia os dados para a service de Editora, para salvar no banco de dados.
      */
-    private void configurarAcaoBotaoSalvar(AutorResponse autor) {
+    private void configurarAcaoBotaoSalvar(EditoraResponse editora) {
         botaoSalvar.addActionListener(listener -> {
             String nome = campoNome.getText();
-            String idadeText = campoIdade.getText();
+            String cnpj = campoCnpj.getText();
 
-            if (isBlank(nome) || isBlank(idadeText)) {
-                showMessageDialog(this, "Todos os campos são obrigatórios!", "Erro de Validação", ERROR_MESSAGE);
+            if (isBlank(nome) || isBlank(cnpj)) {
+                showMessageDialog(this, "Todos os campos são obrigatórios!",
+                        "Erro de Validação", ERROR_MESSAGE);
                 return;
             }
 
-            int idade;
-            try {
-                idade = Integer.parseInt(idadeText);
-            } catch (NumberFormatException e) {
-                showMessageDialog(this, "A idade deve ser um número válido!", "Erro de Formato", ERROR_MESSAGE);
+            if (!isCnpjValido(cnpj)) {
+                showMessageDialog(this, "CNPJ inválido! Insira o CNPJ com o formato XX.XXX.XXX/XXXX-XX",
+                        "Erro de Formato", ERROR_MESSAGE);
                 return;
             }
 
-            AutorRequest request = new AutorRequest(nome, idade);
+            EditoraRequest request = new EditoraRequest(nome, cnpj);
 
-            if (autor == null) {
-                autorService.salvar(request);
+            if (editora == null) {
+                editoraService.salvar(request);
             } else {
-                autorService.editar(autor.getId(), request);
+                editoraService.editar(editora.getId(), request);
             }
-            showMessageDialog(this, "Autor salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            showMessageDialog(this, "Editora salva com sucesso!", "Sucesso", INFORMATION_MESSAGE);
 
             campoNome.setText("");
-            campoIdade.setText("");
+            campoCnpj.setText("");
         });
     }
 }

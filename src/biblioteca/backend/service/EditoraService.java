@@ -11,6 +11,15 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Classe de serviço para Editora.
+ * <p>
+ * Esta classe é responsável por guardar a logica de validação e conversão dos dados,
+ * e também é a classe que vai chamar as operações do banco de dados através do DAO.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 public class EditoraService {
 
     private final IEditoraDAO editoraDAO;

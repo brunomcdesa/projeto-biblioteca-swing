@@ -18,7 +18,9 @@ public class TelaGerenciaEditora extends JFrame {
 
     private final JFrame telaAnterior;
 
-    private JButton botaoVoltar;
+    private final JButton botaoListarEditoras = new JButton("Listar Editoras");
+    private final JButton botaoCadastrarEditora = new JButton("Cadastrar Editora");
+    private final JButton botaoVoltar = new JButton("Voltar");
 
     public TelaGerenciaEditora(JFrame telaAnterior) {
         super("Gerenciar Editoras");
@@ -50,10 +52,14 @@ public class TelaGerenciaEditora extends JFrame {
         JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 
-        botaoVoltar = new JButton("Voltar");
-
+        botaoListarEditoras.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botaoCadastrarEditora.setAlignmentX(CENTER_ALIGNMENT);
         botaoVoltar.setAlignmentX(CENTER_ALIGNMENT);
 
+        painelBotoes.add(botaoListarEditoras);
+        painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
+        painelBotoes.add(botaoCadastrarEditora);
+        painelBotoes.add(Box.createRigidArea(new Dimension(0, 300)));
         painelBotoes.add(botaoVoltar);
 
         painelPrincipal.add(painelBotoes);
@@ -64,6 +70,8 @@ public class TelaGerenciaEditora extends JFrame {
      */
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoBotaoVoltar();
+        this.configurarAcaoListarEditoras();
+        this.configurarAcaoCadastrarEditora();
     }
 
     /**
@@ -73,6 +81,28 @@ public class TelaGerenciaEditora extends JFrame {
         botaoVoltar.addActionListener(listener -> {
             telaAnterior.setVisible(true);
             dispose();
+        });
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de listagem de editoras.
+     */
+    private void configurarAcaoListarEditoras() {
+        botaoListarEditoras.addActionListener(listener -> {
+            TelaListagemEditora telaListagemEditora = new TelaListagemEditora(this);
+            telaListagemEditora.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de cadastrar editora.
+     */
+    private void configurarAcaoCadastrarEditora() {
+        botaoCadastrarEditora.addActionListener(listener -> {
+            TelaFormularioEditora formularioEditora = new TelaFormularioEditora(this);
+            formularioEditora.setVisible(true);
+            this.setVisible(false);
         });
     }
 }

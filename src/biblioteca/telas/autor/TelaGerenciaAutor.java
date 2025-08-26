@@ -17,10 +17,9 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public class TelaGerenciaAutor extends JFrame {
 
     private final JFrame telaAnterior;
-
-    private JButton botaoListarAutores;
-    private JButton botaoIrParaCadastroAutor;
-    private JButton botaoVoltar;
+    private final JButton botaoListarAutores = new JButton("Listar Autores");
+    private final JButton botaoCadastrarAutor = new JButton("Cadastrar Novo Autor");
+    private final JButton botaoVoltar = new JButton("Voltar");
 
     public TelaGerenciaAutor(JFrame telaAnterior) {
         super("Gerenciar Autores");
@@ -69,7 +68,7 @@ public class TelaGerenciaAutor extends JFrame {
      * Adiciona um listener para interceptar o evento de cadastro de Autor.
      */
     private void configurarAcaoDoBotaoCadastroAutor() {
-        botaoIrParaCadastroAutor.addActionListener(listener -> {
+        botaoCadastrarAutor.addActionListener(listener -> {
             TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this);
             telaCadastroAutor.setVisible(true);
             this.setVisible(false);
@@ -93,17 +92,13 @@ public class TelaGerenciaAutor extends JFrame {
         JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 
-        botaoListarAutores = new JButton("Listar Autores");
-        botaoIrParaCadastroAutor = new JButton("Cadastrar Novo Autor");
-        botaoVoltar = new JButton("Voltar");
-
         botaoListarAutores.setAlignmentX(CENTER_ALIGNMENT);
-        botaoIrParaCadastroAutor.setAlignmentX(CENTER_ALIGNMENT);
+        botaoCadastrarAutor.setAlignmentX(CENTER_ALIGNMENT);
         botaoVoltar.setAlignmentX(CENTER_ALIGNMENT);
 
         painelBotoes.add(botaoListarAutores);
         painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
-        painelBotoes.add(botaoIrParaCadastroAutor);
+        painelBotoes.add(botaoCadastrarAutor);
         painelBotoes.add(Box.createRigidArea(new Dimension(0, 300)));
         painelBotoes.add(botaoVoltar);
 

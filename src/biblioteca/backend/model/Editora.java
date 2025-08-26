@@ -1,6 +1,5 @@
 package biblioteca.backend.model;
 
-import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.EditoraRequest;
 import lombok.*;
 

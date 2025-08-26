@@ -1,20 +1,27 @@
 package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.IEditoraDAO;
-import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static biblioteca.backend.utils.JpaUtil.getEntityManager;
 
+/**
+ * Classe responsável por implementar a lógica das transações realizadas no banco de dados, na tabela Editora.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Log
 public class EditoraDAOImpl implements IEditoraDAO {
 
+    /**
+     * Método responsável por salvar/atualizar uma Editora no banco de dados.
+     */
     @Override
     public void salvar(Editora editora) {
         EntityManager entityManager = getEntityManager();
@@ -34,6 +41,9 @@ public class EditoraDAOImpl implements IEditoraDAO {
         }
     }
 
+    /**
+     * Método responsável por listar todas as Editoras salvas no banco de dados.
+     */
     @Override
     public List<Editora> listarTodos() {
         EntityManager entityManager = getEntityManager();
@@ -47,6 +57,9 @@ public class EditoraDAOImpl implements IEditoraDAO {
         }
     }
 
+    /**
+     * Método responsável por listar uma Editora de acordo com o ID dela no banco de dados.
+     */
     @Override
     public Optional<Editora> findById(Integer id) {
         EntityManager entityManager = getEntityManager();
@@ -63,6 +76,9 @@ public class EditoraDAOImpl implements IEditoraDAO {
         }
     }
 
+    /**
+     * Método responsável por deletar uma Editora de acordo com o ID dela no banco de dados.
+     */
     @Override
     public void deletar(Integer id) {
         EntityManager entityManager = getEntityManager();

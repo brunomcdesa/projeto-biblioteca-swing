@@ -1,8 +1,8 @@
-package biblioteca.telas.autor;
+package biblioteca.telas.editora;
 
-import biblioteca.backend.dto.AutorResponse;
-import biblioteca.backend.service.AutorService;
-import biblioteca.telas.autor.table.AutorTable;
+import biblioteca.backend.dto.EditoraResponse;
+import biblioteca.backend.service.EditoraService;
+import biblioteca.telas.editora.table.EditoraTable;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
@@ -15,31 +15,23 @@ import static java.awt.FlowLayout.RIGHT;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.*;
 
-/**
- * Tela de listagem de autores do sistema.
- * <p>
- * Esta classe é responsável por renderizar em uma tabela, os dados dos Autores cadastrados no sistema.
- *
- * @author Bruno Cardoso
- * @version 1.0
- */
 @Log
-public class TelaListagemAutor extends JFrame {
+public class TelaListagemEditora extends JFrame {
 
     private final JFrame telaAnterior;
-    private final AutorService autorService;
+    private final EditoraService editoraService;
+    private final JButton botaoAtualizar = new JButton("Atualizar");
+    private final JButton botaoVoltar = new JButton("Voltar");
+    private final JButton botaoDeletar = new JButton("Deletar");
+    private final JButton botaoEditar = new JButton("Editar");
+    private final EditoraTable editoraTable = new EditoraTable();
+    private final JTable tabela = new JTable(editoraTable);
 
-    private JTable tabela;
-    private AutorTable autorTable;
-    private JButton botaoAtualizar;
-    private JButton botaoVoltar;
-    private JButton botaoDeletar;
-    private JButton botaoEditar;
 
-    public TelaListagemAutor(JFrame telaAnterior) {
-        super("Listagem de Autores");
+    public TelaListagemEditora(JFrame telaAnterior) {
+        super("Listagem de Editoras");
         this.telaAnterior = telaAnterior;
-        this.autorService = new AutorService();
+        this.editoraService = new EditoraService();
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -52,9 +44,6 @@ public class TelaListagemAutor extends JFrame {
     private void inicializarComponentes() {
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
         painelPrincipal.setBorder(createEmptyBorder(10, 10, 10, 10));
-
-        autorTable = new AutorTable();
-        tabela = new JTable(autorTable);
 
         JScrollPane scrollPane = new JScrollPane(tabela);
         painelPrincipal.add(scrollPane, BorderLayout.CENTER);
@@ -71,10 +60,6 @@ public class TelaListagemAutor extends JFrame {
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
         JPanel painelBotoes = new JPanel(new FlowLayout(RIGHT));
-        botaoEditar = new JButton("Editar");
-        botaoAtualizar = new JButton("Atualizar");
-        botaoVoltar = new JButton("Voltar");
-        botaoDeletar = new JButton("Remover");
 
         painelBotoes.add(botaoVoltar);
         painelBotoes.add(botaoAtualizar);
@@ -122,12 +107,13 @@ public class TelaListagemAutor extends JFrame {
         botaoEditar.addActionListener(listener -> {
             int linhaSelecionada = tabela.getSelectedRow();
             boolean isLinhaValida = validarLinhaSelecionada(linhaSelecionada, this,
-                    "Por favor, selecione um autor para editar.", "Nenhum autor selecionado");
+                    "Por favor, selecione uma editora para editar.", "Nenhuma editora selecionado");
 
             if (isLinhaValida) {
-                AutorResponse autor = autorTable.getAutor(linhaSelecionada);
-                TelaFormularioAutor formulario = new TelaFormularioAutor(this, autor);
+                EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
+                TelaFormularioEditora formulario = new TelaFormularioEditora(this, editora);
                 formulario.setVisible(true);
+                this.setVisible(false);
             }
         });
     }
@@ -144,10 +130,10 @@ public class TelaListagemAutor extends JFrame {
                         "Por favor, selecione um autor para deletar.", "Nenhum autor selecionado");
 
                 if (isLinhaValida) {
-                    AutorResponse autor = autorTable.getAutor(linhaSelecionada);
+                    EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
 
-                    autorService.deletar(autor.getId());
-                    showMessageDialog(this, "Autor deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                    editoraService.deletar(editora.getId());
+                    showMessageDialog(this, "Editora deletada com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
                 showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
@@ -161,10 +147,10 @@ public class TelaListagemAutor extends JFrame {
      */
     private void carregarDados() {
         try {
-            List<AutorResponse> autores = autorService.listarTodos();
-            autorTable.setAutores(autores);
+            List<EditoraResponse> editoras = editoraService.listarTodos();
+            editoraTable.setEditoras(editoras);
         } catch (Exception ex) {
-            showMessageDialog(this, "Erro ao carregar autores do banco de dados.", "Erro", ERROR_MESSAGE);
+            showMessageDialog(this, "Erro ao carregar editoras do banco de dados.", "Erro", ERROR_MESSAGE);
             log.severe(ex.getMessage());
         }
     }
