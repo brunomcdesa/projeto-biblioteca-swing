@@ -1,6 +1,7 @@
 package biblioteca.telas.editora;
 
 import biblioteca.backend.dto.EditoraResponse;
+import biblioteca.backend.facade.EditoraFacade;
 import biblioteca.backend.service.EditoraService;
 import biblioteca.telas.editora.table.EditoraTable;
 import lombok.extern.java.Log;
@@ -20,7 +21,7 @@ import static javax.swing.JOptionPane.*;
 public class TelaListagemEditora extends JFrame {
 
     private final JFrame telaAnterior;
-    private final EditoraService editoraService;
+    private final EditoraFacade editoraFacade;
     private final JButton botaoAtualizar = criarBotao("Atualizar");
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoDeletar = criarBotao("Deletar");
@@ -30,10 +31,10 @@ public class TelaListagemEditora extends JFrame {
     private final JTable tabela = new JTable(editoraTable);
 
 
-    public TelaListagemEditora(JFrame telaAnterior) {
+    public TelaListagemEditora(JFrame telaAnterior, EditoraFacade editoraFacade) {
         super("Listagem de Editoras");
         this.telaAnterior = telaAnterior;
-        this.editoraService = new EditoraService();
+        this.editoraFacade = editoraFacade;
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -115,7 +116,7 @@ public class TelaListagemEditora extends JFrame {
 
             if (isLinhaValida) {
                 EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
-                TelaFormularioEditora formulario = new TelaFormularioEditora(this, editora);
+                TelaFormularioEditora formulario = new TelaFormularioEditora(this, editoraFacade, editora);
                 formulario.setVisible(true);
                 this.setVisible(false);
             }
@@ -136,7 +137,7 @@ public class TelaListagemEditora extends JFrame {
                 if (isLinhaValida) {
                     EditoraResponse editora = editoraTable.getEditora(linhaSelecionada);
 
-                    editoraService.deletar(editora.getId());
+                    editoraFacade.deletarEditora(editora.getId());
                     showMessageDialog(this, "Editora deletada com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
@@ -151,7 +152,7 @@ public class TelaListagemEditora extends JFrame {
      */
     private void configurarAcaoBotaoCadastrar() {
         botaoCadastrar.addActionListener(listener -> {
-            TelaFormularioEditora formularioEditora = new TelaFormularioEditora(this);
+            TelaFormularioEditora formularioEditora = new TelaFormularioEditora(this, editoraFacade);
             formularioEditora.setVisible(true);
             this.setVisible(false);
         });
@@ -162,7 +163,7 @@ public class TelaListagemEditora extends JFrame {
      */
     private void carregarDados() {
         try {
-            List<EditoraResponse> editoras = editoraService.listarTodos();
+            List<EditoraResponse> editoras = editoraFacade.listarTodasEditoras();
             editoraTable.setEditoras(editoras);
         } catch (Exception ex) {
             showMessageDialog(this, "Erro ao carregar editoras do banco de dados.", "Erro", ERROR_MESSAGE);

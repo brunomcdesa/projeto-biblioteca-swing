@@ -6,6 +6,7 @@ import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Autor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,13 +23,10 @@ import static java.util.stream.Collectors.toList;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@RequiredArgsConstructor
 public class AutorService {
 
     private final IAutorDAO autorDAO;
-
-    public AutorService() {
-        this.autorDAO = new AutorDAOImpl();
-    }
 
     /**
      * Método responsável por converter a request em uma entidade,

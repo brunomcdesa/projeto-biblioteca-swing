@@ -2,13 +2,13 @@ package biblioteca.telas.editora;
 
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
-import biblioteca.backend.service.EditoraService;
+import biblioteca.backend.facade.EditoraFacade;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static biblioteca.utils.FormUtils.criarLabel;
-import static biblioteca.utils.FormUtils.formatarTextField;
+import static biblioteca.utils.FormUtils.criarTextField;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
 import static biblioteca.utils.StringUtils.isCnpjValido;
@@ -29,21 +29,21 @@ import static javax.swing.JOptionPane.*;
 public class TelaFormularioEditora extends JFrame {
 
     private final JFrame telaAnterior;
-    private final EditoraService editoraService;
+    private final EditoraFacade editoraFacade;
     private final JButton botaoSalvar = new JButton("Salvar");
     private final JButton botaoVoltar = new JButton("Voltar");
 
     private JTextField campoNome;
     private JTextField campoCnpj;
 
-    public TelaFormularioEditora(JFrame telaAnterior) {
-        this(telaAnterior, null);
+    public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade) {
+        this(telaAnterior, editoraFacade, null);
     }
 
-    public TelaFormularioEditora(JFrame telaAnterior, EditoraResponse editora) {
+    public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade,  EditoraResponse editora) {
         super("Cadastrar Editora");
         this.telaAnterior = telaAnterior;
-        this.editoraService = new EditoraService();
+        this.editoraFacade = editoraFacade;
 
         this.inicializarComponentes(editora);
         this.configurarAcoesDosBotoes(editora);
@@ -82,9 +82,9 @@ public class TelaFormularioEditora extends JFrame {
 
     private void configurarCamposFormulario(EditoraResponse editora, JPanel painelFormulario) {
         JLabel labelNome = criarLabel("Nome:");
-        JTextField campoNome = formatarTextField(this.campoNome, mapNullComBackup(editora, EditoraResponse::getNome, ""));
+        this.campoNome = criarTextField(mapNullComBackup(editora, EditoraResponse::getNome, ""));
         JLabel labelCnpj = criarLabel("Cnpj:");
-        JTextField campoCnpj = formatarTextField(this.campoCnpj, mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
+        this.campoCnpj = criarTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
 
         painelFormulario.add(labelNome);
         painelFormulario.add(campoNome);
@@ -145,9 +145,9 @@ public class TelaFormularioEditora extends JFrame {
             EditoraRequest request = new EditoraRequest(nome, cnpj);
 
             if (editora == null) {
-                editoraService.salvar(request);
+                editoraFacade.salvarEditora(request);
             } else {
-                editoraService.editar(editora.getId(), request);
+                editoraFacade.editarEditora(editora.getId(), request);
             }
             showMessageDialog(this, "Editora salva com sucesso!", "Sucesso", INFORMATION_MESSAGE);
 

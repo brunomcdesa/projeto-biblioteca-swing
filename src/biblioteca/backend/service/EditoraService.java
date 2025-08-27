@@ -1,11 +1,11 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.IEditoraDAO;
-import biblioteca.backend.dao.impl.EditoraDAOImpl;
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Editora;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -20,13 +20,10 @@ import static java.util.stream.Collectors.toList;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@RequiredArgsConstructor
 public class EditoraService {
 
     private final IEditoraDAO editoraDAO;
-
-    public EditoraService() {
-        this.editoraDAO = new EditoraDAOImpl();
-    }
 
     /**
      * Método responsável por converter a request em uma entidade,

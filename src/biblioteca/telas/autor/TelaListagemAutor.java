@@ -1,8 +1,9 @@
 package biblioteca.telas.autor;
 
 import biblioteca.backend.dto.AutorResponse;
-import biblioteca.backend.service.AutorService;
+import biblioteca.backend.facade.AutorFacade;
 import biblioteca.telas.autor.table.AutorTable;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ import static javax.swing.JOptionPane.*;
 public class TelaListagemAutor extends JFrame {
 
     private final JFrame telaAnterior;
-    private final AutorService autorService;
+    private final AutorFacade autorFacade;
     private final JButton botaoAtualizar = criarBotao("Atualizar");
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoDeletar = criarBotao("Deletar");
@@ -37,10 +38,10 @@ public class TelaListagemAutor extends JFrame {
     private final AutorTable autorTable = new AutorTable();
     private final JTable tabela = new JTable(autorTable);
 
-    public TelaListagemAutor(JFrame telaAnterior) {
+    public TelaListagemAutor(JFrame telaAnterior, AutorFacade autorFacade) {
         super("Listagem de Autores");
         this.telaAnterior = telaAnterior;
-        this.autorService = new AutorService();
+        this.autorFacade = autorFacade;
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -122,7 +123,7 @@ public class TelaListagemAutor extends JFrame {
 
             if (isLinhaValida) {
                 AutorResponse autor = autorTable.getAutor(linhaSelecionada);
-                TelaFormularioAutor formulario = new TelaFormularioAutor(this, autor);
+                TelaFormularioAutor formulario = new TelaFormularioAutor(this, autorFacade, autor);
                 formulario.setVisible(true);
             }
         });
@@ -142,7 +143,7 @@ public class TelaListagemAutor extends JFrame {
                 if (isLinhaValida) {
                     AutorResponse autor = autorTable.getAutor(linhaSelecionada);
 
-                    autorService.deletar(autor.getId());
+                    autorFacade.deletarAutor(autor.getId());
                     showMessageDialog(this, "Autor deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
@@ -157,7 +158,7 @@ public class TelaListagemAutor extends JFrame {
      */
     private void configurarAcaoBotaoCadastrar() {
         botaoCadastrar.addActionListener(listener -> {
-            TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this);
+            TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this, autorFacade);
             telaCadastroAutor.setVisible(true);
             this.setVisible(false);
         });
@@ -168,7 +169,7 @@ public class TelaListagemAutor extends JFrame {
      */
     private void carregarDados() {
         try {
-            List<AutorResponse> autores = autorService.listarTodos();
+            List<AutorResponse> autores = autorFacade.listarTodosAutores();
             autorTable.setAutores(autores);
         } catch (Exception ex) {
             showMessageDialog(this, "Erro ao carregar autores do banco de dados.", "Erro", ERROR_MESSAGE);

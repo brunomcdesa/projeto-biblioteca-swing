@@ -1,13 +1,13 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.ILivroDAO;
-import biblioteca.backend.dao.impl.LivroDAOImpl;
 import biblioteca.backend.dto.LivroRequest;
 import biblioteca.backend.dto.LivroResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import biblioteca.backend.model.Livro;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,21 +15,12 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+@RequiredArgsConstructor
 public class LivroService {
 
     private final ILivroDAO livroDAO;
-    private final AutorService autorService;
-    private final EditoraService editoraService;
 
-    public LivroService() {
-        this.livroDAO = new LivroDAOImpl();
-        this.autorService = new AutorService();
-        this.editoraService = new EditoraService();
-    }
-
-    public void salvar(LivroRequest livroRequest) {
-        Editora editora = editoraService.findById(livroRequest.getEditoraId());
-        Set<Autor> autores = autorService.findByIdIn(livroRequest.getAutoresIds());
+    public void salvar(LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGenero(livroRequest.getGenero()));
         Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores, livrosParecidos);
 
@@ -45,10 +36,8 @@ public class LivroService {
     /**
      * Método responsável por editar uma editora específica, de acordo com os novos dados da request.
      */
-    public void editar(Integer id, LivroRequest livroRequest) {
+    public void editar(Integer id, LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Livro livro = this.findById(id);
-        Editora editora = editoraService.findById(livroRequest.getEditoraId());
-        Set<Autor> autores = autorService.findByIdIn(livroRequest.getAutoresIds());
         Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGenero(livroRequest.getGenero()));
 
         livro.atualizarDados(livroRequest, editora, autores, livrosParecidos);

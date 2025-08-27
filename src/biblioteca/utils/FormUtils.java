@@ -1,14 +1,11 @@
 package biblioteca.utils;
 
 
-import biblioteca.backend.dto.EditoraResponse;
 import lombok.experimental.UtilityClass;
 
 import javax.swing.*;
-
 import java.awt.*;
 
-import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -48,10 +45,9 @@ public class FormUtils {
         return label;
     }
 
-    public static JTextField formatarTextField(JTextField textField, String text) {
-        textField = new JTextField(text);
+    public static JTextField criarTextField(String text) {
+        JTextField textField = new JTextField(text);
         textField.setPreferredSize(new Dimension(250, 30));
-
         return textField;
     }
 }

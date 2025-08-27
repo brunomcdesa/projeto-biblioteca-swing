@@ -2,7 +2,7 @@ package biblioteca.telas.autor;
 
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
-import biblioteca.backend.service.AutorService;
+import biblioteca.backend.facade.AutorFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,21 +28,21 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class TelaFormularioAutor extends JFrame {
 
     private final JFrame telaAnterior;
-    private final AutorService autorService;
+    private final AutorFacade autorFacade;
     private final JButton botaoSalvar = criarBotao("Salvar");
     private final JButton botaoVoltar = criarBotao("Voltar");
 
     private JTextField campoNome;
     private JTextField campoIdade;
 
-    public TelaFormularioAutor(JFrame telaAnterior) {
-        this(telaAnterior, null);
+    public TelaFormularioAutor(JFrame telaAnterior, AutorFacade autorFacade) {
+        this(telaAnterior, autorFacade, null);
     }
 
-    public TelaFormularioAutor(JFrame telaAnterior, AutorResponse autor) {
+    public TelaFormularioAutor(JFrame telaAnterior, AutorFacade autorFacade, AutorResponse autor) {
         super(autor == null ? "Cadastro de Autor" : "Editar Autor");
         this.telaAnterior = telaAnterior;
-        this.autorService = new AutorService();
+        this.autorFacade = autorFacade;
 
         this.inicializarComponentes(autor);
         this.configurarAcoesDosBotoes(autor);
@@ -80,9 +80,9 @@ public class TelaFormularioAutor extends JFrame {
 
     private void configurarCamposFormulario(AutorResponse autor, JPanel painelFormulario) {
         JLabel labelNome = criarLabel("Nome:");
-        JTextField campoNome = formatarTextField(this.campoNome, mapNullComBackup(autor, AutorResponse::getNome, ""));
+        this.campoNome = criarTextField(mapNullComBackup(autor, AutorResponse::getNome, ""));
         JLabel labelIdade = criarLabel("Idade:");
-        JTextField campoIdade = formatarTextField(this.campoIdade, mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
+        this.campoIdade = criarTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
 
         painelFormulario.add(labelNome);
         painelFormulario.add(campoNome);
@@ -144,9 +144,9 @@ public class TelaFormularioAutor extends JFrame {
             AutorRequest request = new AutorRequest(nome, idade);
 
             if (autor == null) {
-                autorService.salvar(request);
+                autorFacade.salvarNovoAutor(request);
             } else {
-                autorService.editar(autor.getId(), request);
+                autorFacade.editarAutor(autor.getId(), request);
             }
             showMessageDialog(this, "Autor salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 

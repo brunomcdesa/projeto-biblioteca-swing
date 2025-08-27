@@ -1,5 +1,9 @@
 package biblioteca.telas;
 
+import biblioteca.backend.facade.AutorFacade;
+import biblioteca.backend.facade.EditoraFacade;
+import biblioteca.backend.facade.LivroFacade;
+import biblioteca.backend.model.Editora;
 import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.autor.TelaListagemAutor;
 import biblioteca.telas.editora.TelaListagemEditora;
@@ -31,11 +35,11 @@ public class TelaPrincipal extends JFrame {
     private final JButton botaoGerenciaAutor = criarBotao("Gerenciar Autores");
     private final JButton botaoGerenciaEditora = criarBotao("Gerenciar Editoras");
 
-    public TelaPrincipal() {
+    public TelaPrincipal(AutorFacade autorFacade, EditoraFacade editoraFacade, LivroFacade livroFacade) {
         super("Biblioteca");
 
         this.inicializarComponentes();
-        this.configurarAcoesDosBotoes();
+        this.configurarAcoesDosBotoes(autorFacade, editoraFacade, livroFacade);
         this.configurarListenerDeJanela();
     }
 
@@ -81,18 +85,18 @@ public class TelaPrincipal extends JFrame {
     /**
      * Configura os listeners dos botoes
      */
-    private void configurarAcoesDosBotoes() {
-        this.configurarAcaoDoBotaoGerenciarAutores();
-        this.configurarAcaoDoBotaoGerenciarEditoras();
-        this.configurarAcaoDoBotaoGerenciarLivros();
+    private void configurarAcoesDosBotoes(AutorFacade autorFacade, EditoraFacade editoraFacade, LivroFacade livroFacade) {
+        this.configurarAcaoDoBotaoGerenciarAutores(autorFacade);
+        this.configurarAcaoDoBotaoGerenciarEditoras(editoraFacade);
+        this.configurarAcaoDoBotaoGerenciarLivros(livroFacade);
     }
 
     /**
      * Adiciona um listener para interceptar o evento de gerenciar Autores.
      */
-    private void configurarAcaoDoBotaoGerenciarAutores() {
+    private void configurarAcaoDoBotaoGerenciarAutores(AutorFacade autorFacade) {
         botaoGerenciaAutor.addActionListener(listener -> {
-            TelaListagemAutor telaListageAutor = new TelaListagemAutor(this);
+            TelaListagemAutor telaListageAutor = new TelaListagemAutor(this, autorFacade);
             telaListageAutor.setVisible(true);
             this.setVisible(false);
         });
@@ -101,9 +105,9 @@ public class TelaPrincipal extends JFrame {
     /**
      * Adiciona um listener para interceptar o evento de gerenciar Editoras.
      */
-    private void configurarAcaoDoBotaoGerenciarEditoras() {
+    private void configurarAcaoDoBotaoGerenciarEditoras(EditoraFacade editoraFacade) {
         botaoGerenciaEditora.addActionListener(listener -> {
-            TelaListagemEditora telaListagemEditora = new TelaListagemEditora(this);
+            TelaListagemEditora telaListagemEditora = new TelaListagemEditora(this, editoraFacade);
             telaListagemEditora.setVisible(true);
             this.setVisible(false);
         });
@@ -112,9 +116,9 @@ public class TelaPrincipal extends JFrame {
     /**
      * Adiciona um listener para interceptar o evento de gerenciar Livros.
      */
-    private void configurarAcaoDoBotaoGerenciarLivros() {
+    private void configurarAcaoDoBotaoGerenciarLivros(LivroFacade livroFacade) {
         botaoGerenciaLivro.addActionListener(listener -> {
-            TelaListagemLivro telaListagemLivro = new TelaListagemLivro(this);
+            TelaListagemLivro telaListagemLivro = new TelaListagemLivro(this, livroFacade);
             telaListagemLivro.setVisible(true);
             this.setVisible(false);
         });

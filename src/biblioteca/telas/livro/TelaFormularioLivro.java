@@ -1,7 +1,7 @@
 package biblioteca.telas.livro;
 
 import biblioteca.backend.dto.LivroResponse;
-import biblioteca.backend.service.LivroService;
+import biblioteca.backend.facade.LivroFacade;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public class TelaFormularioLivro extends JFrame {
 
     private final JFrame telaAnterior;
-    private final LivroService livroService;
+    private final LivroFacade livroFacade;
     private final JButton botaoSalvar = criarBotao("Salvar");
     private final JButton botaoVoltar = criarBotao("Voltar");
 
@@ -27,14 +27,14 @@ public class TelaFormularioLivro extends JFrame {
     private JTextField campoEditora; // trocar para select
     private JTextField campoAutores; // trocar para multiselect
 
-    public TelaFormularioLivro(JFrame telaAnterior) {
-        this(telaAnterior, null);
+    public TelaFormularioLivro(JFrame telaAnterior, LivroFacade livroFacade) {
+        this(telaAnterior, livroFacade, null);
     }
 
-    public TelaFormularioLivro(JFrame telaAnterior, LivroResponse livro) {
+    public TelaFormularioLivro(JFrame telaAnterior, LivroFacade livroFacade, LivroResponse livro) {
         super("Cadastar Livro");
         this.telaAnterior = telaAnterior;
-        this.livroService = new LivroService();
+        this.livroFacade = livroFacade;
 
         this.inicializarComponentes(livro);
         this.configurarAcoesDosBotoes(livro);
@@ -73,13 +73,13 @@ public class TelaFormularioLivro extends JFrame {
 
     private void configurarCamposFormulario(LivroResponse livro, JPanel painelFormulario) {
         JLabel labelTitulo = criarLabel("Título:");
-        JTextField campoTitulo = formatarTextField(this.campoTitulo, mapNullComBackup(livro, LivroResponse::getTitulo, ""));
+        this.campoTitulo = criarTextField(mapNullComBackup(livro, LivroResponse::getTitulo, ""));
         JLabel labelDataPublicacao = criarLabel("Data de publicação (dd/MM/yyyy):");
-        JTextField campoDataPublicacao = formatarTextField(this.campoDataPublicacao, mapNullComBackup(livro, livroResponse -> formatarData(livroResponse.getDataPublicacao()), ""));
+        this.campoDataPublicacao = criarTextField(mapNullComBackup(livro, livroResponse -> formatarData(livroResponse.getDataPublicacao()), ""));
         JLabel labelIsbm = criarLabel("ISBM:");
-        JTextField campoIsbm = formatarTextField(this.campoIsbm, mapNullComBackup(livro, LivroResponse::getIsbn, ""));
+        this.campoIsbm = criarTextField(mapNullComBackup(livro, LivroResponse::getIsbn, ""));
         JLabel labelGenero = criarLabel("Gênero:");
-        JTextField campoGenero = formatarTextField(this.campoGenero, mapNullComBackup(livro, LivroResponse::getGenero, ""));
+        this.campoGenero = criarTextField(mapNullComBackup(livro, LivroResponse::getGenero, ""));
 
         painelFormulario.add(labelTitulo);
         painelFormulario.add(campoTitulo);

@@ -1,7 +1,7 @@
 package biblioteca.telas.livro;
 
 import biblioteca.backend.dto.LivroResponse;
-import biblioteca.backend.service.LivroService;
+import biblioteca.backend.facade.LivroFacade;
 import biblioteca.telas.livro.table.LivroTable;
 import lombok.extern.java.Log;
 
@@ -20,7 +20,7 @@ import static javax.swing.JOptionPane.*;
 public class TelaListagemLivro extends JFrame {
 
     private final JFrame telaAnterior;
-    private final LivroService livroService;
+    private final LivroFacade livroFacade;
     private final JButton botaoAtualizar = criarBotao("Atualizar");
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoDeletar = criarBotao("Deletar");
@@ -29,10 +29,10 @@ public class TelaListagemLivro extends JFrame {
     private final LivroTable livroTable = new LivroTable();
     private final JTable tabela = new JTable(livroTable);
 
-    public TelaListagemLivro(JFrame telaAnterior) {
+    public TelaListagemLivro(JFrame telaAnterior, LivroFacade livroFacade) {
         super("Listagem de Livros");
         this.telaAnterior = telaAnterior;
-        this.livroService = new LivroService();
+        this.livroFacade = livroFacade;
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -114,7 +114,7 @@ public class TelaListagemLivro extends JFrame {
 
             if (isLinhaValida) {
                 LivroResponse livro = livroTable.getLivro(linhaSelecionada);
-                TelaFormularioLivro formulario = new TelaFormularioLivro(this, livro);
+                TelaFormularioLivro formulario = new TelaFormularioLivro(this, livroFacade, livro);
                 formulario.setVisible(true);
                 this.setVisible(false);
             }
@@ -135,7 +135,7 @@ public class TelaListagemLivro extends JFrame {
                 if (isLinhaValida) {
                     LivroResponse livro = livroTable.getLivro(linhaSelecionada);
 
-                    livroService.deletar(livro.getId());
+                    livroFacade.deletarLivro(livro.getId());
                     showMessageDialog(this, "Livro deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
@@ -150,7 +150,7 @@ public class TelaListagemLivro extends JFrame {
      */
     private void configurarAcaoBotaoCadastrar() {
         botaoCadastrar.addActionListener(listener -> {
-            TelaFormularioLivro formularioLivro = new TelaFormularioLivro(this);
+            TelaFormularioLivro formularioLivro = new TelaFormularioLivro(this, livroFacade);
             formularioLivro.setVisible(true);
             this.setVisible(false);
         });
@@ -161,7 +161,7 @@ public class TelaListagemLivro extends JFrame {
      */
     private void carregarDados() {
         try {
-            List<LivroResponse> livros = livroService.listarTodos();
+            List<LivroResponse> livros = livroFacade.listarTodosLivros();
             livroTable.setLivros(livros);
         } catch (Exception ex) {
             showMessageDialog(this, "Erro ao carregar livros do banco de dados.", "Erro", ERROR_MESSAGE);
