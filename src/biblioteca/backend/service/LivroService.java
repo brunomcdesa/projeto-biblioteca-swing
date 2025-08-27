@@ -15,11 +15,24 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Classe de serviço para Livro.
+ * <p>
+ * Esta classe é responsável por guardar a logica de validação e conversão dos dados,
+ * e também é a classe que vai chamar as operações do banco de dados através do DAO.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 public class LivroService {
 
     private final ILivroDAO livroDAO;
 
+    /**
+     * Método responsável por converter a request em uma entidade,
+     * e salvar esta nova entidade no banco de dados.
+     */
     public void salvar(LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGenero(livroRequest.getGenero()));
         Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores, livrosParecidos);
@@ -27,6 +40,11 @@ public class LivroService {
         livroDAO.salvar(novoLivro);
     }
 
+    /**
+     * Método responsável por listar todos os Livros do sistema.
+     *
+     * @return uma lista de Livros.
+     */
     public List<LivroResponse> listarTodos() {
         return livroDAO.listarTodos().stream()
                 .map(LivroResponse::converterDeLivro)
@@ -34,7 +52,7 @@ public class LivroService {
     }
 
     /**
-     * Método responsável por editar uma editora específica, de acordo com os novos dados da request.
+     * Método responsável por editar um livro específico, de acordo com os novos dados da request.
      */
     public void editar(Integer id, LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Livro livro = this.findById(id);
@@ -46,18 +64,18 @@ public class LivroService {
     }
 
     /**
-     * Método responsável por deletar uma editora específica do banco de dados.
+     * Método responsável por deletar um livro específico do banco de dados.
      */
     public void deletar(Integer id) {
         livroDAO.deletar(id);
     }
 
     /**
-     * Método responsável por buscar um Autor pelo ID dele.
+     * Método responsável por buscar um Livro pelo ID dele.
      * <p>
-     * Caso não encontre nenhum Autor com o mesmo ID, será lançado uma excepion.
+     * Caso não encontre nenhum Livro com o mesmo ID, será lançado uma excepion.
      *
-     * @return uma Editora.
+     * @return um Livro.
      */
     private Livro findById(Integer id) {
         return livroDAO.findById(id)

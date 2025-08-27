@@ -8,6 +8,15 @@ import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
+/**
+ * Tabela de Livro
+ * <p>
+ * Esta classe é responsável por definir os dados da tabela de Livro,
+ * que vai ser utilizada para mostrar a listagem dos livros do sistema.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 public class LivroTable extends AbstractTableModel {
 
     private final String[] colunas = {"ID", "Título", "Data de Publicação", "ISBN", "Gênero", "Editora",

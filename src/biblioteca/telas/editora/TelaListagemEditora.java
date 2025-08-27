@@ -2,21 +2,25 @@ package biblioteca.telas.editora;
 
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.facade.EditoraFacade;
-import biblioteca.backend.service.EditoraService;
 import biblioteca.telas.editora.table.EditoraTable;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
-import static biblioteca.utils.FormUtils.criarBotao;
-import static biblioteca.utils.FormUtils.validarLinhaSelecionada;
+import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.SOUTH;
-import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.*;
 
+/**
+ * Tela de Listagem de Editoras.
+ * <p>
+ * Esta classe é responsável por renderizar a tela referente a listagem das editoras
+ * e também efetuar o gerenciamento de cadastro/edição/deleção de uma editora.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Log
 public class TelaListagemEditora extends JFrame {
 
@@ -45,11 +49,7 @@ public class TelaListagemEditora extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes() {
-        JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
-        painelPrincipal.setBorder(createEmptyBorder(10, 10, 10, 10));
-
-        JScrollPane scrollPane = new JScrollPane(tabela);
-        painelPrincipal.add(scrollPane, BorderLayout.CENTER);
+        JPanel painelPrincipal =  criarPainelPrincipalListagem(tabela);
 
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
         add(painelPrincipal);
@@ -62,13 +62,8 @@ public class TelaListagemEditora extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = new JPanel(new FlowLayout(RIGHT));
-
-        painelBotoes.add(botaoVoltar);
-        painelBotoes.add(botaoAtualizar);
-        painelBotoes.add(botaoDeletar);
-        painelBotoes.add(botaoEditar);
-        painelBotoes.add(botaoCadastrar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoAtualizar, botaoDeletar, botaoEditar,
+                botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }

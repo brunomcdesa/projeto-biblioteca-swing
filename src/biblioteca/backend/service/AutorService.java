@@ -1,7 +1,6 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.IAutorDAO;
-import biblioteca.backend.dao.impl.AutorDAOImpl;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
@@ -77,7 +76,24 @@ public class AutorService {
                 .orElseThrow(() -> new NaoEncontradoException("Autor não encontrado."));
     }
 
+    /**
+     * Método responsável por buscar uma lista de Autores pelos IDs deles.
+     *
+     * @return um Set de Autores.
+     */
     public Set<Autor> findByIdIn(List<Integer> autoresIds) {
         return new HashSet<>(autorDAO.findByIdIn(autoresIds));
+    }
+
+    /**
+     * Método responsável por buscar um array dos nomes de todos os Autores do sistema.
+     *
+     * @return Um array de nomes de Autores.
+     */
+    public String[] buscarNomesAutores() {
+        return autorDAO.listarTodos().stream()
+                .map(Autor::getNome)
+                .sorted()
+                .toArray(String[]::new);
     }
 }

@@ -3,7 +3,6 @@ package biblioteca.telas;
 import biblioteca.backend.facade.AutorFacade;
 import biblioteca.backend.facade.EditoraFacade;
 import biblioteca.backend.facade.LivroFacade;
-import biblioteca.backend.model.Editora;
 import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.autor.TelaListagemAutor;
 import biblioteca.telas.editora.TelaListagemEditora;
@@ -14,7 +13,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static biblioteca.utils.FormUtils.criarBotao;
+import static biblioteca.utils.TelasUtils.criarBotao;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.Font.BOLD;
 import static javax.swing.BorderFactory.createEmptyBorder;

@@ -12,9 +12,18 @@ import java.util.Optional;
 import static biblioteca.backend.utils.JpaUtil.getEntityManager;
 import static java.util.Collections.emptyList;
 
+/**
+ * Classe responsável por implementar a lógica das transações realizadas no banco de dados, na tabela Livro.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Log
 public class LivroDAOImpl implements ILivroDAO {
 
+    /**
+     * Método responsável por salvar/atualizar um Livro no banco de dados.
+     */
     @Override
     public void salvar(Livro livro) {
         EntityManager entityManager = getEntityManager();
@@ -34,6 +43,11 @@ public class LivroDAOImpl implements ILivroDAO {
         }
     }
 
+    /**
+     * Método responsável por listar todos os Livros salvos no banco de dados.
+     *
+     * @return Todos os livros salvos no banco de dados.
+     */
     @Override
     public List<Livro> listarTodos() {
         EntityManager entityManager = getEntityManager();
@@ -51,6 +65,11 @@ public class LivroDAOImpl implements ILivroDAO {
         }
     }
 
+    /**
+     * Método responsável por buscar um Livro de acordo com o ID dele no banco de dados.
+     *
+     * @return Um valor Opcional de Livro.
+     */
     @Override
     public Optional<Livro> findById(Integer id) {
         EntityManager entityManager = getEntityManager();
@@ -67,6 +86,9 @@ public class LivroDAOImpl implements ILivroDAO {
         }
     }
 
+    /**
+     * Método responsável por deletar um Livro de acordo com o ID dele no banco de dados.
+     */
     @Override
     public void deletar(Integer id) {
         EntityManager entityManager = getEntityManager();
@@ -87,6 +109,12 @@ public class LivroDAOImpl implements ILivroDAO {
         }
     }
 
+    /**
+     * Método responsável por listar todos os Livros salvos no banco de dados com o mesmo gênero que foi
+     * passado por parâmetro.
+     *
+     * @return Todos os livros salvos no banco de dados de um gênero específico.
+     */
     @Override
     public List<Livro> findByGenero(EGenero genero) {
         EntityManager entityManager = getEntityManager();

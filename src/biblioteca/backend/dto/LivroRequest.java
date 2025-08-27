@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Livro.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Data
 @Builder
 @NoArgsConstructor

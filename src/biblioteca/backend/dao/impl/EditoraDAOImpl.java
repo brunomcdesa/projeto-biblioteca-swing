@@ -43,6 +43,8 @@ public class EditoraDAOImpl implements IEditoraDAO {
 
     /**
      * Método responsável por listar todas as Editoras salvas no banco de dados.
+     *
+     * @return Todas as editoras salvas no banco de dados.
      */
     @Override
     public List<Editora> listarTodos() {
@@ -58,7 +60,9 @@ public class EditoraDAOImpl implements IEditoraDAO {
     }
 
     /**
-     * Método responsável por listar uma Editora de acordo com o ID dela no banco de dados.
+     * Método responsável por buscar uma Editora de acordo com o ID dela no banco de dados.
+     *
+     * @return Um valor Opcional de Editora.
      */
     @Override
     public Optional<Editora> findById(Integer id) {

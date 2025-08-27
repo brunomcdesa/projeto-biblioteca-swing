@@ -6,13 +6,22 @@ import biblioteca.backend.facade.LivroFacade;
 import javax.swing.*;
 import java.awt.*;
 
-import static biblioteca.utils.FormUtils.*;
+import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.formatarData;
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
+/**
+ * Tela de cadastro de Livro.
+ * <p>
+ * Esta classe é responsável por renderizar a tela referente a o cadastro de livro,
+ * onde vai ser mostrado os campos para que um novo livro seja cadastrado no sistema.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 public class TelaFormularioLivro extends JFrame {
 
     private final JFrame telaAnterior;
@@ -23,16 +32,16 @@ public class TelaFormularioLivro extends JFrame {
     private JTextField campoTitulo;
     private JTextField campoDataPublicacao;
     private JTextField campoIsbm;
-    private JTextField campoGenero; // trocar para select
-    private JTextField campoEditora; // trocar para select
-    private JTextField campoAutores; // trocar para multiselect
+    private JComboBox<String> campoGenero;
+    private JComboBox<String> campoEditora;
+    private JList<String> campoAutores;
 
     public TelaFormularioLivro(JFrame telaAnterior, LivroFacade livroFacade) {
         this(telaAnterior, livroFacade, null);
     }
 
     public TelaFormularioLivro(JFrame telaAnterior, LivroFacade livroFacade, LivroResponse livro) {
-        super("Cadastar Livro");
+        super(mapNullComBackup(livro,"Editar Livro", "Cadastar Livro"));
         this.telaAnterior = telaAnterior;
         this.livroFacade = livroFacade;
 
@@ -44,12 +53,9 @@ public class TelaFormularioLivro extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(LivroResponse livro) {
-        JPanel painelPrincipal = new JPanel(new BorderLayout(10, 20));
-        painelPrincipal.setBorder(createEmptyBorder(50, 50, 50, 50));
-        painelPrincipal.add(new JLabel("Preencha os dados do livro:", SwingConstants.CENTER), NORTH);
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do livro:");
         this.aplicarConfiguracoesFormulario(painelPrincipal, livro);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-
 
         add(painelPrincipal);
         setSize(800, 500);
@@ -61,9 +67,8 @@ public class TelaFormularioLivro extends JFrame {
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, LivroResponse livro) {
-        JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
-
-       this.configurarCamposFormulario(livro, painelFormulario);
+        JPanel painelFormulario = criarPainelFormulario();
+        this.configurarCamposFormulario(livro, painelFormulario);
 
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -71,24 +76,30 @@ public class TelaFormularioLivro extends JFrame {
         painelPrincipal.add(painelContainer, CENTER);
     }
 
+    /**
+     * Cria e define os campos do formulário.
+     */
     private void configurarCamposFormulario(LivroResponse livro, JPanel painelFormulario) {
-        JLabel labelTitulo = criarLabel("Título:");
         this.campoTitulo = criarTextField(mapNullComBackup(livro, LivroResponse::getTitulo, ""));
-        JLabel labelDataPublicacao = criarLabel("Data de publicação (dd/MM/yyyy):");
         this.campoDataPublicacao = criarTextField(mapNullComBackup(livro, livroResponse -> formatarData(livroResponse.getDataPublicacao()), ""));
-        JLabel labelIsbm = criarLabel("ISBM:");
         this.campoIsbm = criarTextField(mapNullComBackup(livro, LivroResponse::getIsbn, ""));
-        JLabel labelGenero = criarLabel("Gênero:");
-        this.campoGenero = criarTextField(mapNullComBackup(livro, LivroResponse::getGenero, ""));
+        this.campoGenero = criarSelect(this.carregarSelectGenero());
+        this.campoEditora = criarSelect(this.carregarSelectEditora());
+        this.campoAutores = criarMultiSelect(this.carregarMultiSelectAutores());
+        JScrollPane scrollAutores = new JScrollPane(campoAutores);
+        scrollAutores.setPreferredSize(new Dimension(100, 50));
 
-        painelFormulario.add(labelTitulo);
-        painelFormulario.add(campoTitulo);
-        painelFormulario.add(labelDataPublicacao);
-        painelFormulario.add(campoDataPublicacao);
-        painelFormulario.add(labelIsbm);
-        painelFormulario.add(campoIsbm);
-        painelFormulario.add(labelGenero);
-        painelFormulario.add(campoGenero);
+        painelFormulario.add(criarLinhaFormulario("Título:", campoTitulo));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("Data de publicação (dd/MM/yyyy):", campoDataPublicacao));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("ISBM:", campoIsbm));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("Gênero:", campoGenero));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("Editora:", campoEditora));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("Autores:", scrollAutores));
     }
 
     /**
@@ -128,5 +139,26 @@ public class TelaFormularioLivro extends JFrame {
         botaoSalvar.addActionListener(listener -> {
 
         });
+    }
+
+    /**
+     * Carrega os dados que serão utilizados no campo select de Gênero.
+     */
+    private String[] carregarSelectGenero() {
+        return livroFacade.getSelectGenero();
+    }
+
+    /**
+     * Carrega os dados que serão utilizados no campo select de Editora.
+     */
+    private String[] carregarSelectEditora() {
+        return livroFacade.getSelectEditora();
+    }
+
+    /**
+     * Carrega os dados que serão utilizados no campo multi select de Autores.
+     */
+    private String[] carregarMultiSelectAutores() {
+        return livroFacade.getMultiSelectAutores();
     }
 }

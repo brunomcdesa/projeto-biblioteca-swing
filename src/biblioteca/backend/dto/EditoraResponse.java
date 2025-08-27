@@ -6,6 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Classe DTO que representa os dados de retorno para as telas.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,6 +24,8 @@ public class EditoraResponse {
 
     /**
      * Método responsável por realizar a conversão de uma entidade Editora para um DTO EditoraResponse.
+     *
+     * @return Um DTO com dados da Editora.
      */
     public static EditoraResponse converterDeEditora(Editora editora) {
         return EditoraResponse.builder()

@@ -7,14 +7,13 @@ import biblioteca.backend.facade.EditoraFacade;
 import javax.swing.*;
 import java.awt.*;
 
-import static biblioteca.utils.FormUtils.criarLabel;
-import static biblioteca.utils.FormUtils.criarTextField;
+import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
 import static biblioteca.utils.StringUtils.isCnpjValido;
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.*;
 
 /**
@@ -41,7 +40,7 @@ public class TelaFormularioEditora extends JFrame {
     }
 
     public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade,  EditoraResponse editora) {
-        super("Cadastrar Editora");
+        super(mapNullComBackup(editora, "Editar Editora","Cadastrar Editora"));
         this.telaAnterior = telaAnterior;
         this.editoraFacade = editoraFacade;
 
@@ -53,12 +52,9 @@ public class TelaFormularioEditora extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(EditoraResponse editora) {
-        JPanel painelPrincipal = new JPanel(new BorderLayout(10, 20));
-        painelPrincipal.setBorder(createEmptyBorder(50, 50, 50, 50));
-        painelPrincipal.add(new JLabel("Preencha os dados do autor:", SwingConstants.CENTER), NORTH);
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados da Editora:");
         this.aplicarConfiguracoesFormulario(painelPrincipal, editora);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-
 
         add(painelPrincipal);
         setSize(800, 500);
@@ -70,26 +66,24 @@ public class TelaFormularioEditora extends JFrame {
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, EditoraResponse editora) {
-        JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
-
+        JPanel painelFormulario = criarPainelFormulario();
         this.configurarCamposFormulario(editora, painelFormulario);
-
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         painelContainer.add(painelFormulario);
         painelPrincipal.add(painelContainer, CENTER);
     }
 
+    /**
+     * Cria e define os campos do formulário.
+     */
     private void configurarCamposFormulario(EditoraResponse editora, JPanel painelFormulario) {
-        JLabel labelNome = criarLabel("Nome:");
         this.campoNome = criarTextField(mapNullComBackup(editora, EditoraResponse::getNome, ""));
-        JLabel labelCnpj = criarLabel("Cnpj:");
         this.campoCnpj = criarTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
 
-        painelFormulario.add(labelNome);
-        painelFormulario.add(campoNome);
-        painelFormulario.add(labelCnpj);
-        painelFormulario.add(campoCnpj);
+        painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("CNPJ:", this.campoCnpj));
     }
 
     /**

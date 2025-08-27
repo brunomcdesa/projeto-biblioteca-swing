@@ -44,6 +44,8 @@ public class AutorDAOImpl implements IAutorDAO {
 
     /**
      * Método responsável por listar todos os Autores salvos no banco de dados.
+     *
+     * @return Todos os autores salvos no banco de dados.
      */
     @Override
     public List<Autor> listarTodos() {
@@ -59,7 +61,9 @@ public class AutorDAOImpl implements IAutorDAO {
     }
 
     /**
-     * Método responsável por listar um Autor de acordo com o ID dele no banco de dados.
+     * Método responsável por buscar um Autor de acordo com o ID dele no banco de dados.
+     *
+     * @return Um valor Opcional de Autor.
      */
     @Override
     public Optional<Autor> findById(Integer id) {

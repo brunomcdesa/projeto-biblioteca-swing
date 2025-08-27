@@ -7,12 +7,12 @@ import biblioteca.backend.facade.AutorFacade;
 import javax.swing.*;
 import java.awt.*;
 
-import static biblioteca.utils.FormUtils.*;
+import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.isBlank;
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -40,7 +40,7 @@ public class TelaFormularioAutor extends JFrame {
     }
 
     public TelaFormularioAutor(JFrame telaAnterior, AutorFacade autorFacade, AutorResponse autor) {
-        super(autor == null ? "Cadastro de Autor" : "Editar Autor");
+        super(mapNullComBackup(autor, "Editar Autor", "Cadastro de Autor"));
         this.telaAnterior = telaAnterior;
         this.autorFacade = autorFacade;
 
@@ -52,12 +52,9 @@ public class TelaFormularioAutor extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(AutorResponse autor) {
-        JPanel painelPrincipal = new JPanel(new BorderLayout(10, 20));
-        painelPrincipal.setBorder(createEmptyBorder(50, 50, 50, 50));
-        painelPrincipal.add(new JLabel("Preencha os dados do autor:", SwingConstants.CENTER), NORTH);
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do autor:");
         this.aplicarConfiguracoesFormulario(painelPrincipal, autor);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-
 
         add(painelPrincipal);
         setSize(800, 500);
@@ -69,8 +66,7 @@ public class TelaFormularioAutor extends JFrame {
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, AutorResponse autor) {
-        JPanel painelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
-
+        JPanel painelFormulario = criarPainelFormulario();
         this.configurarCamposFormulario(autor, painelFormulario);
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -78,16 +74,16 @@ public class TelaFormularioAutor extends JFrame {
         painelPrincipal.add(painelContainer, CENTER);
     }
 
+    /**
+     * Cria e define os campos do formulário.
+     */
     private void configurarCamposFormulario(AutorResponse autor, JPanel painelFormulario) {
-        JLabel labelNome = criarLabel("Nome:");
         this.campoNome = criarTextField(mapNullComBackup(autor, AutorResponse::getNome, ""));
-        JLabel labelIdade = criarLabel("Idade:");
         this.campoIdade = criarTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
 
-        painelFormulario.add(labelNome);
-        painelFormulario.add(campoNome);
-        painelFormulario.add(labelIdade);
-        painelFormulario.add(campoIdade);
+        painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
+        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaFormulario("Idade:", this.campoIdade));
     }
 
     /**

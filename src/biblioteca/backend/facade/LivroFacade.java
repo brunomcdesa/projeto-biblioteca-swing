@@ -2,6 +2,7 @@ package biblioteca.backend.facade;
 
 import biblioteca.backend.dto.LivroRequest;
 import biblioteca.backend.dto.LivroResponse;
+import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import biblioteca.backend.service.AutorService;
@@ -12,6 +13,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Classe definida como Facade dos fluxos de Livro.
+ * <p>
+ * Esta classe é exposta para as telas do swing e é responsável por fazer a ponte entre o "frontend" e o "backend".
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 public class LivroFacade {
 
@@ -19,30 +28,91 @@ public class LivroFacade {
     private final AutorService autorService;
     private final EditoraService editoraService;
 
+    /**
+     * Método responsável por salvar um novo livro de acordo com a request recebida.
+     * <p>
+     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
+     * junto com a request recebida, chama a service de livro para criar um novo livro.
+     */
     public void salvarLivro(LivroRequest livroRequest) {
         Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
         Set<Autor> autores =this.buscarAutoresPorIds(livroRequest.getAutoresIds());
         livroService.salvar(livroRequest, editora, autores);
     }
 
+    /**
+     * Método responsável por buscar todos os livros do sistema.
+     * <p>
+     * Realiza uma busca de todos os livros na service de livro.
+     *
+     * @return Uma lista de dados dos livros.
+     */
     public List<LivroResponse> listarTodosLivros() {
         return livroService.listarTodos();
     }
 
+    /**
+     * Método responsável por editar um livro específico de acordo com o ID e com a request recebida.
+     * <p>
+     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
+     * junto com o ID e a request recebida, chama a service de livro para editar o livro escolhido pelo usuário.
+     */
     public void editarLivro(Integer id, LivroRequest livroRequest) {
         Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
         Set<Autor> autores = this.buscarAutoresPorIds(livroRequest.getAutoresIds());
         livroService.editar(id, livroRequest, editora, autores);
     }
 
+    /**
+     * Método responsável por deletar um livro específico de acordo com o ID recebido.
+     * <p>
+     * Chama a service de livro para efetuar o ato de deletar o livro em questão.
+     */
     public void deletarLivro(Integer id) {
         livroService.deletar(id);
     }
 
+    /**
+     * Método responsável por buscar os dados do Enum de Genero, para ser utilizado em um campo Select.
+     *
+     * @return Um array de descrições dos Gêneros.
+     */
+    public String[] getSelectGenero() {
+       return EGenero.getValuesDescricoes();
+    }
+
+    /**
+     * Método responsável por buscar os nomes das editoras do sistema, para ser utilizado em um campo Select.
+     *
+     * @return Um array de nomes de Editoras.
+     */
+    public String[] getSelectEditora() {
+        return editoraService.buscarNomesEditoras();
+    }
+
+    /**
+     * Método responsável por buscar os nomes dos Autores do sistema, para ser utilizado em um campo Multi Select.
+     *
+     * @return Um array de nomes de Autores.
+     */
+    public String[] getMultiSelectAutores() {
+        return autorService.buscarNomesAutores();
+    }
+
+    /**
+     * Método responsável por buscar uma editora específica por ID.
+     *
+     * @return Uma Editora.
+     */
     private Editora buscarEditoraPorId(Integer editoraId) {
         return editoraService.findById(editoraId);
     }
 
+    /**
+     * Método responsável por buscar autores específicos de acordo com os IDs.
+     *
+     * @return Um Set de Autores.
+     */
     private Set<Autor> buscarAutoresPorIds(List<Integer> autoresIds) {
         return autorService.findByIdIn(autoresIds);
     }

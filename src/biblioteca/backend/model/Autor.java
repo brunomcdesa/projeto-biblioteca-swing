@@ -53,6 +53,8 @@ public class Autor {
 
     /**
      * Método responsável por realizar a conversão de um AutorRequest em uma entidade Autor.
+     *
+     * @return um novo Autor.
      */
     public static Autor converterDeRequest(AutorRequest autorRequest) {
         return Autor.builder()

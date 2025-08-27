@@ -63,14 +63,25 @@ public class EditoraService {
     }
 
     /**
-     * Método responsável por buscar um Autor pelo ID dele.
+     * Método responsável por buscar uma Editora pelo ID dele.
      * <p>
-     * Caso não encontre nenhum Autor com o mesmo ID, será lançado uma excepion.
+     * Caso não encontre nenhuma Editora com o mesmo ID, será lançado uma excepion.
      *
      * @return uma Editora.
      */
     public Editora findById(Integer id) {
         return editoraDAO.findById(id)
                 .orElseThrow(() -> new NaoEncontradoException("Editora não encontrada."));
+    }
+
+    /**
+     * Método responsável por buscar um array dos nomes de todas as editoras do sistema.
+     *
+     * @return Um array de nomes de Editoras.
+     */
+    public String[] buscarNomesEditoras() {
+        return editoraDAO.listarTodos().stream()
+                .map(Editora::getNome)
+                .toArray(String[]::new);
     }
 }

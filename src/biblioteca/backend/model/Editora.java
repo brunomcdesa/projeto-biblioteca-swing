@@ -39,6 +39,8 @@ public class Editora {
 
     /**
      * Método responsável por realizar a conversão de um EditoraRequest em uma entidade Editora.
+     *
+     * @return uma nova Editora.
      */
     public static Editora converterDeRequest(EditoraRequest editoraRequest) {
         return Editora.builder()

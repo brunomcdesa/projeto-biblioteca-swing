@@ -73,6 +73,11 @@ public class Livro {
                     foreignKey = @ForeignKey(name = "FK_LIVRO_PARECIDO")))
     private Set<Livro> livrosParecidos;
 
+    /**
+     * Método responsável por realizar a montar um Livro de acordo com os dados recebidos por parâmetro.
+     *
+     * @return um novo Livro.
+     */
     public static Livro montarLivro(LivroRequest livroRequest, Editora editora, Set<Autor> autores,
                                     Set<Livro> livrosParecidos) {
         return Livro.builder()
@@ -86,18 +91,31 @@ public class Livro {
                 .build();
     }
 
+    /**
+     * Método responsável por buscar os nomes dos autores do livro solicitante.
+     *
+     * @return uma lista de nomes de Autores.
+     */
     public List<String> getNomesAutores() {
         return autores.stream()
                 .map(Autor::getNome)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método responsável por buscar os títulos dos livros parecidos com o livro solicitante.
+     *
+     * @return uma lista de títulos de livros parecidos.
+     */
     public List<String> getTitulosLivrosParecidos() {
         return livrosParecidos.stream()
                 .map(Livro::getTitulo)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método responsável atualizar os dados do livro solicitante, com base nos parâmetros recebidos.
+     */
     public void atualizarDados(LivroRequest request, Editora editora, Set<Autor> autores,
                                Set<Livro> livrosParecidos) {
         this.setTitulo(request.getTitulo());

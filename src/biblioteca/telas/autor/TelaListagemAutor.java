@@ -3,18 +3,13 @@ package biblioteca.telas.autor;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.facade.AutorFacade;
 import biblioteca.telas.autor.table.AutorTable;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
-import static biblioteca.utils.FormUtils.criarBotao;
-import static biblioteca.utils.FormUtils.validarLinhaSelecionada;
+import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.SOUTH;
-import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.*;
 
 /**
@@ -52,11 +47,7 @@ public class TelaListagemAutor extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes() {
-        JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
-        painelPrincipal.setBorder(createEmptyBorder(10, 10, 10, 10));
-
-        JScrollPane scrollPane = new JScrollPane(tabela);
-        painelPrincipal.add(scrollPane, BorderLayout.CENTER);
+        JPanel painelPrincipal = criarPainelPrincipalListagem(tabela);
 
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
         add(painelPrincipal);
@@ -69,13 +60,8 @@ public class TelaListagemAutor extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = new JPanel(new FlowLayout(RIGHT));
-
-        painelBotoes.add(botaoVoltar);
-        painelBotoes.add(botaoAtualizar);
-        painelBotoes.add(botaoDeletar);
-        painelBotoes.add(botaoEditar);
-        painelBotoes.add(botaoCadastrar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoAtualizar, botaoDeletar, botaoEditar,
+                botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -125,6 +111,7 @@ public class TelaListagemAutor extends JFrame {
                 AutorResponse autor = autorTable.getAutor(linhaSelecionada);
                 TelaFormularioAutor formulario = new TelaFormularioAutor(this, autorFacade, autor);
                 formulario.setVisible(true);
+                this.setVisible(false);
             }
         });
     }

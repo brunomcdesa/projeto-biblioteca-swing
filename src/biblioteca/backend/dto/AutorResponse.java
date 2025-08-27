@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Classe DTO que representa os dados de retorno para as telas
+ * Classe DTO que representa os dados de retorno para as telas.
  *
  * @author Bruno Cardoso
  * @version 1.0
@@ -24,6 +24,8 @@ public class AutorResponse {
 
     /**
      * Método responsável por realizar a conversão de uma entidade Autor para um DTO AutorResponse.
+     *
+     * @return Um DTO com dados do Autor.
      */
     public static AutorResponse converterDeAutor(Autor autor) {
         return AutorResponse.builder()
