@@ -70,4 +70,13 @@ public class Autor {
         this.setNome(request.getNome());
         this.setIdade(request.getIdade());
     }
+
+    /**
+     * Método responsável por verifiacar se o Autor possui livros vinculados a ele.
+     *
+     * @return true se o Autor possuir livros vinculados. false se o Autor não possuir livros vinculados.
+     */
+    public boolean possuiLivrosVinculados() {
+        return !this.livros.isEmpty();
+    }
 }

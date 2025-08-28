@@ -5,6 +5,7 @@ import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
+import biblioteca.backend.exceptions.ValidacaoException;
 import biblioteca.backend.model.Autor;
 import lombok.RequiredArgsConstructor;
 
@@ -64,6 +65,9 @@ public class AutorService {
      * Método responsável por deletar um autor específico do banco de dados.
      */
     public void deletar(Integer id) {
+        Autor autor = this.findById(id);
+        validarAutorComLivrosVinculados(autor);
+
         autorDAO.deletar(id);
     }
 
@@ -98,5 +102,16 @@ public class AutorService {
                 .sorted(Comparator.comparing(Autor::getNome))
                 .map(autor -> montarSelectResponse(autor.getId(), autor.getNome()))
                 .toArray(SelectResponse[]::new);
+    }
+
+    /**
+     * Método responsável por validar se o autor tem livros vinculados.
+     *
+     * @throws ValidacaoException caso o autor possua livros vinculados a ele.
+     */
+    private void validarAutorComLivrosVinculados(Autor autor) {
+        if (autor.possuiLivrosVinculados()) {
+            throw new ValidacaoException("Autor possui livros vinculados. Por favor remova o vínculo com os livros antes de excluir o autor.");
+        }
     }
 }

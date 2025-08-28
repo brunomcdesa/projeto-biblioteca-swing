@@ -26,7 +26,7 @@ public class TelaListagemLivro extends JFrame {
 
     private final JFrame telaAnterior;
     private final LivroFacade livroFacade;
-    private final JButton botaoAtualizar = criarBotao("Atualizar");
+    private final JButton botaoRecarregarDados = criarBotao("Recarregar Dados");
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
@@ -61,7 +61,7 @@ public class TelaListagemLivro extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-       JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoAtualizar, botaoDeletar, botaoEditar,
+       JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoDeletar, botaoEditar,
                botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
@@ -93,7 +93,7 @@ public class TelaListagemLivro extends JFrame {
      * para que os dados sejam atualizados na tela quando clicado.
      */
     private void configurarAcaoBotaoAtualizar() {
-        botaoAtualizar.addActionListener(listener -> {
+        botaoRecarregarDados.addActionListener(listener -> {
             carregarDados();
         });
     }

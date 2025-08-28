@@ -160,7 +160,7 @@ public class TelaFormularioLivro extends JFrame {
             }
 
             if (!isDataValida(dataPublicacaoText)) {
-                showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy;",
+                showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy.",
                         "Erro de Formato", ERROR_MESSAGE);
                 return;
             }

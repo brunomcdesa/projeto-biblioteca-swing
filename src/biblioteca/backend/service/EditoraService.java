@@ -5,6 +5,8 @@ import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
+import biblioteca.backend.exceptions.ValidacaoException;
+import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import lombok.RequiredArgsConstructor;
 
@@ -61,6 +63,9 @@ public class EditoraService {
      * Método responsável por deletar uma editora específica do banco de dados.
      */
     public void deletar(Integer id) {
+        Editora editora = this.findById(id);
+        validarEditoraComLivrosVinculados(editora);
+
         editoraDAO.deletar(id);
     }
 
@@ -85,5 +90,17 @@ public class EditoraService {
         return editoraDAO.listarTodos().stream()
                 .map(editora -> montarSelectResponse(editora.getId(), editora.getNome()))
                 .toArray(SelectResponse[]::new);
+    }
+
+
+    /**
+     * Método responsável por validar se a editora tem livros vinculados.
+     *
+     * @throws ValidacaoException caso a editora possua livros vinculados a ela.
+     */
+    private void validarEditoraComLivrosVinculados(Editora editora) {
+        if (editora.possuiLivrosVinculados()) {
+            throw new ValidacaoException("Editora possui livros vinculados. Por favor remova o vínculo com os livros antes de excluir a editora.");
+        }
     }
 }

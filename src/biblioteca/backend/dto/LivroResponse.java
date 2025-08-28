@@ -70,6 +70,7 @@ public class LivroResponse {
     public List<String> getAutoresNomes() {
         return this.autores.stream()
                 .map(AutorResponse::getNome)
+                .sorted()
                 .collect(Collectors.toList());
     }
 
@@ -82,6 +83,17 @@ public class LivroResponse {
         return this.autores.stream()
                 .map(AutorResponse::getId)
                 .map(id -> (Object) id)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Método responsável por mapear os títulos dos livros parecidos por ordem alfabética.
+     *
+     * @return uma lista de títulos dos livros parecidos ordenados por ordem alfabética.
+     */
+    public List<String> getTitulosLivroParecidosOrdenados() {
+        return this.titulosLivrosParecidos.stream()
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ import biblioteca.backend.dto.EditoraRequest;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -37,6 +38,9 @@ public class Editora {
     @Column(name = "CNPJ")
     private String cnpj;
 
+    @OneToMany(mappedBy = "editora")
+    private List<Livro> livros;
+
     /**
      * Método responsável por realizar a conversão de um EditoraRequest em uma entidade Editora.
      *
@@ -55,5 +59,14 @@ public class Editora {
     public void atualizarDados(EditoraRequest request) {
         this.setNome(request.getNome());
         this.setCnpj(request.getCnpj());
+    }
+
+    /**
+     * Método responsável por verifiacar se a Editora possui livros vinculados a ele.
+     *
+     * @return true se a Editora possuir livros vinculados. false se a Editora não possuir livros vinculados.
+     */
+    public boolean possuiLivrosVinculados() {
+        return !this.livros.isEmpty();
     }
 }

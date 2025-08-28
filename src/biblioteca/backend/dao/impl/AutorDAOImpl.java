@@ -70,7 +70,9 @@ public class AutorDAOImpl implements IAutorDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT a FROM Autor a where a.id = :id",
+                            "SELECT a FROM Autor a "
+                                    + "LEFT JOIN FETCH a.livros "
+                                    + "WHERE a.id = :id",
                             Autor.class)
                     .setParameter("id", id)
                     .getSingleResult());

@@ -25,7 +25,7 @@ public class TelaListagemAutor extends JFrame {
 
     private final JFrame telaAnterior;
     private final AutorFacade autorFacade;
-    private final JButton botaoAtualizar = criarBotao("Atualizar");
+    private final JButton botaoRecarregarDados = criarBotao("Recarregar Dados");
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
@@ -60,7 +60,7 @@ public class TelaListagemAutor extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoAtualizar, botaoDeletar, botaoEditar,
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoDeletar, botaoEditar,
                 botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
@@ -92,7 +92,7 @@ public class TelaListagemAutor extends JFrame {
      * para que os dados sejam atualizados na tela quando clicado.
      */
     private void configurarAcaoBotaoAtualizar() {
-        botaoAtualizar.addActionListener(listener -> {
+        botaoRecarregarDados.addActionListener(listener -> {
             carregarDados();
         });
     }
@@ -134,7 +134,7 @@ public class TelaListagemAutor extends JFrame {
                     showMessageDialog(this, "Autor deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 }
             } catch (Exception ex) {
-                showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
         });

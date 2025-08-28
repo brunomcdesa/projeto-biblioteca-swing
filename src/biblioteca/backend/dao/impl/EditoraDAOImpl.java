@@ -69,7 +69,9 @@ public class EditoraDAOImpl implements IEditoraDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT e FROM Editora e where e.id = :id",
+                            "SELECT e FROM Editora e "
+                                    + "LEFT JOIN FETCH e.livros "
+                                    + "WHERE e.id = :id",
                             Editora.class)
                     .setParameter("id", id)
                     .getSingleResult());
