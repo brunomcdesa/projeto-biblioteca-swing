@@ -1,9 +1,12 @@
 package biblioteca.backend.enums;
 
+import biblioteca.backend.dto.SelectResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+
+import static biblioteca.backend.dto.SelectResponse.montarSelectResponse;
 
 /**
  * Enum definido para representar alguns gêneros de Livros
@@ -25,13 +28,13 @@ public enum EGenero {
     private final String descricao;
 
     /**
-     * Método responsável mapear as descrições de todos os gêneros.
+     * Método responsável mapear os valores do enum para o DTO SelectResponse.
      *
-     * @return Um array de descriçõe dos gêneros.
+     * @return Um array SelectResponse.
      */
-    public static String[] getValuesDescricoes() {
+    public static SelectResponse[] getValuesParaSelect() {
         return Arrays.stream(EGenero.values())
-                .map(EGenero::getDescricao)
-                .toArray(String[]::new);
+                .map(genero -> montarSelectResponse(genero, genero.descricao))
+                .toArray(SelectResponse[]::new);
     }
 }

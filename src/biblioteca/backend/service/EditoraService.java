@@ -3,12 +3,14 @@ package biblioteca.backend.service;
 import biblioteca.backend.dao.contract.IEditoraDAO;
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
+import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Editora;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static biblioteca.backend.dto.SelectResponse.montarSelectResponse;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -75,13 +77,13 @@ public class EditoraService {
     }
 
     /**
-     * Método responsável por buscar um array dos nomes de todas as editoras do sistema.
+     * Método responsável por buscar um array das Editoras e converter para o Objeto SelectResponse.
      *
-     * @return Um array de nomes de Editoras.
+     * @return Um array de SelectResponse.
      */
-    public String[] buscarNomesEditoras() {
+    public SelectResponse[] buscarEditorasSelect() {
         return editoraDAO.listarTodos().stream()
-                .map(Editora::getNome)
-                .toArray(String[]::new);
+                .map(editora -> montarSelectResponse(editora.getId(), editora.getNome()))
+                .toArray(SelectResponse[]::new);
     }
 }

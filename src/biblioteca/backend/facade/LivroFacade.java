@@ -2,6 +2,7 @@ package biblioteca.backend.facade;
 
 import biblioteca.backend.dto.LivroRequest;
 import biblioteca.backend.dto.LivroResponse;
+import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
@@ -77,8 +78,8 @@ public class LivroFacade {
      *
      * @return Um array de descrições dos Gêneros.
      */
-    public String[] getSelectGenero() {
-       return EGenero.getValuesDescricoes();
+    public SelectResponse[] getSelectGenero() {
+       return EGenero.getValuesParaSelect();
     }
 
     /**
@@ -86,8 +87,8 @@ public class LivroFacade {
      *
      * @return Um array de nomes de Editoras.
      */
-    public String[] getSelectEditora() {
-        return editoraService.buscarNomesEditoras();
+    public SelectResponse[] getSelectEditora() {
+        return editoraService.buscarEditorasSelect();
     }
 
     /**
@@ -95,8 +96,8 @@ public class LivroFacade {
      *
      * @return Um array de nomes de Autores.
      */
-    public String[] getMultiSelectAutores() {
-        return autorService.buscarNomesAutores();
+    public SelectResponse[] getSelectAutores() {
+        return autorService.buscarAutoresSelect();
     }
 
     /**

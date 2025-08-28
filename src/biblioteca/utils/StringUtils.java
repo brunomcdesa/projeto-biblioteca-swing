@@ -49,7 +49,36 @@ public class StringUtils {
         return isNotBlank(cnpj) && cnpj.matches("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$");
     }
 
+    /**
+     * Método responsável por formatar a data passada por parâmetro.
+     * <p>
+     * A data será formatada para o padrão dd/MM/yyyy.
+     *
+     * @return Uma String de data no formato dd/MM/yyyy. Ex: "28/05/2025".
+     */
     public static String formatarData(LocalDate data) {
         return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    /**
+     * Método responsável por verificar se a data enviada no formato de String é válida.
+     * <p>
+     * A data será considerada válida, se a String não for Blank e a sequência de caracteres atender ao padrão dd/MM/yyyy
+     *
+     * @return true caso a data não for Blank e estiver no padrão definido. false caso a data for Blank ou não estiver no formato definido.
+     */
+    public static boolean isDataValida(String data) {
+        return isNotBlank(data) && data.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$");
+    }
+
+    /**
+     * Método responsável por converter uma String em um objeto LocalDate.
+     * <p>
+     * A data será convertida para um LocalDate, quando a String estiver no formato dd/MM/yyyy.
+     *
+     * @return Uma data convertida para LocalDate.
+     */
+    public static LocalDate converterStringParaLocalDate(String data) {
+        return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }

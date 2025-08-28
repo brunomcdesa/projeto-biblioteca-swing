@@ -146,8 +146,8 @@ public class TelaFormularioAutor extends JFrame {
             }
             showMessageDialog(this, "Autor salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
-            campoNome.setText("");
-            campoIdade.setText("");
+            telaAnterior.setVisible(true);
+            dispose();
         });
     }
 }

@@ -145,8 +145,8 @@ public class TelaFormularioEditora extends JFrame {
             }
             showMessageDialog(this, "Editora salva com sucesso!", "Sucesso", INFORMATION_MESSAGE);
 
-            campoNome.setText("");
-            campoCnpj.setText("");
+            telaAnterior.setVisible(true);
+            dispose();
         });
     }
 }

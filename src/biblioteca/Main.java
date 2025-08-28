@@ -41,7 +41,6 @@ public class Main {
         LivroService livroService = new LivroService(livroDAO);
         LivroFacade livroFacade =  new LivroFacade(livroService, autorService, editoraService);
 
-
         SwingUtilities.invokeLater(() -> {
             TelaPrincipal tela = new TelaPrincipal(autorFacade, editoraFacade, livroFacade);
             tela.setVisible(true);

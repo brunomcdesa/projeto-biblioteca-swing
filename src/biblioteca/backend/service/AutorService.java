@@ -3,14 +3,17 @@ package biblioteca.backend.service;
 import biblioteca.backend.dao.contract.IAutorDAO;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
+import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.model.Autor;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static biblioteca.backend.dto.SelectResponse.montarSelectResponse;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -86,14 +89,14 @@ public class AutorService {
     }
 
     /**
-     * Método responsável por buscar um array dos nomes de todos os Autores do sistema.
+     * Método responsável por buscar um array dos Autores e converter para o DTO SelectResponse.
      *
-     * @return Um array de nomes de Autores.
+     * @return Um array de SelectResponse.
      */
-    public String[] buscarNomesAutores() {
+    public SelectResponse[] buscarAutoresSelect() {
         return autorDAO.listarTodos().stream()
-                .map(Autor::getNome)
-                .sorted()
-                .toArray(String[]::new);
+                .sorted(Comparator.comparing(Autor::getNome))
+                .map(autor -> montarSelectResponse(autor.getId(), autor.getNome()))
+                .toArray(SelectResponse[]::new);
     }
 }

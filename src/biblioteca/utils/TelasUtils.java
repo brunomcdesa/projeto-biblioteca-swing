@@ -1,11 +1,14 @@
 package biblioteca.utils;
 
 
+import biblioteca.backend.dto.SelectResponse;
 import lombok.experimental.UtilityClass;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.awt.BorderLayout.*;
 import static java.awt.FlowLayout.RIGHT;
@@ -29,6 +32,7 @@ public class TelasUtils {
      * Método responsável por validar a linha selecionada da tabela
      * <p>
      * Realiza a comparação do index da linha selecionada, com o index de uma linha não selecionada (-1).
+     *
      * @return true: caso o resultado da comparação seja falso. false: caso o resultado da comparação seja true.
      */
     public static boolean validarLinhaSelecionada(int indexLinhaSelecionada, JFrame componente, String message, String title) {
@@ -64,7 +68,7 @@ public class TelasUtils {
      *
      * @return um JComboBox para ser utilizado como um campo de select de um formulário.
      */
-    public static JComboBox<String> criarSelect(String[] opcoes) {
+    public static JComboBox<SelectResponse> criarSelect(SelectResponse[] opcoes) {
         return new JComboBox<>(opcoes);
     }
 
@@ -76,8 +80,8 @@ public class TelasUtils {
      *
      * @return um JList para ser utilizado como um campo de multi select de um formulário.
      */
-    public static JList<String> criarMultiSelect(String[] opcoes) {
-        JList<String> multiSelect = new JList<>(opcoes);
+    public static JList<SelectResponse> criarMultiSelect(SelectResponse[] opcoes) {
+        JList<SelectResponse> multiSelect = new JList<>(opcoes);
         multiSelect.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
 
         return multiSelect;
@@ -156,5 +160,32 @@ public class TelasUtils {
                 .forEach(painelBotoes::add);
 
         return painelBotoes;
+    }
+
+    /**
+     * Método responsável por atribuir o item selecionado no campo Select.
+     * <p>
+     * Recebe o campo select e o valor selecionado, e faz uma comparação do valor selecionado com os elementos do campo select,
+     * e o index que possuir o value equivalente ao valor selecionado é setado como selectedItem.
+     */
+    public static void atribuirItemSelecionado(JComboBox<SelectResponse> campoSelect, Object valorSelecionado) {
+        ComboBoxModel<SelectResponse> model = campoSelect.getModel();
+        IntStream.range(0, model.getSize())
+                .mapToObj(model::getElementAt)
+                .filter(item -> item.getValue() == valorSelecionado)
+                .forEach(campoSelect::setSelectedItem);
+    }
+
+    /**
+     * Método responsável por atribuir os itens selecionados no campo Multi Select.
+     * <p>
+     * Recebe o campo multi select e os valorres selecionados, e faz uma comparação dos valores selecionados com os elementos do campo multi select,
+     * e os indicies que possuirem o value equivalente a algum dos valores selecionados são setados como como selectedItens.
+     */
+    public static void atribuirItensSelecionados(JList<SelectResponse> campoSelect, List<Object> valoresSelecionados) {
+        ListModel<SelectResponse> model = campoSelect.getModel();
+        campoSelect.setSelectedIndices(IntStream.range(0, model.getSize())
+                .filter(index -> valoresSelecionados.contains(model.getElementAt(index).getValue()))
+                .toArray());
     }
 }

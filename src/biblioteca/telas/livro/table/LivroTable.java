@@ -55,13 +55,13 @@ public class LivroTable extends AbstractTableModel {
             case 3:
                 return livro.getIsbn();
             case 4:
-                return livro.getGenero();
+                return livro.getGenero().getDescricao();
             case 5:
-                return livro.getNomeEditora();
+                return livro.getEditora().getNome();
             case 6:
-                return livro.getNomesAutores();
+                return String.join(", ", livro.getAutoresNomes());
             case 7:
-                return livro.getTitulosLivrosParecidos();
+                return livro.possuiTitulosParecidos() ? String.join(", ", livro.getTitulosLivrosParecidos()) : "-";
             default:
                 return null;
         }

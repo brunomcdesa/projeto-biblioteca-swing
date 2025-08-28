@@ -92,17 +92,6 @@ public class Livro {
     }
 
     /**
-     * Método responsável por buscar os nomes dos autores do livro solicitante.
-     *
-     * @return uma lista de nomes de Autores.
-     */
-    public List<String> getNomesAutores() {
-        return autores.stream()
-                .map(Autor::getNome)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Método responsável por buscar os títulos dos livros parecidos com o livro solicitante.
      *
      * @return uma lista de títulos de livros parecidos.

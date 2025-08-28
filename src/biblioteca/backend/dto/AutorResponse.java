@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Classe DTO que representa os dados de retorno para as telas.
  *
@@ -33,5 +37,16 @@ public class AutorResponse {
                 .nome(autor.getNome())
                 .idade(autor.getIdade())
                 .build();
+    }
+
+    /**
+     * Método responsável por realizar a conversão de várias entidades Autor para uma lista de DTOs AutorResponse.
+     *
+     * @return Uma lista de DTO com dados do Autor.
+     */
+    public static List<AutorResponse> converterDeAutores(Set<Autor> autores) {
+        return autores.stream()
+                .map(AutorResponse::converterDeAutor)
+                .collect(Collectors.toList());
     }
 }
