@@ -1,10 +1,12 @@
 package biblioteca.backend.facade;
 
+import biblioteca.backend.dto.EditoraFiltros;
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.service.EditoraService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,5 +50,9 @@ public class EditoraFacade {
      */
     public void deletarEditora(Integer id) {
         editoraService.deletar(id);
+    }
+
+    public List<EditoraResponse> listarPorFiltros(EditoraFiltros filtros) {
+        return Collections.emptyList();
     }
 }

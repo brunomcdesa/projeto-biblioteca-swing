@@ -146,6 +146,19 @@ public class TelasUtils {
         return painelLinha;
     }
 
+    public static JPanel criarLinhaFiltro(String textoLabel, Component componente) {
+        JPanel painelLinha = new JPanel(new BorderLayout(5, 0));
+
+        JLabel label = new JLabel(textoLabel);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setPreferredSize(new Dimension(100, label.getPreferredSize().height));
+
+        painelLinha.add(label, WEST);
+        painelLinha.add(componente, CENTER);
+
+        return painelLinha;
+    }
+
     /**
      * Método responsável por criar o painel de botoes das telas de listagem.
      * <p>
@@ -160,6 +173,15 @@ public class TelasUtils {
                 .forEach(painelBotoes::add);
 
         return painelBotoes;
+    }
+
+    public static JPanel criarPainelFiltros(Component... components) {
+        JPanel painelFiltros = new JPanel();
+        painelFiltros.setLayout(new BoxLayout(painelFiltros, BoxLayout.LINE_AXIS));
+        Arrays.stream(components)
+                .forEach(painelFiltros::add);
+
+        return painelFiltros;
     }
 
     /**

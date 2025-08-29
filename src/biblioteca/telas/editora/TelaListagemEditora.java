@@ -28,6 +28,7 @@ public class TelaListagemEditora extends JFrame {
     private final EditoraFacade editoraFacade;
     private final JButton botaoRecarregarDados = criarBotao("Recarregar Dados");
     private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoPesquisar = criarBotao("Pesquisar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
     private final JButton botaoCadastrar = criarBotao("Cadastrar");
@@ -49,7 +50,7 @@ public class TelaListagemEditora extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes() {
-        JPanel painelPrincipal =  criarPainelPrincipalListagem(tabela);
+        JPanel painelPrincipal = criarPainelPrincipalListagem(tabela);
 
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
         add(painelPrincipal);
@@ -62,8 +63,8 @@ public class TelaListagemEditora extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoDeletar, botaoEditar,
-                botaoCadastrar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar,
+                botaoDeletar, botaoEditar, botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -77,6 +78,7 @@ public class TelaListagemEditora extends JFrame {
         this.configurarAcaoBotaoEditar();
         this.configurarAcaoBotaoDeletar();
         this.configurarAcaoBotaoCadastrar();
+        this.configurarAcaoBotaoPesquisar();
     }
 
     /**
@@ -152,6 +154,19 @@ public class TelaListagemEditora extends JFrame {
             this.setVisible(false);
         });
     }
+
+    /**
+     * Efetua a configuração da ação do botão de atualizar,
+     * para que os dados sejam atualizados na tela quando clicado.
+     */
+    private void configurarAcaoBotaoPesquisar() {
+        botaoPesquisar.addActionListener(listener -> {
+            TelaPesquisaEditora telaPesquisaEditora = new TelaPesquisaEditora(this, editoraFacade);
+            telaPesquisaEditora.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
 
     /**
      * Efetua a busca dos dados da listagem.
