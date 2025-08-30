@@ -95,12 +95,12 @@ public class EditoraService {
     /**
      * Método responsável por buscar um array das Editoras e converter para o Objeto SelectResponse.
      *
-     * @return Um array de SelectResponse.
+     * @return Uma lista de SelectResponse.
      */
-    public SelectResponse[] buscarEditorasSelect() {
+    public List<SelectResponse> buscarEditorasSelect() {
         return editoraDAO.listarTodos().stream()
                 .map(editora -> montarSelectResponse(editora.getId(), editora.getNome()))
-                .toArray(SelectResponse[]::new);
+                .collect(toList());
     }
 
 

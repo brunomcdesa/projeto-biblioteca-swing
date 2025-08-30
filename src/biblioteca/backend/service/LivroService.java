@@ -1,6 +1,7 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.ILivroDAO;
+import biblioteca.backend.dto.LivroFiltros;
 import biblioteca.backend.dto.LivroRequest;
 import biblioteca.backend.dto.LivroResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
@@ -52,12 +53,22 @@ public class LivroService {
     }
 
     /**
+     * Método responsável por listar todos os Livros do sistema por filtros.
+     *
+     * @return uma lista de Livros de acordo com os filtros passados por parametro.
+     */
+    public List<LivroResponse> listarTodosPorFiltros(LivroFiltros filtros) {
+        return livroDAO.listarTodosPorPredicate(filtros.toPredicate()).stream()
+                .map(LivroResponse::converterDeLivro)
+                .collect(toList());
+    }
+
+    /**
      * Método responsável por editar um livro específico, de acordo com os novos dados da request.
      */
     public void editar(Integer id, LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Livro livro = this.findById(id);
-        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGenero(livroRequest.getGenero()));
-
+        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGeneroAndIdNot(livroRequest.getGenero(), livro.getId()));
         livro.atualizarDados(livroRequest, editora, autores, livrosParecidos);
 
         livroDAO.salvar(livro);

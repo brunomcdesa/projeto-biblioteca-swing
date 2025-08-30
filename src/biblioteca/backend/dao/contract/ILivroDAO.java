@@ -1,5 +1,6 @@
 package biblioteca.backend.dao.contract;
 
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Livro;
 
@@ -18,9 +19,13 @@ public interface ILivroDAO {
 
     List<Livro> listarTodos();
 
+    List<Livro> listarTodosPorPredicate(PredicateResult predicate);
+
     Optional<Livro> findById(Integer id);
 
     void deletar(Integer id);
 
     List<Livro> findByGenero(EGenero genero);
+
+    List<Livro> findByGeneroAndIdNot(EGenero genero, Integer id);
 }

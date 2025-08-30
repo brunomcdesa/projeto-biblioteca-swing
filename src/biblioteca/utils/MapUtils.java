@@ -36,4 +36,15 @@ public class MapUtils {
     public static <T, C> C mapNullComBackup(T value, C returnValue, C backup) {
         return (value != null) ? returnValue : backup;
     }
+
+    /**
+     * Método genérico com foco em realizar o mapeamento passado como Function, caso o value não seja null.
+     * <p>
+     * Caso o value for null, retornará null
+     *
+     * @return Valor do mapeamento realizado pela Function, caso o value não for null. Null caso o value for null.
+     */
+    public static <T, C> C mapNull(T value, Function<T, C> function) {
+        return (value != null) ? function.apply(value) : null;
+    }
 }

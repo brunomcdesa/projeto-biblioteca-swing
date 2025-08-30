@@ -114,5 +114,13 @@ public class Livro {
         this.setEditora(editora);
         this.setAutores(autores);
         this.setLivrosParecidos(livrosParecidos);
+        livrosParecidos.forEach(livroParecido -> livroParecido.atualizarLivrosParecidos(this));
+    }
+
+    /**
+     * Método responsável atualizar os dados dos livros parecidos, adicionando o livro passado
+     */
+    private void atualizarLivrosParecidos(Livro livro) {
+        this.livrosParecidos.add(livro);
     }
 }

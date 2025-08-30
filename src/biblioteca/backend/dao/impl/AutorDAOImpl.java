@@ -54,7 +54,8 @@ public class AutorDAOImpl implements IAutorDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT a FROM Autor a ORDER BY a.id",
+                            "SELECT a FROM Autor a "
+                                    + "ORDER BY a.id",
                             Autor.class)
                     .getResultList();
         } finally {
@@ -119,7 +120,8 @@ public class AutorDAOImpl implements IAutorDAO {
             this.iniciarTransacao(entityManager);
 
             entityManager.createQuery(
-                            "DELETE FROM Autor a WHERE a.id = :id")
+                            "DELETE FROM Autor a "
+                                    + "WHERE a.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 
@@ -132,12 +134,18 @@ public class AutorDAOImpl implements IAutorDAO {
         }
     }
 
+    /**
+     * Método responsável por buscar os Autores de acordo com os IDs deles no banco de dados.
+     *
+     * @return Um valor Opcional de Autor.
+     */
     @Override
     public List<Autor> findByIdIn(List<Integer> ids) {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT a FROM Autor a WHERE a.id IN(:ids)",
+                            "SELECT a FROM Autor a "
+                                    + "WHERE a.id IN(:ids)",
                             Autor.class)
                     .setParameter("ids", ids)
                     .getResultList();

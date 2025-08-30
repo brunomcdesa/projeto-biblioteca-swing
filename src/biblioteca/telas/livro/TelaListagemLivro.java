@@ -28,6 +28,7 @@ public class TelaListagemLivro extends JFrame {
     private final LivroFacade livroFacade;
     private final JButton botaoRecarregarDados = criarBotao("Recarregar Dados");
     private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoPesquisar = criarBotao("Pesquisar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
     private final JButton botaoCadastrar = criarBotao("Cadastrar");
@@ -61,8 +62,8 @@ public class TelaListagemLivro extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-       JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoDeletar, botaoEditar,
-               botaoCadastrar);
+       JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
+               botaoEditar, botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -76,6 +77,7 @@ public class TelaListagemLivro extends JFrame {
         this.configurarAcaoBotaoEditar();
         this.configurarAcaoBotaoDeletar();
         this.configurarAcaoBotaoCadastrar();
+        this.configurarAcaoBotaoPesquisar();
     }
 
     /**
@@ -148,6 +150,18 @@ public class TelaListagemLivro extends JFrame {
         botaoCadastrar.addActionListener(listener -> {
             TelaFormularioLivro formularioLivro = new TelaFormularioLivro(this, livroFacade);
             formularioLivro.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
+    /**
+     * Efetua a configuração da ação do botão de pesquisar,
+     * para que seja aberta uma nova tela de pesquisa de livros por filtros.
+     */
+    private void configurarAcaoBotaoPesquisar() {
+        botaoPesquisar.addActionListener(listener -> {
+            TelaPesquisaLivro telaPesquisaLivro = new TelaPesquisaLivro(this, livroFacade);
+            telaPesquisaLivro.setVisible(true);
             this.setVisible(false);
         });
     }

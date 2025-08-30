@@ -25,7 +25,6 @@ public class PredicateBase {
         this.parametros = new HashMap<>();
     }
 
-
     /**
      * Método responsável efetuar o build do predicate de fato, de acordo com os filtros montados nas classes de predicates que extenderem esta classe.
      *

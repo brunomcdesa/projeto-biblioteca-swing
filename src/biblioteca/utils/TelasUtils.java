@@ -68,8 +68,10 @@ public class TelasUtils {
      *
      * @return um JComboBox para ser utilizado como um campo de select de um formulário.
      */
-    public static JComboBox<SelectResponse> criarSelect(SelectResponse[] opcoes) {
-        return new JComboBox<>(opcoes);
+    public static JComboBox<SelectResponse> criarSelect(List<SelectResponse> opcoes) {
+        SelectResponse selectDefault = new SelectResponse(null, "Selecionar");
+        opcoes.add(0, selectDefault);
+        return new JComboBox<>(opcoes.toArray(new SelectResponse[0]));
     }
 
     /**
@@ -80,8 +82,8 @@ public class TelasUtils {
      *
      * @return um JList para ser utilizado como um campo de multi select de um formulário.
      */
-    public static JList<SelectResponse> criarMultiSelect(SelectResponse[] opcoes) {
-        JList<SelectResponse> multiSelect = new JList<>(opcoes);
+    public static JList<SelectResponse> criarMultiSelect(List<SelectResponse> opcoes) {
+        JList<SelectResponse> multiSelect = new JList<>(opcoes.toArray(new SelectResponse[0]));
         multiSelect.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
 
         return multiSelect;
@@ -176,8 +178,9 @@ public class TelasUtils {
     }
 
     public static JPanel criarPainelFiltros(Component... components) {
-        JPanel painelFiltros = new JPanel();
-        painelFiltros.setLayout(new BoxLayout(painelFiltros, BoxLayout.LINE_AXIS));
+        JPanel painelFiltros = new JPanel(new GridLayout(0, 3, 10, 5));
+        painelFiltros.setBorder(createEmptyBorder(10, 10, 10, 10));
+
         Arrays.stream(components)
                 .forEach(painelFiltros::add);
 

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static biblioteca.backend.dto.SelectResponse.montarSelectResponse;
 
@@ -30,11 +32,11 @@ public enum EGenero {
     /**
      * Método responsável mapear os valores do enum para o DTO SelectResponse.
      *
-     * @return Um array SelectResponse.
+     * @return Uma lista de SelectResponse.
      */
-    public static SelectResponse[] getValuesParaSelect() {
+    public static List<SelectResponse> getValuesParaSelect() {
         return Arrays.stream(EGenero.values())
                 .map(genero -> montarSelectResponse(genero, genero.descricao))
-                .toArray(SelectResponse[]::new);
+                .collect(Collectors.toList());
     }
 }

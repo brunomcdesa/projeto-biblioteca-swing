@@ -1,8 +1,6 @@
 package biblioteca.backend.facade;
 
-import biblioteca.backend.dto.LivroRequest;
-import biblioteca.backend.dto.LivroResponse;
-import biblioteca.backend.dto.SelectResponse;
+import biblioteca.backend.dto.*;
 import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
@@ -76,28 +74,37 @@ public class LivroFacade {
     /**
      * Método responsável por buscar os dados do Enum de Genero, para ser utilizado em um campo Select.
      *
-     * @return Um array de descrições dos Gêneros.
+     * @return Uma lista de SelectResponse.
      */
-    public SelectResponse[] getSelectGenero() {
+    public List<SelectResponse> getSelectGenero() {
        return EGenero.getValuesParaSelect();
     }
 
     /**
      * Método responsável por buscar os nomes das editoras do sistema, para ser utilizado em um campo Select.
      *
-     * @return Um array de nomes de Editoras.
+     * @return Uma lista de SelectResponse.
      */
-    public SelectResponse[] getSelectEditora() {
+    public List<SelectResponse> getSelectEditora() {
         return editoraService.buscarEditorasSelect();
     }
 
     /**
      * Método responsável por buscar os nomes dos Autores do sistema, para ser utilizado em um campo Multi Select.
      *
-     * @return Um array de nomes de Autores.
+     * @return Uma lista de SelectResponse.
      */
-    public SelectResponse[] getSelectAutores() {
+    public List<SelectResponse> getSelectAutores() {
         return autorService.buscarAutoresSelect();
+    }
+
+    /**
+     * Método responsável por buscar todos os livros do sistema de acordo com os filtros.
+     *
+     * @return Uma lista de dados dos livros de acordo com os filtros.
+     */
+    public List<LivroResponse> listarPorFiltros(LivroFiltros filtros) {
+        return livroService.listarTodosPorFiltros(filtros);
     }
 
     /**

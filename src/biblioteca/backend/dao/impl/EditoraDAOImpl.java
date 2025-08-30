@@ -53,7 +53,8 @@ public class EditoraDAOImpl implements IEditoraDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT e FROM Editora e ORDER BY e.id",
+                            "SELECT e FROM Editora e "
+                                    + "ORDER BY e.id",
                             Editora.class)
                     .getResultList();
         } finally {
@@ -118,7 +119,8 @@ public class EditoraDAOImpl implements IEditoraDAO {
             this.iniciarTransacao(entityManager);
 
             entityManager.createQuery(
-                            "DELETE FROM Editora e WHERE e.id = :id")
+                            "DELETE FROM Editora e "
+                                    + "WHERE e.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 

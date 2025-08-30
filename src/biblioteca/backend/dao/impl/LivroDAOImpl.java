@@ -1,11 +1,13 @@
 package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.ILivroDAO;
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Livro;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +68,32 @@ public class LivroDAOImpl implements ILivroDAO {
     }
 
     /**
+     * Método responsável por listar todos os Livros salvos no banco de dados, de acordo com os filtros dentro do predicate.
+     *
+     * @return Todos os Livros salvos no banco de dados de acordo com os filtros passados.
+     */
+    @Override
+    public List<Livro> listarTodosPorPredicate(PredicateResult predicate) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Livro> query = entityManager.createQuery(
+                    "SELECT DISTINCT l FROM Livro l "
+                            + "LEFT JOIN FETCH l.editora e "
+                            + "LEFT JOIN FETCH l.autores a "
+                            + "LEFT JOIN FETCH l.livrosParecidos lp "
+                            + predicate.getWhereClause()
+                            + "ORDER BY l.id",
+                    Livro.class);
+            predicate.getParams().
+                    forEach(query::setParameter);
+
+            return query.getResultList();
+        } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
+
+    /**
      * Método responsável por buscar um Livro de acordo com o ID dele no banco de dados.
      *
      * @return Um valor Opcional de Livro.
@@ -75,7 +103,9 @@ public class LivroDAOImpl implements ILivroDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT l FROM Livro l where l.id = :id",
+                            "SELECT l FROM Livro l "
+                                    + "LEFT JOIN FETCH l.livrosParecidos "
+                                    + "WHERE l.id = :id",
                             Livro.class)
                     .setParameter("id", id)
                     .getSingleResult());
@@ -96,7 +126,8 @@ public class LivroDAOImpl implements ILivroDAO {
             this.iniciarTransacao(entityManager);
 
             entityManager.createQuery(
-                            "DELETE FROM Livro l WHERE l.id = :id")
+                            "DELETE FROM Livro l "
+                                    + "WHERE l.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 
@@ -120,9 +151,36 @@ public class LivroDAOImpl implements ILivroDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT l FROM Livro l where l.genero = :genero",
+                            "SELECT l FROM Livro l "
+                                    + "WHERE l.genero = :genero",
                             Livro.class)
                     .setParameter("genero", genero)
+                    .getResultList();
+        } catch (Exception ex) {
+            return emptyList();
+        } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por listar todos os Livros salvos no banco de dados com o mesmo gênero que foi
+     * passado por parâmetro, com exceção do livro que possuir o id igual ao passado por parametro.
+     *
+     * @return Todos os livros salvos no banco de dados de um gênero específico.
+     */
+    @Override
+    public List<Livro> findByGeneroAndIdNot(EGenero genero, Integer id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.createQuery(
+                            "SELECT l FROM Livro l "
+                                    + "LEFT JOIN FETCH l.livrosParecidos "
+                                    + "WHERE l.genero = :genero "
+                                    + "AND l.id != :id",
+                            Livro.class)
+                    .setParameter("genero", genero)
+                    .setParameter("id", id)
                     .getResultList();
         } catch (Exception ex) {
             return emptyList();

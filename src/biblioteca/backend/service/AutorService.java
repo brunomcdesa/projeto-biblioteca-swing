@@ -107,13 +107,13 @@ public class AutorService {
     /**
      * Método responsável por buscar um array dos Autores e converter para o DTO SelectResponse.
      *
-     * @return Um array de SelectResponse.
+     * @return Uma lista de SelectResponse.
      */
-    public SelectResponse[] buscarAutoresSelect() {
+    public List<SelectResponse> buscarAutoresSelect() {
         return autorDAO.listarTodos().stream()
                 .sorted(Comparator.comparing(Autor::getNome))
                 .map(autor -> montarSelectResponse(autor.getId(), autor.getNome()))
-                .toArray(SelectResponse[]::new);
+                .collect(toList());
     }
 
     /**

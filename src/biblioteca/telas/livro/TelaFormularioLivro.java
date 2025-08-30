@@ -188,21 +188,21 @@ public class TelaFormularioLivro extends JFrame {
     /**
      * Carrega os dados que serão utilizados no campo select de Gênero.
      */
-    private SelectResponse[] carregarSelectGenero() {
+    private List<SelectResponse> carregarSelectGenero() {
         return livroFacade.getSelectGenero();
     }
 
     /**
      * Carrega os dados que serão utilizados no campo select de Editora.
      */
-    private SelectResponse[] carregarSelectEditora() {
+    private List<SelectResponse> carregarSelectEditora() {
         return livroFacade.getSelectEditora();
     }
 
     /**
      * Carrega os dados que serão utilizados no campo multi select de Autores.
      */
-    private SelectResponse[] carregarSelectAutores() {
+    private List<SelectResponse> carregarSelectAutores() {
         return livroFacade.getSelectAutores();
     }
 
