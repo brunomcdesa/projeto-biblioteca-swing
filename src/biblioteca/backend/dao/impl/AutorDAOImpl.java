@@ -1,10 +1,12 @@
 package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.IAutorDAO;
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.model.Autor;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +57,30 @@ public class AutorDAOImpl implements IAutorDAO {
                             "SELECT a FROM Autor a ORDER BY a.id",
                             Autor.class)
                     .getResultList();
+        } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por listar todos os Autores salvos no banco de dados, de acordo com os filtros dentro do predicate.
+     *
+     * @return Todos os autores salvos no banco de dados de acordo com os filtros passados.
+     */
+    @Override
+    public List<Autor> listarTodosPorPredicate(PredicateResult predicate) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Autor> query = entityManager.createQuery(
+                    "SELECT a FROM Autor a "
+                            + "LEFT JOIN FETCH a.livros l "
+                            + predicate.getWhereClause()
+                            + "ORDER BY a.id",
+                    Autor.class);
+            predicate.getParams().
+                    forEach(query::setParameter);
+
+            return query.getResultList();
         } finally {
             this.fecharTransacao(entityManager);
         }

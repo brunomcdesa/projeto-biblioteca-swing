@@ -1,5 +1,6 @@
 package biblioteca.backend.facade;
 
+import biblioteca.backend.dto.AutorFiltros;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.service.AutorService;
@@ -48,5 +49,14 @@ public class AutorFacade {
      */
     public void deletarAutor(Integer id) {
         autorService.deletar(id);
+    }
+
+    /**
+     * Método responsável por buscar todos os autores do sistema de acordo com os filtros.
+     *
+     * @return Uma lista de dados dos autores de acordo com os filtros.
+     */
+    public List<AutorResponse> listarPorFiltros(AutorFiltros filtros) {
+        return autorService.listarTodosPorFiltros(filtros);
     }
 }

@@ -1,6 +1,7 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.IAutorDAO;
+import biblioteca.backend.dto.AutorFiltros;
 import biblioteca.backend.dto.AutorRequest;
 import biblioteca.backend.dto.AutorResponse;
 import biblioteca.backend.dto.SelectResponse;
@@ -47,6 +48,17 @@ public class AutorService {
      */
     public List<AutorResponse> listarTodos() {
         return autorDAO.listarTodos().stream()
+                .map(AutorResponse::converterDeAutor)
+                .collect(toList());
+    }
+
+    /**
+     * Método responsável por listar todos os Autores do sistema por filtros.
+     *
+     * @return uma lista de Autores de acordo com os filtros passados por parametro.
+     */
+    public List<AutorResponse> listarTodosPorFiltros(AutorFiltros filtros) {
+        return autorDAO.listarTodosPorPredicate(filtros.toPredicate()).stream()
                 .map(AutorResponse::converterDeAutor)
                 .collect(toList());
     }

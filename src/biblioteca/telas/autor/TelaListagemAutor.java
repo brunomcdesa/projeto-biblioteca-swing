@@ -27,6 +27,7 @@ public class TelaListagemAutor extends JFrame {
     private final AutorFacade autorFacade;
     private final JButton botaoRecarregarDados = criarBotao("Recarregar Dados");
     private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoPesquisar = criarBotao("Pesquisar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
     private final JButton botaoCadastrar = criarBotao("Cadastrar");
@@ -60,8 +61,8 @@ public class TelaListagemAutor extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoDeletar, botaoEditar,
-                botaoCadastrar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
+                botaoEditar, botaoCadastrar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -75,6 +76,7 @@ public class TelaListagemAutor extends JFrame {
         this.configurarAcaoEditar();
         this.configurarAcaoBotaoDeletar();
         this.configurarAcaoBotaoCadastrar();
+        this.configurarAcaoBotaoPesquisar();
     }
 
     /**
@@ -147,6 +149,18 @@ public class TelaListagemAutor extends JFrame {
         botaoCadastrar.addActionListener(listener -> {
             TelaFormularioAutor telaCadastroAutor = new TelaFormularioAutor(this, autorFacade);
             telaCadastroAutor.setVisible(true);
+            this.setVisible(false);
+        });
+    }
+
+    /**
+     * Efetua a configuração da ação do botão de pesquisar,
+     * para que seja aberta uma nova tela de pesquisa de autores por filtros.
+     */
+    private void configurarAcaoBotaoPesquisar() {
+        botaoPesquisar.addActionListener(listener -> {
+            TelaPesquisaAutor telaPesquisaAutor = new TelaPesquisaAutor(this, autorFacade);
+            telaPesquisaAutor.setVisible(true);
             this.setVisible(false);
         });
     }

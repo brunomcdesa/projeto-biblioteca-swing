@@ -60,7 +60,6 @@ public class EditoraService {
                 .collect(toList());
     }
 
-
     /**
      * Método responsável por editar uma editora específica, de acordo com os novos dados da request.
      */

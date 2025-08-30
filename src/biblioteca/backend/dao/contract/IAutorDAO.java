@@ -1,5 +1,6 @@
 package biblioteca.backend.dao.contract;
 
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.model.Autor;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface IAutorDAO {
     void salvar(Autor autor);
 
     List<Autor> listarTodos();
+
+    List<Autor> listarTodosPorPredicate(PredicateResult predicate);
 
     Optional<Autor> findById(Integer id);
 
