@@ -63,17 +63,14 @@ public class TelaFormularioLivro extends JFrame {
         this.aplicarConfiguracoesFormulario(painelPrincipal, livro);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
-        add(painelPrincipal);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, LivroResponse livro) {
-        JPanel painelFormulario = criarPainelFormulario();
+        JPanel painelFormulario = criarPainelPadrao();
         this.configurarCamposFormulario(livro, painelFormulario);
 
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -98,15 +95,15 @@ public class TelaFormularioLivro extends JFrame {
         atribuirValoresSelecionadosCamposSelect(livro);
 
         painelFormulario.add(criarLinhaFormulario("Título:", campoTitulo));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Data de publicação (dd/MM/yyyy):", campoDataPublicacao));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("ISBN:", campoIsbn));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Gênero:", campoGenero));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Editora:", campoEditora));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Autores:", scrollAutores));
     }
 
@@ -159,7 +156,7 @@ public class TelaFormularioLivro extends JFrame {
                 return;
             }
 
-            if (!isDataValida(dataPublicacaoText)) {
+            if (isDataInvalida(dataPublicacaoText)) {
                 showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy.",
                         "Erro de Formato", ERROR_MESSAGE);
                 return;

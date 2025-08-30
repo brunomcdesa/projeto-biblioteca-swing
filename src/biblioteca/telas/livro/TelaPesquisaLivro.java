@@ -50,7 +50,6 @@ public class TelaPesquisaLivro extends JFrame {
         this.telaAnterior = telaAnterior;
         this.livroFacade = livroFacade;
 
-
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
     }
@@ -63,10 +62,8 @@ public class TelaPesquisaLivro extends JFrame {
 
         this.aplicarConfiguracoesFiltros(painelPrincipal);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-        add(painelPrincipal);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**
@@ -136,7 +133,7 @@ public class TelaPesquisaLivro extends JFrame {
 
             LocalDate dataPublicacao = null;
             if (isNotBlank(dataPublicacaoText)) {
-                if (!isDataValida(dataPublicacaoText)) {
+                if (isDataInvalida(dataPublicacaoText)) {
                     showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy.",
                             "Erro de Formato", ERROR_MESSAGE);
                     return;

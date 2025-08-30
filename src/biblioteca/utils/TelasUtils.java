@@ -1,11 +1,13 @@
 package biblioteca.utils;
 
-
 import biblioteca.backend.dto.SelectResponse;
+import biblioteca.backend.utils.JpaUtil;
 import lombok.experimental.UtilityClass;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -18,9 +20,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
 /**
- * Classe utilitária para as telas de formulários.
+ * Classe utilitária para as telas do sistema.
  * <p>
- * Esta classe é responsável por realizar validações e operações comuns entre as telas de formulário
+ * Esta classe é responsável por realizar validações e operações comuns entre as telas do sistema.
  *
  * @author Bruno Cardoso
  * @version 1.0
@@ -123,7 +125,7 @@ public class TelasUtils {
      *
      * @return um JPanel para ser utilizado como painel dos campos do formulário.
      */
-    public static JPanel criarPainelFormulario() {
+    public static JPanel criarPainelPadrao() {
         JPanel painelFormulario = new JPanel();
         painelFormulario.setLayout(new BoxLayout(painelFormulario, BoxLayout.Y_AXIS));
 
@@ -148,6 +150,20 @@ public class TelasUtils {
         return painelLinha;
     }
 
+    /**
+     * Método responsável por criar uma linha de separação.
+     *
+     * @return um Component para para ser utilizado como uma linha de separação.
+     */
+    public static Component criarLinhaSeparacao() {
+        return Box.createRigidArea(new Dimension(0, 15));
+    }
+
+    /**
+     * Método responsável por criar uma linha do filtro.
+     *
+     * @return um JPanel para para ser utilizado como uma linha do painel de filtro.
+     */
     public static JPanel criarLinhaFiltro(String textoLabel, Component componente) {
         JPanel painelLinha = new JPanel(new BorderLayout(5, 0));
 
@@ -169,19 +185,27 @@ public class TelasUtils {
      *
      * @return um JPanel para para ser utilizado como painel de botoes das telas de listagem.
      */
-    public static JPanel criarPainelBotoesListagem(Component... components) {
+    public static JPanel criarPainelBotoesListagem(Component... botoes) {
         JPanel painelBotoes = new JPanel(new FlowLayout(RIGHT));
-        Arrays.stream(components)
+        Arrays.stream(botoes)
                 .forEach(painelBotoes::add);
 
         return painelBotoes;
     }
 
-    public static JPanel criarPainelFiltros(Component... components) {
+    /**
+     * Método responsável por criar o painel de filtros.
+     * <p>
+     * Recebe as linhas que serão adicionados no painel por parametro e adiciona eles dinamicamente no painel,
+     * de acordo com a quantidade de linhas recebidas.
+     *
+     * @return um JPanel para para ser utilizado como painel de botoes das telas de listagem.
+     */
+    public static JPanel criarPainelFiltros(Component... linhas) {
         JPanel painelFiltros = new JPanel(new GridLayout(0, 3, 10, 5));
         painelFiltros.setBorder(createEmptyBorder(10, 10, 10, 10));
 
-        Arrays.stream(components)
+        Arrays.stream(linhas)
                 .forEach(painelFiltros::add);
 
         return painelFiltros;
@@ -212,5 +236,29 @@ public class TelasUtils {
         campoSelect.setSelectedIndices(IntStream.range(0, model.getSize())
                 .filter(index -> valoresSelecionados.contains(model.getElementAt(index).getValue()))
                 .toArray());
+    }
+
+    /**
+     * Método responsável por atribuir as configurações padrões das telas do sistema.
+     */
+    public static void adicionarConfiguracoesPadroesTela(JFrame tela, JPanel painelPrincipal) {
+        tela.add(painelPrincipal);
+        tela.setSize(1000, 600);
+        tela.setLocationRelativeTo(null);
+        tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        configurarListenerDeJanela(tela);
+    }
+
+    /**
+     * Adiciona um listener para interceptar o evento de fechamento da janela.
+     */
+    private static void configurarListenerDeJanela(JFrame tela) {
+        tela.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                JpaUtil.fecharConexao();
+            }
+        });
     }
 }

@@ -10,7 +10,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-import static biblioteca.backend.utils.JpaUtil.getEntityManager;
+import static biblioteca.backend.utils.JpaUtil.*;
 import static java.util.Collections.emptyList;
 
 /**
@@ -29,18 +29,18 @@ public class AutorDAOImpl implements IAutorDAO {
     public void salvar(Autor autor) {
         EntityManager entityManager = getEntityManager();
         try {
-            this.iniciarTransacao(entityManager);
+            iniciarTransacao(entityManager);
             if (autor.getId() == null) {
                 entityManager.persist(autor);
             } else {
                 entityManager.merge(autor);
             }
-            this.commitarTransacao(entityManager);
+            commitarTransacao(entityManager);
         } catch (Exception ex) {
-            this.desfazerAlteracoesTransacao(entityManager);
+            desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -59,7 +59,7 @@ public class AutorDAOImpl implements IAutorDAO {
                             Autor.class)
                     .getResultList();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -83,7 +83,7 @@ public class AutorDAOImpl implements IAutorDAO {
 
             return query.getResultList();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -106,7 +106,7 @@ public class AutorDAOImpl implements IAutorDAO {
         } catch (Exception ex) {
             return Optional.empty();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -117,7 +117,7 @@ public class AutorDAOImpl implements IAutorDAO {
     public void deletar(Integer id) {
         EntityManager entityManager = getEntityManager();
         try {
-            this.iniciarTransacao(entityManager);
+            iniciarTransacao(entityManager);
 
             entityManager.createQuery(
                             "DELETE FROM Autor a "
@@ -125,12 +125,12 @@ public class AutorDAOImpl implements IAutorDAO {
                     .setParameter("id", id)
                     .executeUpdate();
 
-            this.commitarTransacao(entityManager);
+            commitarTransacao(entityManager);
         } catch (Exception ex) {
-            this.desfazerAlteracoesTransacao(entityManager);
+            desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -152,23 +152,7 @@ public class AutorDAOImpl implements IAutorDAO {
         } catch (Exception ex) {
             return emptyList();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
-    }
-
-    private void iniciarTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().begin();
-    }
-
-    private void commitarTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().commit();
-    }
-
-    private void desfazerAlteracoesTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().rollback();
-    }
-
-    private void fecharTransacao(EntityManager entityManager) {
-        entityManager.close();
     }
 }

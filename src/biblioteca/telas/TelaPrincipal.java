@@ -3,17 +3,14 @@ package biblioteca.telas;
 import biblioteca.backend.facade.AutorFacade;
 import biblioteca.backend.facade.EditoraFacade;
 import biblioteca.backend.facade.LivroFacade;
-import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.autor.TelaListagemAutor;
 import biblioteca.telas.editora.TelaListagemEditora;
 import biblioteca.telas.livro.TelaListagemLivro;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import static biblioteca.utils.TelasUtils.criarBotao;
+import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.Font.BOLD;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -39,7 +36,6 @@ public class TelaPrincipal extends JFrame {
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes(autorFacade, editoraFacade, livroFacade);
-        this.configurarListenerDeJanela();
     }
 
     /**
@@ -55,27 +51,23 @@ public class TelaPrincipal extends JFrame {
 
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
-        add(painelPrincipal);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = new JPanel();
-        painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
+        JPanel painelBotoes = criarPainelPadrao();
 
         botaoGerenciaLivro.setAlignmentX(CENTER_ALIGNMENT);
         botaoGerenciaAutor.setAlignmentX(CENTER_ALIGNMENT);
         botaoGerenciaEditora.setAlignmentX(CENTER_ALIGNMENT);
 
         painelBotoes.add(botaoGerenciaLivro);
-        painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
+        painelBotoes.add(criarLinhaSeparacao());
         painelBotoes.add(botaoGerenciaAutor);
-        painelBotoes.add(Box.createRigidArea(new Dimension(0, 15)));
+        painelBotoes.add(criarLinhaSeparacao());
         painelBotoes.add(botaoGerenciaEditora);
 
         painelPrincipal.add(painelBotoes);
@@ -120,18 +112,6 @@ public class TelaPrincipal extends JFrame {
             TelaListagemLivro telaListagemLivro = new TelaListagemLivro(this, livroFacade);
             telaListagemLivro.setVisible(true);
             this.setVisible(false);
-        });
-    }
-
-    /**
-     * Adiciona um listener para interceptar o evento de fechamento da janela.
-     */
-    private void configurarListenerDeJanela() {
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                JpaUtil.fecharConexao();
-            }
         });
     }
 }

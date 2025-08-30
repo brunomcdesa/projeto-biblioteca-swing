@@ -12,7 +12,6 @@ import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 
-
 /**
  * Tela de Listagem de Editoras de acordo com os filtros informados.
  * <p>
@@ -52,10 +51,8 @@ public class TelaPesquisaEditora extends JFrame {
 
         this.aplicarConfiguracoesFiltros(painelPrincipal);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-        add(painelPrincipal);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**

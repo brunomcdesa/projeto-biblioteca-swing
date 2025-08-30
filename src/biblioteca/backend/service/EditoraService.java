@@ -103,7 +103,6 @@ public class EditoraService {
                 .collect(toList());
     }
 
-
     /**
      * Método responsável por validar se a editora tem livros vinculados.
      *

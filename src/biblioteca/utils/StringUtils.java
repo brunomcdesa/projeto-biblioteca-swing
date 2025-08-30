@@ -67,8 +67,8 @@ public class StringUtils {
      *
      * @return true caso a data não for Blank e estiver no padrão definido. false caso a data for Blank ou não estiver no formato definido.
      */
-    public static boolean isDataValida(String data) {
-        return isNotBlank(data) && data.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$");
+    public static boolean isDataInvalida(String data) {
+        return !isNotBlank(data) || !data.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$");
     }
 
     /**

@@ -52,10 +52,8 @@ public class TelaListagemLivro extends JFrame {
         JPanel painelPrincipal = criarPainelPrincipalListagem(tabela);
 
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
-        add(painelPrincipal);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**

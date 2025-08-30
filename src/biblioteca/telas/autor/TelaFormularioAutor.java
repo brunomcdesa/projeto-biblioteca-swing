@@ -56,17 +56,14 @@ public class TelaFormularioAutor extends JFrame {
         this.aplicarConfiguracoesFormulario(painelPrincipal, autor);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
-        add(painelPrincipal);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, AutorResponse autor) {
-        JPanel painelFormulario = criarPainelFormulario();
+        JPanel painelFormulario = criarPainelPadrao();
         this.configurarCamposFormulario(autor, painelFormulario);
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -82,7 +79,7 @@ public class TelaFormularioAutor extends JFrame {
         this.campoIdade = criarTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
 
         painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Idade:", this.campoIdade));
     }
 

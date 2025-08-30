@@ -56,17 +56,14 @@ public class TelaFormularioEditora extends JFrame {
         this.aplicarConfiguracoesFormulario(painelPrincipal, editora);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
-        add(painelPrincipal);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
     }
 
     /**
      * Adiciona configurações dos dados iniciais dos campos do formuário.
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, EditoraResponse editora) {
-        JPanel painelFormulario = criarPainelFormulario();
+        JPanel painelFormulario = criarPainelPadrao();
         this.configurarCamposFormulario(editora, painelFormulario);
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -82,7 +79,7 @@ public class TelaFormularioEditora extends JFrame {
         this.campoCnpj = criarTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
 
         painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
-        painelFormulario.add(Box.createRigidArea(new Dimension(0, 5)));
+        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("CNPJ:", this.campoCnpj));
     }
 

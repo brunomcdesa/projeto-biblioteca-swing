@@ -53,4 +53,32 @@ public class JpaUtil {
             log.info("Entity manager fechado com sucesso..");
         }
     }
+
+    /**
+     * Inicia uma transação do entity manager recebido por parâmetro.
+     */
+    public static void iniciarTransacao(EntityManager entityManager) {
+        entityManager.getTransaction().begin();
+    }
+
+    /**
+     * Efetua o commit da transação no banco de dados, do entity manager recebido por parâmetro.
+     */
+    public static void commitarTransacao(EntityManager entityManager) {
+        entityManager.getTransaction().commit();
+    }
+
+    /**
+     * Desfaz as alterações realizadas no banco de dados, do entity manager recebido por parâmetro.
+     */
+    public static void desfazerAlteracoesTransacao(EntityManager entityManager) {
+        entityManager.getTransaction().rollback();
+    }
+
+    /**
+     * Fecha a transação do entity manager recebido por parâmetro.
+     */
+    public static void fecharTransacao(EntityManager entityManager) {
+        entityManager.close();
+    }
 }

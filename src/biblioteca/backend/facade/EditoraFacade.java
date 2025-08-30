@@ -6,7 +6,6 @@ import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.service.EditoraService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

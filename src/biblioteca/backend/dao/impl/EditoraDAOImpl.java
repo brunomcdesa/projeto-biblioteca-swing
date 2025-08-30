@@ -10,7 +10,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-import static biblioteca.backend.utils.JpaUtil.getEntityManager;
+import static biblioteca.backend.utils.JpaUtil.*;
 
 /**
  * Classe responsável por implementar a lógica das transações realizadas no banco de dados, na tabela Editora.
@@ -28,18 +28,18 @@ public class EditoraDAOImpl implements IEditoraDAO {
     public void salvar(Editora editora) {
         EntityManager entityManager = getEntityManager();
         try {
-            this.iniciarTransacao(entityManager);
+            iniciarTransacao(entityManager);
             if (editora.getId() == null) {
                 entityManager.persist(editora);
             } else {
                 entityManager.merge(editora);
             }
-            this.commitarTransacao(entityManager);
+            commitarTransacao(entityManager);
         } catch (Exception ex) {
-            this.desfazerAlteracoesTransacao(entityManager);
+            desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -58,7 +58,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
                             Editora.class)
                     .getResultList();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -82,7 +82,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
 
             return query.getResultList();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -105,7 +105,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
         } catch (Exception ex) {
             return Optional.empty();
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
     }
 
@@ -116,7 +116,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
     public void deletar(Integer id) {
         EntityManager entityManager = getEntityManager();
         try {
-            this.iniciarTransacao(entityManager);
+            iniciarTransacao(entityManager);
 
             entityManager.createQuery(
                             "DELETE FROM Editora e "
@@ -124,28 +124,12 @@ public class EditoraDAOImpl implements IEditoraDAO {
                     .setParameter("id", id)
                     .executeUpdate();
 
-            this.commitarTransacao(entityManager);
+            commitarTransacao(entityManager);
         } catch (Exception ex) {
-            this.desfazerAlteracoesTransacao(entityManager);
+            desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
         } finally {
-            this.fecharTransacao(entityManager);
+            fecharTransacao(entityManager);
         }
-    }
-
-    private void iniciarTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().begin();
-    }
-
-    private void commitarTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().commit();
-    }
-
-    private void desfazerAlteracoesTransacao(EntityManager entityManager) {
-        entityManager.getTransaction().rollback();
-    }
-
-    private void fecharTransacao(EntityManager entityManager) {
-        entityManager.close();
     }
 }
