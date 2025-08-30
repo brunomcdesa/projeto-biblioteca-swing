@@ -8,6 +8,7 @@ import biblioteca.backend.facade.LivroFacade;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -149,26 +150,21 @@ public class TelaFormularioLivro extends JFrame {
             SelectResponse editoraSelecionada = (SelectResponse) campoEditora.getSelectedItem();
             List<SelectResponse> autoresSelecionados = campoAutores.getSelectedValuesList();
 
-            if (isBlank(titulo) || isBlank(dataPublicacaoText) || isBlank(isbn) || generoSelecionado == null
-                    || editoraSelecionada == null || autoresSelecionados.isEmpty()) {
+            validarCamposStringObrigatorios(this, titulo, dataPublicacaoText, isbn);
+            if (generoSelecionado == null || editoraSelecionada == null || autoresSelecionados.isEmpty()) {
                 showMessageDialog(this, "Todos os campos são obrigatórios!",
                         "Erro de Validação", ERROR_MESSAGE);
                 return;
             }
 
-            if (isDataInvalida(dataPublicacaoText)) {
-                showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy.",
-                        "Erro de Formato", ERROR_MESSAGE);
-                return;
-            }
+            LocalDate dataPublicacao = converterStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
 
             List<Integer> autoresSelecionadosIds = autoresSelecionados.stream()
                     .map(autor -> (Integer) autor.getValue())
                     .collect(Collectors.toList());
 
-            LivroRequest request = new LivroRequest(titulo, isbn, (EGenero) generoSelecionado.getValue(),
-                    converterStringParaLocalDate(dataPublicacaoText), (Integer) editoraSelecionada.getValue(),
-                    autoresSelecionadosIds);
+            LivroRequest request = new LivroRequest(titulo, isbn, (EGenero) generoSelecionado.getValue(), dataPublicacao,
+                    (Integer) editoraSelecionada.getValue(), autoresSelecionadosIds);
 
             if (livro == null) {
                 livroFacade.salvarLivro(request);

@@ -12,6 +12,20 @@ import static biblioteca.utils.StringUtils.isNotBlank;
 public class EditoraPredicate extends PredicateBase {
 
     /**
+     * Método responsável adicionar o predicate referente ao ID da Editora.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public EditoraPredicate comId(Integer id) {
+        if (id != null) {
+            condicoes.add("e.id = :id");
+            parametros.put("id", id);
+        }
+
+        return this;
+    }
+
+    /**
      * Método responsável adicionar o predicate referente ao nome da Editora.
      *
      * @return a própria classe com a condição adicionada, caso esteja presente.
@@ -34,6 +48,20 @@ public class EditoraPredicate extends PredicateBase {
         if (isNotBlank(cnpj)) {
             condicoes.add("e.cnpj LIKE :cnpj");
             parametros.put("cnpj", "%" + cnpj.trim() + "%");
+        }
+
+        return this;
+    }
+
+    /**
+     * Método responsável adicionar o predicate referente ao ID do Livro vinculado com a Editora.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public EditoraPredicate comIdLivro(Integer idLivro) {
+        if (idLivro != null) {
+            condicoes.add("l.id = :idLivro");
+            parametros.put("idLivro", idLivro);
         }
 
         return this;

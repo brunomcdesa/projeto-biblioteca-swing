@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EditoraFiltros {
 
+    private Integer id;
     private String nome;
     private String cnpj;
+    private Integer idLivro;
     private String tituloLivro;
 
     /**
@@ -29,8 +31,10 @@ public class EditoraFiltros {
      */
     public PredicateResult toPredicate() {
         return new EditoraPredicate()
+                .comId(this.id)
                 .comNome(this.nome)
                 .comCnpj(this.cnpj)
+                .comIdLivro(this.idLivro)
                 .comTituloLivro(this.tituloLivro)
                 .build();
     }

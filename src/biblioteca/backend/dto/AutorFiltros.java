@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AutorFiltros {
 
+    private Integer id;
     private String nome;
     private Integer idade;
+    private Integer idLivro;
     private String tituloLivro;
 
     /**
@@ -29,8 +31,10 @@ public class AutorFiltros {
      */
     public PredicateResult toPredicate() {
         return new AutorPredicate()
+                .comId(this.id)
                 .comNome(this.nome)
                 .comIdade(this.idade)
+                .comIdLivro(this.idLivro)
                 .comTituloLivro(this.tituloLivro)
                 .build();
     }

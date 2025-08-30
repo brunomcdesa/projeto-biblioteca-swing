@@ -7,13 +7,13 @@ import biblioteca.backend.facade.AutorFacade;
 import javax.swing.*;
 import java.awt.*;
 
-import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
-import static biblioteca.utils.StringUtils.isBlank;
+import static biblioteca.utils.StringUtils.converterStringEmInteger;
+import static biblioteca.utils.StringUtils.validarCamposStringObrigatorios;
+import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
@@ -121,18 +121,9 @@ public class TelaFormularioAutor extends JFrame {
             String nome = campoNome.getText();
             String idadeText = campoIdade.getText();
 
-            if (isBlank(nome) || isBlank(idadeText)) {
-                showMessageDialog(this, "Todos os campos são obrigatórios!", "Erro de Validação", ERROR_MESSAGE);
-                return;
-            }
+            validarCamposStringObrigatorios(this, nome, idadeText);
 
-            int idade;
-            try {
-                idade = Integer.parseInt(idadeText);
-            } catch (NumberFormatException e) {
-                showMessageDialog(this, "A idade deve ser um número válido!", "Erro de Formato", ERROR_MESSAGE);
-                return;
-            }
+            Integer idade = converterStringEmInteger(idadeText, "Idade", this);
 
             AutorRequest request = new AutorRequest(nome, idade);
 

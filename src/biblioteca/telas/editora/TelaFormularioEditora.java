@@ -7,10 +7,9 @@ import biblioteca.backend.facade.EditoraFacade;
 import javax.swing.*;
 import java.awt.*;
 
+import static biblioteca.utils.StringUtils.*;
 import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
-import static biblioteca.utils.StringUtils.isBlank;
-import static biblioteca.utils.StringUtils.isCnpjValido;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
@@ -40,7 +39,7 @@ public class TelaFormularioEditora extends JFrame {
     }
 
     public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade,  EditoraResponse editora) {
-        super(mapNullComBackup(editora, "Editar Editora","Cadastrar Editora"));
+        super(mapNullComBackup(editora, "Editar Editora", "Cadastrar Editora"));
         this.telaAnterior = telaAnterior;
         this.editoraFacade = editoraFacade;
 
@@ -121,11 +120,7 @@ public class TelaFormularioEditora extends JFrame {
             String nome = campoNome.getText();
             String cnpj = campoCnpj.getText();
 
-            if (isBlank(nome) || isBlank(cnpj)) {
-                showMessageDialog(this, "Todos os campos são obrigatórios!",
-                        "Erro de Validação", ERROR_MESSAGE);
-                return;
-            }
+            validarCamposStringObrigatorios(this, nome, cnpj);
 
             if (!isCnpjValido(cnpj)) {
                 showMessageDialog(this, "CNPJ inválido! Insira o CNPJ com o formato XX.XXX.XXX/XXXX-XX",

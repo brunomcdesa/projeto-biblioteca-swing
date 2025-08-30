@@ -16,8 +16,6 @@ import static biblioteca.utils.StringUtils.*;
 import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Tela de Listagem de Livros de acordo com os filtros informados.
@@ -33,20 +31,23 @@ public class TelaPesquisaLivro extends JFrame {
     private final JFrame telaAnterior;
     private final LivroFacade livroFacade;
     private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoLimparFiltros = criarBotao("Limpar Filtros");
     private final JButton botaoBuscar = criarBotao("Buscar");
     private final LivroTable livroTable = new LivroTable();
     private final JTable tabela = new JTable(livroTable);
 
+    private JTextField filtroId;
     private JTextField filtroTitulo;
     private JTextField filtroDataPublicacao;
     private JTextField filtroIsbn;
     private JComboBox<SelectResponse> filtroGenero;
     private JComboBox<SelectResponse> filtroEditora;
     private JComboBox<SelectResponse> filtroAutor;
+    private JTextField filtroIdLivroParecido;
     private JTextField filtroTituloLivroParecido;
 
     public TelaPesquisaLivro(JFrame telaAnterior, LivroFacade livroFacade) {
-        super("Pesquisar livros");
+        super("Pesquisar Livros");
         this.telaAnterior = telaAnterior;
         this.livroFacade = livroFacade;
 
@@ -70,7 +71,7 @@ public class TelaPesquisaLivro extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoBuscar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoLimparFiltros, botaoBuscar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -79,21 +80,25 @@ public class TelaPesquisaLivro extends JFrame {
      * Adiciona configurações de cmapos de filtragem.
      */
     private void aplicarConfiguracoesFiltros(JPanel painelPrincipal) {
+        this.filtroId = criarTextField("");
         this.filtroTitulo = criarTextField("");
         this.filtroDataPublicacao = criarTextField("");
         this.filtroIsbn = criarTextField("");
         this.filtroGenero = criarSelect(carregarSelectGenero());
         this.filtroEditora = criarSelect(carregarSelectEditora());
         this.filtroAutor = criarSelect(carregarSelectAutores());
+        this.filtroIdLivroParecido = criarTextField("");
         this.filtroTituloLivroParecido = criarTextField("");
 
         JPanel painelFiltros = criarPainelFiltros(
+                criarLinhaFiltro("ID: ", filtroId),
                 criarLinhaFiltro("Título: ", filtroTitulo),
                 criarLinhaFiltro("Data de Publicação: ", filtroDataPublicacao),
                 criarLinhaFiltro("ISBN: ", filtroIsbn),
                 criarLinhaFiltro("Gênero: ", filtroGenero),
                 criarLinhaFiltro("Editora: ", filtroEditora),
                 criarLinhaFiltro("Autor: ", filtroAutor),
+                criarLinhaFiltro("ID do Livro Parecido: ", filtroIdLivroParecido),
                 criarLinhaFiltro("Título do Livro Parecido: ", filtroTituloLivroParecido)
         );
 
@@ -105,6 +110,7 @@ public class TelaPesquisaLivro extends JFrame {
      */
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoBotaoVoltar();
+        this.configurarAcaoBotaoLimparFiltros();
         this.configurarAcaoBotaoBuscar();
     }
 
@@ -119,32 +125,48 @@ public class TelaPesquisaLivro extends JFrame {
     }
 
     /**
+     * Efetua a configuração da ação do botao de limpar os filtros.
+     */
+    private void configurarAcaoBotaoLimparFiltros() {
+        botaoLimparFiltros.addActionListener(listener -> {
+            this.filtroId.setText("");
+            this.filtroTitulo.setText("");
+            this.filtroDataPublicacao.setText("");
+            this.filtroIsbn.setText("");
+            this.filtroGenero.setSelectedIndex(0);
+            this.filtroEditora.setSelectedIndex(0);
+            this.filtroAutor.setSelectedIndex(0);
+            this.filtroIdLivroParecido.setText("");
+            this.filtroTituloLivroParecido.setText("");
+        });
+    }
+
+    /**
      * Efetua a configuração da ação do botao de buscar dados.
      */
     private void configurarAcaoBotaoBuscar() {
         botaoBuscar.addActionListener(listener -> {
+            String idText = filtroId.getText();
             String titulo = filtroTitulo.getText();
             String dataPublicacaoText = filtroDataPublicacao.getText();
             String isbn = filtroIsbn.getText();
             SelectResponse generoSelecionado = (SelectResponse) filtroGenero.getSelectedItem();
             SelectResponse editoraSelecionada = (SelectResponse) filtroEditora.getSelectedItem();
             SelectResponse autorSelecionado = (SelectResponse) filtroAutor.getSelectedItem();
+            String idLivroParecidoText = filtroIdLivroParecido.getText();
             String tituloLivroParecido = filtroTituloLivroParecido.getText();
 
-            LocalDate dataPublicacao = null;
-            if (isNotBlank(dataPublicacaoText)) {
-                if (isDataInvalida(dataPublicacaoText)) {
-                    showMessageDialog(this, "Data de Publicação inválida! Insira a data de publicação no formato dd/MM/yyyy.",
-                            "Erro de Formato", ERROR_MESSAGE);
-                    return;
-                } else {
-                    dataPublicacao = converterStringParaLocalDate(dataPublicacaoText);
-                }
-            }
+            Integer id = converterStringEmInteger(idText, "ID", this);
+            LocalDate dataPublicacao = isNotBlank(dataPublicacaoText)
+                    ? converterStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this)
+                    : null;
+            Integer idLivroParecido = converterStringEmInteger(idLivroParecidoText, "ID do Livro", this);
 
-            LivroFiltros filtros = new LivroFiltros(titulo, dataPublicacao, isbn, mapNull(generoSelecionado, generoSelect -> (EGenero) generoSelect.getValue()),
-                    mapNull(editoraSelecionada, editoraSelect -> (Integer) editoraSelect.getValue()), mapNull(autorSelecionado, autorSelect -> (Integer) autorSelect.getValue()),
-                    tituloLivroParecido);
+            LivroFiltros filtros = new LivroFiltros(id, titulo, dataPublicacao, isbn,
+                    mapNull(generoSelecionado, generoSelect -> (EGenero) generoSelect.getValue()),
+                    mapNull(editoraSelecionada, editoraSelect -> (Integer) editoraSelect.getValue()),
+                    mapNull(autorSelecionado, autorSelect -> (Integer) autorSelect.getValue()),
+                    idLivroParecido, tituloLivroParecido);
             List<LivroResponse> livros = livroFacade.listarPorFiltros(filtros);
             livroTable.setLivros(livros);
         });

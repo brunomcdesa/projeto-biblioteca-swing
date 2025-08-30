@@ -8,6 +8,7 @@ import biblioteca.telas.editora.table.EditoraTable;
 import javax.swing.*;
 import java.util.List;
 
+import static biblioteca.utils.StringUtils.converterStringEmInteger;
 import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
@@ -26,16 +27,19 @@ public class TelaPesquisaEditora extends JFrame {
     private final JFrame telaAnterior;
     private final EditoraFacade editoraFacade;
     private final JButton botaoVoltar = criarBotao("Voltar");
+    private final JButton botaoLimparFiltros = criarBotao("Limpar Filtros");
     private final JButton botaoBuscar = criarBotao("Buscar");
     private final EditoraTable editoraTable = new EditoraTable();
     private final JTable tabela = new JTable(editoraTable);
 
+    private JTextField filtroId;
     private JTextField filtroNome;
     private JTextField filtroCnpj;
+    private JTextField filtroIdLivro;
     private JTextField filtroTituloLivro;
 
     public TelaPesquisaEditora(JFrame telaAnterior, EditoraFacade editoraFacade) {
-        super("Pesquisar editoras");
+        super("Pesquisar Editoras");
         this.telaAnterior = telaAnterior;
         this.editoraFacade = editoraFacade;
 
@@ -59,7 +63,7 @@ public class TelaPesquisaEditora extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoBuscar);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoLimparFiltros, botaoBuscar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -68,12 +72,16 @@ public class TelaPesquisaEditora extends JFrame {
      * Adiciona configurações de cmapos de filtragem.
      */
     private void aplicarConfiguracoesFiltros(JPanel painelPrincipal) {
+        this.filtroId = criarTextField("");
         this.filtroNome = criarTextField("");
         this.filtroCnpj = criarTextField("");
+        this.filtroIdLivro = criarTextField("");
         this.filtroTituloLivro = criarTextField("");
         JPanel painelFiltros = criarPainelFiltros(
+                criarLinhaFiltro("ID: ", filtroId),
                 criarLinhaFiltro("Nome: ", filtroNome),
                 criarLinhaFiltro("Cnpj: ", filtroCnpj),
+                criarLinhaFiltro("ID do Livro: ", filtroIdLivro),
                 criarLinhaFiltro("Título do Livro: ", filtroTituloLivro)
         );
 
@@ -85,6 +93,7 @@ public class TelaPesquisaEditora extends JFrame {
      */
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoBotaoVoltar();
+        this.configurarAcaoBotaoLimparFiltros();
         this.configurarAcaoBotaoBuscar();
     }
 
@@ -99,15 +108,33 @@ public class TelaPesquisaEditora extends JFrame {
     }
 
     /**
+     * Efetua a configuração da ação do botao de limpar os filtros.
+     */
+    private void configurarAcaoBotaoLimparFiltros() {
+        botaoLimparFiltros.addActionListener(listener -> {
+            this.filtroId.setText("");
+            this.filtroNome.setText("");
+            this.filtroCnpj.setText("");
+            this.filtroIdLivro.setText("");
+            this.filtroTituloLivro.setText("");
+        });
+    }
+
+    /**
      * Efetua a configuração da ação do botao de buscar dados.
      */
     private void configurarAcaoBotaoBuscar() {
         botaoBuscar.addActionListener(listener -> {
+            String idText = filtroId.getText();
             String nome = filtroNome.getText();
             String cnpj = filtroCnpj.getText();
+            String idLivroText = filtroIdLivro.getText();
             String tituloLivro = filtroTituloLivro.getText();
 
-            EditoraFiltros filtros = new EditoraFiltros(nome, cnpj, tituloLivro);
+            Integer id = converterStringEmInteger(idText, "ID", this);
+            Integer idLivro = converterStringEmInteger(idLivroText, "ID do Livro", this);
+
+            EditoraFiltros filtros = new EditoraFiltros(id, nome, cnpj, idLivro, tituloLivro);
             List<EditoraResponse> editoras = editoraFacade.listarPorFiltros(filtros);
             editoraTable.setEditoras(editoras);
         });

@@ -12,6 +12,20 @@ import static biblioteca.utils.StringUtils.isNotBlank;
 public class AutorPredicate extends PredicateBase {
 
     /**
+     * Método responsável adicionar o predicate referente ao ID do Autor.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public AutorPredicate comId(Integer id) {
+        if (id != null) {
+            condicoes.add("a.id = :id");
+            parametros.put("id", id);
+        }
+
+        return this;
+    }
+
+    /**
      * Método responsável adicionar o predicate referente ao nome do Autor.
      *
      * @return a própria classe com a condição adicionada, caso esteja presente.
@@ -34,6 +48,20 @@ public class AutorPredicate extends PredicateBase {
         if (idade != null) {
             condicoes.add("a.idade = :idade");
             parametros.put("idade", idade);
+        }
+
+        return this;
+    }
+
+    /**
+     * Método responsável adicionar o predicate referente ao ID do livro vinculado com o Autor.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public AutorPredicate comIdLivro(Integer idLivro) {
+        if (idLivro != null) {
+            condicoes.add("l.id = :idLivro");
+            parametros.put("idLivro", idLivro);
         }
 
         return this;

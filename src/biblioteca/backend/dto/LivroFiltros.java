@@ -21,12 +21,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class LivroFiltros {
 
+    private Integer id;
     private String titulo;
     private LocalDate dataPublicacao;
     private String isbn;
     private EGenero genero;
     private Integer editoraId;
     private Integer autorId;
+    private Integer idLivroParecido;
     private String tituloLivroParecido;
 
     /**
@@ -36,12 +38,14 @@ public class LivroFiltros {
      */
     public PredicateResult toPredicate() {
         return new LivroPredicate()
+                .comId(this.id)
                 .comTitulo(this.titulo)
                 .comDataPublicacao(this.dataPublicacao)
                 .comIsbn(this.isbn)
                 .comGenero(this.genero)
                 .comEditoraId(this.editoraId)
                 .comAutorId(this.autorId)
+                .comIdLivroParecido(this.idLivroParecido)
                 .comTituloLivroParecido(tituloLivroParecido)
                 .build();
     }

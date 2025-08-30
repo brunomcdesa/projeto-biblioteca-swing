@@ -16,6 +16,20 @@ import static biblioteca.utils.StringUtils.isNotBlank;
 public class LivroPredicate extends PredicateBase {
 
     /**
+     * Método responsável adicionar o predicate referente ao ID do Livro.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public LivroPredicate comId(Integer id) {
+        if (id != null) {
+            condicoes.add("l.id = :id");
+            parametros.put("id", id);
+        }
+
+        return this;
+    }
+
+    /**
      * Método responsável adicionar o predicate referente ao título do Livro.
      *
      * @return a própria classe com a condição adicionada, caso esteja presente.
@@ -94,6 +108,20 @@ public class LivroPredicate extends PredicateBase {
         if (autorId != null) {
             condicoes.add("a.id = :autorId");
             parametros.put("autorId", autorId);
+        }
+
+        return this;
+    }
+
+    /**
+     * Método responsável adicionar o predicate referente ao ID do livro parecido com o Livro.
+     *
+     * @return a própria classe com a condição adicionada, caso esteja presente.
+     */
+    public LivroPredicate comIdLivroParecido(Integer idLivroParecido) {
+        if (idLivroParecido != null) {
+            condicoes.add("lp.id = :idLivroParecido");
+            parametros.put("idLivroParecido", idLivroParecido);
         }
 
         return this;

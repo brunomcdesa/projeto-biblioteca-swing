@@ -54,7 +54,7 @@ public class AutorDAOImpl implements IAutorDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
-                            "SELECT a FROM Autor a "
+                            "SELECT DISTINCT a FROM Autor a "
                                     + "ORDER BY a.id",
                             Autor.class)
                     .getResultList();
@@ -73,7 +73,7 @@ public class AutorDAOImpl implements IAutorDAO {
         EntityManager entityManager = getEntityManager();
         try {
             TypedQuery<Autor> query = entityManager.createQuery(
-                    "SELECT a FROM Autor a "
+                    "SELECT DISTINCT a FROM Autor a "
                             + "LEFT JOIN FETCH a.livros l "
                             + predicate.getWhereClause()
                             + "ORDER BY a.id",
@@ -97,7 +97,7 @@ public class AutorDAOImpl implements IAutorDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT a FROM Autor a "
+                            "SELECT DISTINCT a FROM Autor a "
                                     + "LEFT JOIN FETCH a.livros "
                                     + "WHERE a.id = :id",
                             Autor.class)
@@ -145,7 +145,7 @@ public class AutorDAOImpl implements IAutorDAO {
         try {
             return entityManager.createQuery(
                             "SELECT a FROM Autor a "
-                                    + "WHERE a.id IN(:ids)",
+                                    + "WHERE a.id IN (:ids)",
                             Autor.class)
                     .setParameter("ids", ids)
                     .getResultList();

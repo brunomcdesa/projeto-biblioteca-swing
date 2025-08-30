@@ -72,7 +72,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
         EntityManager entityManager = getEntityManager();
         try {
             TypedQuery<Editora> query = entityManager.createQuery(
-                    "SELECT e FROM Editora e "
+                    "SELECT DISTINCT e FROM Editora e "
                             + "LEFT JOIN FETCH e.livros l "
                             + predicate.getWhereClause()
                             + "ORDER BY e.id",
@@ -96,7 +96,7 @@ public class EditoraDAOImpl implements IEditoraDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT e FROM Editora e "
+                            "SELECT DISTINCT e FROM Editora e "
                                     + "LEFT JOIN FETCH e.livros "
                                     + "WHERE e.id = :id",
                             Editora.class)

@@ -1,9 +1,17 @@
 package biblioteca.utils;
 
+import biblioteca.backend.exceptions.ValidacaoException;
 import lombok.experimental.UtilityClass;
 
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+
+import static java.lang.String.format;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Classe utilitária para operações e validações de Strings.
@@ -77,8 +85,45 @@ public class StringUtils {
      * A data será convertida para um LocalDate, quando a String estiver no formato dd/MM/yyyy.
      *
      * @return Uma data convertida para LocalDate.
+     * @throws ValidacaoException se a data não estiver em um formato válido.
      */
-    public static LocalDate converterStringParaLocalDate(String data) {
+    public static LocalDate converterStringParaLocalDate(String data, String nomeDoCampo, Component parent) {
+        if (isDataInvalida(data)) {
+            String mensagem = format("%s inválida! Insira a data de publicação no formato dd/MM/yyyy.", nomeDoCampo);
+            showMessageDialog(parent, mensagem, "Erro de Formato", ERROR_MESSAGE);
+            throw new ValidacaoException(mensagem);
+        }
         return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    /**
+     * Converte o texto de um campo para Integer.
+     * Se o formato for inválido, exibe uma mensagem de erro e lança uma ValidacaoException.
+     *
+     * @return O Integer convertido, ou null se o texto for nulo ou em branco.
+     * @throws ValidacaoException se o texto não for um número válido.
+     */
+    public static Integer converterStringEmInteger(String texto, String nomeDoCampo, Component parent) {
+        if (isNotBlank(texto)) {
+            try {
+                return Integer.parseInt(texto.trim());
+            } catch (NumberFormatException ex) {
+                String mensagem = format("%s deve ser um número válido!", nomeDoCampo);
+                showMessageDialog(parent, mensagem, "Erro de Formato", ERROR_MESSAGE);
+                throw new ValidacaoException(mensagem);
+            }
+        }
+
+        return null;
+    }
+
+    public static void validarCamposStringObrigatorios(Component parent, String... campos) {
+        boolean possuiCampoInvalido = Arrays.stream(campos)
+                .anyMatch(StringUtils::isBlank);
+        if (possuiCampoInvalido) {
+            String mensagem = "Todos os campos são obrigatórios!";
+            showMessageDialog(parent, "Todos os campos são obrigatórios!", "Erro de Validação", ERROR_MESSAGE);
+            throw new ValidacaoException(mensagem);
+        }
     }
 }
