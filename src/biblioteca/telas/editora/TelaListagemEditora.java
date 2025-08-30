@@ -156,8 +156,8 @@ public class TelaListagemEditora extends JFrame {
     }
 
     /**
-     * Efetua a configuração da ação do botão de atualizar,
-     * para que os dados sejam atualizados na tela quando clicado.
+     * Efetua a configuração da ação do botão de pesquisar,
+     * para que seja aberta uma nova tela de pesquisa de editoras por filtros.
      */
     private void configurarAcaoBotaoPesquisar() {
         botaoPesquisar.addActionListener(listener -> {

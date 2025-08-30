@@ -1,5 +1,6 @@
 package biblioteca.backend.dao.contract;
 
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.model.Editora;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface IEditoraDAO {
     void salvar(Editora editora);
 
     List<Editora> listarTodos();
+
+    List<Editora> listarTodosPorPredicate(PredicateResult predicate);
 
     Optional<Editora> findById(Integer id);
 

@@ -1,12 +1,12 @@
 package biblioteca.backend.service;
 
 import biblioteca.backend.dao.contract.IEditoraDAO;
+import biblioteca.backend.dto.EditoraFiltros;
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.exceptions.NaoEncontradoException;
 import biblioteca.backend.exceptions.ValidacaoException;
-import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +48,18 @@ public class EditoraService {
                 .map(EditoraResponse::converterDeEditora)
                 .collect(toList());
     }
+
+    /**
+     * Método responsável por listar todas as Editoras do sistema por filtros.
+     *
+     * @return uma lista de Autores de acordo com os filtros passados por parametro.
+     */
+    public List<EditoraResponse> listarTodosPorFiltros(EditoraFiltros filtros) {
+        return editoraDAO.listarTodosPorPredicate(filtros.toPredicate()).stream()
+                .map(EditoraResponse::converterDeEditora)
+                .collect(toList());
+    }
+
 
     /**
      * Método responsável por editar uma editora específica, de acordo com os novos dados da request.

@@ -6,13 +6,22 @@ import biblioteca.backend.facade.EditoraFacade;
 import biblioteca.telas.editora.table.EditoraTable;
 
 import javax.swing.*;
-
 import java.util.List;
 
 import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 
+
+/**
+ * Tela de Listagem de Editoras de acordo com os filtros informados.
+ * <p>
+ * Esta classe é responsável por renderizar a tela referente a listagem das editoras
+ * de acordo com os filtros passados.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 public class TelaPesquisaEditora extends JFrame {
 
     private final JFrame telaAnterior;
@@ -24,7 +33,7 @@ public class TelaPesquisaEditora extends JFrame {
 
     private JTextField filtroNome;
     private JTextField filtroCnpj;
-    private JTextField filtroNomeLivro;
+    private JTextField filtroTituloLivro;
 
     public TelaPesquisaEditora(JFrame telaAnterior, EditoraFacade editoraFacade) {
         super("Pesquisar editoras");
@@ -35,6 +44,9 @@ public class TelaPesquisaEditora extends JFrame {
         this.configurarAcoesDosBotoes();
     }
 
+    /**
+     * Inicializa e configura os componentes visuais da tela.
+     */
     private void inicializarComponentes() {
         JPanel painelPrincipal = criarPainelPrincipalListagem(tabela);
 
@@ -46,20 +58,26 @@ public class TelaPesquisaEditora extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
+    /**
+     * Adiciona configurações visuais dos botoes da tela.
+     */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
         JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoBuscar);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
 
+    /**
+     * Adiciona configurações de cmapos de filtragem.
+     */
     private void aplicarConfiguracoesFiltros(JPanel painelPrincipal) {
         this.filtroNome = criarTextField("");
         this.filtroCnpj = criarTextField("");
-        this.filtroNomeLivro = criarTextField("");
+        this.filtroTituloLivro = criarTextField("");
         JPanel painelFiltros = criarPainelFiltros(
                 criarLinhaFiltro("Nome: ", filtroNome),
                 criarLinhaFiltro("Cnpj: ", filtroCnpj),
-                criarLinhaFiltro("Nome do Livro: ",  filtroNomeLivro)
+                criarLinhaFiltro("Título do Livro: ", filtroTituloLivro)
         );
 
         painelPrincipal.add(painelFiltros, NORTH);
@@ -90,9 +108,9 @@ public class TelaPesquisaEditora extends JFrame {
         botaoBuscar.addActionListener(listener -> {
             String nome = filtroNome.getText();
             String cnpj = filtroCnpj.getText();
-            String nomeLivro = filtroNomeLivro.getText();
+            String tituloLivro = filtroTituloLivro.getText();
 
-            EditoraFiltros filtros = new EditoraFiltros(nome, cnpj, nomeLivro);
+            EditoraFiltros filtros = new EditoraFiltros(nome, cnpj, tituloLivro);
             List<EditoraResponse> editoras = editoraFacade.listarPorFiltros(filtros);
             editoraTable.setEditoras(editoras);
         });

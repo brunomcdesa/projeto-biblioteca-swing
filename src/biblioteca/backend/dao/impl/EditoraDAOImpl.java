@@ -1,10 +1,12 @@
 package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.IEditoraDAO;
+import biblioteca.backend.dto.PredicateResult;
 import biblioteca.backend.model.Editora;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,30 @@ public class EditoraDAOImpl implements IEditoraDAO {
                             "SELECT e FROM Editora e ORDER BY e.id",
                             Editora.class)
                     .getResultList();
+        } finally {
+            this.fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por listar todas as Editoras salvas no banco de dados, de acordo com os filtros dentro do predicate.
+     *
+     * @return Todas as editoras salvas no banco de dados de acordo com os filtros passados.
+     */
+    @Override
+    public List<Editora> listarTodosPorPredicate(PredicateResult predicate) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Editora> query = entityManager.createQuery(
+                    "SELECT e FROM Editora e "
+                            + "LEFT JOIN FETCH e.livros l "
+                            + predicate.getWhereClause()
+                            + "ORDER BY e.id",
+                    Editora.class);
+            predicate.getParams().
+                    forEach(query::setParameter);
+
+            return query.getResultList();
         } finally {
             this.fecharTransacao(entityManager);
         }

@@ -52,7 +52,12 @@ public class EditoraFacade {
         editoraService.deletar(id);
     }
 
+    /**
+     * Método responsável por buscar todas as editoras do sistema de acordo com os filtros.
+     *
+     * @return Uma lista de dados das editoras de acordo com os filtros.
+     */
     public List<EditoraResponse> listarPorFiltros(EditoraFiltros filtros) {
-        return Collections.emptyList();
+        return editoraService.listarTodosPorFiltros(filtros);
     }
 }
