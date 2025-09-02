@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,7 +26,8 @@ public enum EPadraoData {
     PADRAO_DATA_D_MMMM_YYYY("d MMMM yyyy"),
     PADRAO_DATA_D_MMM_YYYY("d MMM yyyy"),
     PADRAO_DATA_MMMM_D_YYYY("MMMM d, yyyy"),
-    PADRAO_DATA_MMM_D_YYYY("MMM d, yyyy");
+    PADRAO_DATA_MMM_D_YYYY("MMM d, yyyy"),
+    PADRAO_DATA_YYYY("yyyy");
 
     private final String padrao;
 
@@ -41,7 +43,11 @@ public enum EPadraoData {
                     try {
                         return LocalDate.parse(data, DateTimeFormatter.ofPattern(padraoData.getPadrao(), ENGLISH));
                     } catch (Exception ignored) {
-                      return null;
+                        try {
+                            return Year.parse(data, DateTimeFormatter.ofPattern(padraoData.getPadrao())).atDay(1);
+                        } catch (Exception ignoredYearException) {
+                            return null;
+                        }
                     }
                 }).filter(Objects::nonNull)
                 .findFirst()

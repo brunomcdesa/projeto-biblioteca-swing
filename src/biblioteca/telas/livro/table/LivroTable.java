@@ -61,7 +61,7 @@ public class LivroTable extends AbstractTableModel {
             case 5:
                 return livro.getEditora().getNome();
             case 6:
-                return String.join(", ", livro.getAutoresNomes());
+                return !livro.getAutores().isEmpty() ? String.join(", ", livro.getAutoresNomes()) : "-";
             case 7:
                 return livro.possuiTitulosParecidos() ? String.join(", ", livro.getTitulosLivroParecidosOrdenados()) : "-";
             default:

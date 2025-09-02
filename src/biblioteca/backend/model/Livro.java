@@ -53,7 +53,7 @@ public class Livro {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "FK_EDITORA", referencedColumnName = "ID",
-        foreignKey = @ForeignKey(name = "FK_EDITORA"), nullable = false)
+        foreignKey = @ForeignKey(name = "FK_EDITORA"))
     private Editora editora;
 
     @ManyToMany
@@ -88,6 +88,21 @@ public class Livro {
                 .editora(editora)
                 .autores(autores)
                 .livrosParecidos(livrosParecidos)
+                .build();
+    }
+
+    /**
+     * Método responsável por realizar a montar um Livro de acordo com os dados recebidos por parâmetro.
+     *
+     * @return um novo Livro.
+     */
+    public static Livro montarLivro(LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
+        return Livro.builder()
+                .titulo(livroRequest.getTitulo())
+                .dataPublicacao(livroRequest.getDataPublicacao())
+                .isbn(livroRequest.getIsbn())
+                .editora(editora)
+                .autores(autores)
                 .build();
     }
 

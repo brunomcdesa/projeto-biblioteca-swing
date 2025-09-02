@@ -7,8 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static biblioteca.utils.MapUtils.mapNullComBackup;
 
 /**
  * Classe DTO que representa os dados do Livro, retornados da API do OPEN LIBRARY.
@@ -42,8 +45,10 @@ public class OpenLibraryLivroResponse {
      * @return Lista de Keys dos autores.
      */
     public List<String> getKeysDosAutores() {
-        return this.keysAutores.stream()
-                .map(OpenLibraryKeyResponse::getKey)
-                .collect(Collectors.toList());
+        return mapNullComBackup(this.keysAutores,
+                keys -> keys.stream()
+                        .map(OpenLibraryKeyResponse::getKey)
+                        .collect(Collectors.toList()),
+                Collections.emptyList());
     }
 }

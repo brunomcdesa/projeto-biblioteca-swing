@@ -45,8 +45,8 @@ public class Main {
         OpenLibraryClient client = new OpenLibraryClient(okHttpClient, objectMapper);
 
         ILivroDAO livroDAO = new LivroDAOImpl();
-        LivroService livroService = new LivroService(livroDAO);
-        LivroFacade livroFacade =  new LivroFacade(livroService, autorService, editoraService, client);
+        LivroService livroService = new LivroService(livroDAO, autorService, editoraService, client);
+        LivroFacade livroFacade =  new LivroFacade(livroService);
 
         SwingUtilities.invokeLater(() -> {
             TelaPrincipal tela = new TelaPrincipal(autorFacade, editoraFacade, livroFacade);

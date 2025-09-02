@@ -1,6 +1,7 @@
 package biblioteca.telas.livro;
 
 import biblioteca.backend.facade.LivroFacade;
+import lombok.extern.java.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +11,7 @@ import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.*;
 
 /**
  * Tela de cadastro de Livro por ISBN.
@@ -21,6 +21,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 public class TelaCadastroLivroIsbn extends JFrame {
 
     private final LivroFacade livroFacade;
@@ -32,7 +33,6 @@ public class TelaCadastroLivroIsbn extends JFrame {
     public TelaCadastroLivroIsbn(LivroFacade livroFacade) {
         super("Cadastrar Livro por ISBN");
         this.livroFacade = livroFacade;
-
 
         this.inicializarComponentes();
         this.configurarAcoesDosBotoes();
@@ -46,8 +46,9 @@ public class TelaCadastroLivroIsbn extends JFrame {
         this.aplicarConfiguracoesFormulario(painelPrincipal);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
-        adicionarConfiguracoesPadroesTela(this, painelPrincipal);
-        setSize(600, 300);;
+        add(painelPrincipal);
+        setSize(600, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -109,10 +110,14 @@ public class TelaCadastroLivroIsbn extends JFrame {
             String isbn = campoIsbn.getText();
             validarCamposStringObrigatorios(this, isbn);
 
-            livroFacade.cadastrarLivroPorIsbn(isbn);
-            showMessageDialog(this, "Livro salvo com sucesso!", "Sucesso", INFORMATION_MESSAGE);
-
-            this.dispose();
+            try {
+                livroFacade.cadastrarLivroPorIsbn(isbn);
+                showMessageDialog(this, "Livro salvo com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                this.dispose();
+            } catch (Exception ex) {
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
+                log.severe(ex.getMessage());
+            }
         });
     }
 }

@@ -1,6 +1,7 @@
 package biblioteca.backend.dto;
 
 import biblioteca.backend.enums.EGenero;
+import biblioteca.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-import static biblioteca.utils.StringUtils.converterDataEmStringEmInglesParaLocalDate;
+import static biblioteca.utils.MapUtils.mapNull;
 
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Livro.
@@ -39,7 +40,7 @@ public class LivroRequest {
         return LivroRequest.builder()
                 .titulo(livroResponse.getTitulo())
                 .isbn(livroResponse.getIsbn().get(0))
-                .dataPublicacao(converterDataEmStringEmInglesParaLocalDate(livroResponse.getDataPublicacao()))
+                .dataPublicacao(mapNull(livroResponse.getDataPublicacao(), StringUtils::converterDataEmStringEmInglesParaLocalDate))
                 .build();
     }
 }

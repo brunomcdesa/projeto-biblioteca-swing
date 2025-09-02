@@ -6,6 +6,8 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static biblioteca.utils.MapUtils.mapNullComBackup;
+
 /**
  * Tabela de Editora
  * <p>
@@ -48,7 +50,7 @@ public class EditoraTable extends AbstractTableModel {
             case 1:
                 return editora.getNome();
             case 2:
-                return editora.getCnpj();
+                return mapNullComBackup(editora.getCnpj(), cnpj -> cnpj, "-");
             default:
                 return null;
         }
