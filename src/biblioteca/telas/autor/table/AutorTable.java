@@ -6,6 +6,9 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static biblioteca.utils.MapUtils.mapNullComBackup;
+import static java.time.format.DateTimeFormatter.ofPattern;
+
 /**
  * Tabela de Autor
  * <p>
@@ -17,7 +20,7 @@ import java.util.List;
  */
 public class AutorTable extends AbstractTableModel {
 
-    private final String[] colunas = {"ID", "Nome", "Idade"};
+    private final String[] colunas = {"ID", "Nome", "Idade", "Data de Nascimento", "Data de Morte", "Biografia"};
     private List<AutorResponse> autores;
 
     public AutorTable() {
@@ -48,7 +51,13 @@ public class AutorTable extends AbstractTableModel {
             case 1:
                 return autor.getNome();
             case 2:
-                return autor.getIdade();
+                return mapNullComBackup(autor.getIdade(), Object::toString, "-");
+            case 3:
+                return mapNullComBackup(autor.getDataNascimento(), dataNascimento -> dataNascimento.format(ofPattern("dd/MM/yyyy")), "-");
+            case 4:
+                return mapNullComBackup(autor.getDataMorte(), dataMorte -> dataMorte.format(ofPattern("dd/MM/yyyy")), "-");
+            case 5:
+                return mapNullComBackup(autor.getBiografia(), biografia -> biografia, "-");
             default:
                 return null;
         }

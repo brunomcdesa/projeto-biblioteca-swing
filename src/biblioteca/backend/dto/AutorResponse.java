@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,7 +25,10 @@ public class AutorResponse {
 
     public Integer id;
     public String nome;
+    public LocalDate dataNascimento;
+    public LocalDate dataMorte;
     public Integer idade;
+    public String biografia;
 
     /**
      * Método responsável por realizar a conversão de uma entidade Autor para um DTO AutorResponse.
@@ -35,7 +39,10 @@ public class AutorResponse {
         return AutorResponse.builder()
                 .id(autor.getId())
                 .nome(autor.getNome())
+                .dataNascimento(autor.getDataNascimento())
+                .dataMorte(autor.getDataMorte())
                 .idade(autor.getIdade())
+                .biografia(autor.getBiografia())
                 .build();
     }
 

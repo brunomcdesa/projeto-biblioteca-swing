@@ -6,10 +6,10 @@ import biblioteca.backend.facade.AutorFacade;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 
 import static biblioteca.utils.MapUtils.mapNullComBackup;
-import static biblioteca.utils.StringUtils.converterStringEmInteger;
-import static biblioteca.utils.StringUtils.validarCamposStringObrigatorios;
+import static biblioteca.utils.StringUtils.*;
 import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
@@ -33,7 +33,9 @@ public class TelaFormularioAutor extends JFrame {
     private final JButton botaoVoltar = criarBotao("Voltar");
 
     private JTextField campoNome;
-    private JTextField campoIdade;
+    private JTextField campoDataNascimento;
+    private JTextField campoDataMorte;
+    private JTextArea campoBiografia;
 
     public TelaFormularioAutor(JFrame telaAnterior, AutorFacade autorFacade) {
         this(telaAnterior, autorFacade, null);
@@ -76,11 +78,17 @@ public class TelaFormularioAutor extends JFrame {
      */
     private void configurarCamposFormulario(AutorResponse autor, JPanel painelFormulario) {
         this.campoNome = criarTextField(mapNullComBackup(autor, AutorResponse::getNome, ""));
-        this.campoIdade = criarTextField(mapNullComBackup(autor, response -> response.getIdade().toString(), ""));
+        this.campoDataNascimento = criarTextField(mapNullComBackup(autor, response -> formatarData(response.getDataNascimento()), ""));
+        this.campoDataMorte = criarTextField(mapNullComBackup(autor, response -> formatarData(response.getDataMorte()), ""));
+        this.campoBiografia = criarTextArea(mapNullComBackup(autor, AutorResponse::getBiografia, ""));
 
         painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
         painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Idade:", this.campoIdade));
+        painelFormulario.add(criarLinhaFormulario("Data de Nascimento:", this.campoDataNascimento));
+        painelFormulario.add(criarLinhaSeparacao());
+        painelFormulario.add(criarLinhaFormulario("Data de Morte:", this.campoDataMorte));
+        painelFormulario.add(criarLinhaSeparacao());
+        painelFormulario.add(criarLinhaFormulario("Biografia:", this.campoBiografia));
     }
 
     /**
@@ -119,13 +127,18 @@ public class TelaFormularioAutor extends JFrame {
     private void configurarAcaoBotaoSalvar(AutorResponse autor) {
         botaoSalvar.addActionListener(listener -> {
             String nome = campoNome.getText();
-            String idadeText = campoIdade.getText();
+            String dataNascimentoText = campoDataNascimento.getText();
+            String dataMorteText = campoDataMorte.getText();
+            String biografia = campoBiografia.getText();
 
-            validarCamposStringObrigatorios(this, nome, idadeText);
+            validarCamposStringObrigatorios(this, nome, dataNascimentoText);
 
-            Integer idade = converterStringEmInteger(idadeText, "Idade", this);
+            LocalDate dataNascimento = converterCampoStringParaLocalDate(dataNascimentoText, "Data de Nascimento", this);
+            LocalDate dataMorte = isNotBlank(dataMorteText)
+                    ? converterCampoStringParaLocalDate(dataMorteText, "Data de Morte", this)
+                    : null;
 
-            AutorRequest request = new AutorRequest(nome, null, null, null);
+            AutorRequest request = new AutorRequest(nome, dataNascimento, dataMorte, biografia);
 
             if (autor == null) {
                 autorFacade.salvarNovoAutor(request);

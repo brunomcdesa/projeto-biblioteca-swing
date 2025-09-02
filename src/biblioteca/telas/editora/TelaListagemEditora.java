@@ -134,6 +134,7 @@ public class TelaListagemEditora extends JFrame {
 
                     editoraFacade.deletarEditora(editora.getId());
                     showMessageDialog(this, "Editora deletada com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                    carregarDados();
                 }
             } catch (Exception ex) {
                 showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);

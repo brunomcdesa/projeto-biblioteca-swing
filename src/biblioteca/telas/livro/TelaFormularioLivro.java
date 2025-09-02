@@ -91,13 +91,13 @@ public class TelaFormularioLivro extends JFrame {
         this.campoEditora = criarSelect(this.carregarSelectEditora());
         this.campoAutores = criarMultiSelect(this.carregarSelectAutores());
         JScrollPane scrollAutores = new JScrollPane(campoAutores);
-        scrollAutores.setPreferredSize(new Dimension(100, 50));
+        scrollAutores.setPreferredSize(new Dimension(100, 100));
 
         atribuirValoresSelecionadosCamposSelect(livro);
 
         painelFormulario.add(criarLinhaFormulario("Título:", campoTitulo));
         painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Data de publicação (dd/MM/yyyy):", campoDataPublicacao));
+        painelFormulario.add(criarLinhaFormulario("Data de publicação:", campoDataPublicacao));
         painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("ISBN:", campoIsbn));
         painelFormulario.add(criarLinhaSeparacao());

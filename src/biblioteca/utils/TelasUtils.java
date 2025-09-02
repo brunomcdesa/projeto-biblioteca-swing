@@ -66,6 +66,17 @@ public class TelasUtils {
     }
 
     /**
+     * Método responsável por criar um campo de área de texto para ser utilizado nos formulários.
+     *
+     * @return um JTextArea para ser utilizado como um campo de área de texto de um formulário.
+     */
+    public static JTextArea criarTextArea(String text) {
+        JTextArea textField = new JTextArea(text);
+        textField.setPreferredSize(new Dimension(250, 100));
+        return textField;
+    }
+
+    /**
      * Método responsável por criar um campo de select para ser utilizado nos formulários.
      *
      * @return um JComboBox para ser utilizado como um campo de select de um formulário.

@@ -132,6 +132,7 @@ public class TelaListagemAutor extends JFrame {
 
                     autorFacade.deletarAutor(autor.getId());
                     showMessageDialog(this, "Autor deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                    carregarDados();
                 }
             } catch (Exception ex) {
                 showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);

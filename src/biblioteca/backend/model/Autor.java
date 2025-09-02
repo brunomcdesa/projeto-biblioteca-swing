@@ -47,6 +47,9 @@ public class Autor {
     @Column(name = "DATA_MORTE")
     private LocalDate dataMorte;
 
+    @Column(name = "BIOGRAFIA", length = 400)
+    private String biografia;
+
     /**
      * Atributo que representa o relacionamento Many To Many entre LIVRO e AUTOR
      * <p>
@@ -72,7 +75,8 @@ public class Autor {
                 .dataNascimento(request.getDataNascimento())
                 .dataMorte(request.getDataMorte())
                 .idade(mapNull(request.getDataNascimento(),
-                        dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataNascimento(), data -> data, LocalDate.now()))))
+                        dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataMorte(), data -> data, LocalDate.now()))))
+                .biografia(request.getBiografia())
                 .build();
     }
 
@@ -84,7 +88,8 @@ public class Autor {
         this.setDataNascimento(request.getDataNascimento());
         this.setDataMorte(request.getDataMorte());
         this.setIdade(mapNull(request.getDataNascimento(),
-                dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataNascimento(), data -> data, LocalDate.now()))));
+                dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataMorte(), data -> data, LocalDate.now()))));
+        this.setBiografia(request.getBiografia());
     }
 
     /**

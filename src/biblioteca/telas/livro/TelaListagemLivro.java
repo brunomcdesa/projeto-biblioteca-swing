@@ -135,6 +135,7 @@ public class TelaListagemLivro extends JFrame {
 
                     livroFacade.deletarLivro(livro.getId());
                     showMessageDialog(this, "Livro deletado com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+                    carregarDados();
                 }
             } catch (Exception ex) {
                 showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
