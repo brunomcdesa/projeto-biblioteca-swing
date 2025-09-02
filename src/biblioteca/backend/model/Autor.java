@@ -4,8 +4,12 @@ import biblioteca.backend.dto.AutorRequest;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
+import static biblioteca.utils.MapUtils.mapNull;
+import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 /**
@@ -37,6 +41,12 @@ public class Autor {
     @Column(name = "IDADE")
     private Integer idade;
 
+    @Column(name = "DATA_NASCIMENTO")
+    private LocalDate dataNascimento;
+
+    @Column(name = "DATA_MORTE")
+    private LocalDate dataMorte;
+
     /**
      * Atributo que representa o relacionamento Many To Many entre LIVRO e AUTOR
      * <p>
@@ -56,10 +66,13 @@ public class Autor {
      *
      * @return um novo Autor.
      */
-    public static Autor converterDeRequest(AutorRequest autorRequest) {
+    public static Autor converterDeRequest(AutorRequest request) {
         return Autor.builder()
-                .nome(autorRequest.getNome())
-                .idade(autorRequest.getIdade())
+                .nome(request.getNome())
+                .dataNascimento(request.getDataNascimento())
+                .dataMorte(request.getDataMorte())
+                .idade(mapNull(request.getDataNascimento(),
+                        dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataNascimento(), data -> data, LocalDate.now()))))
                 .build();
     }
 
@@ -68,7 +81,10 @@ public class Autor {
      */
     public void atualizarDados(AutorRequest request) {
         this.setNome(request.getNome());
-        this.setIdade(request.getIdade());
+        this.setDataNascimento(request.getDataNascimento());
+        this.setDataMorte(request.getDataMorte());
+        this.setIdade(mapNull(request.getDataNascimento(),
+                dataNascimento -> calcularIdade(dataNascimento, mapNullComBackup(request.getDataNascimento(), data -> data, LocalDate.now()))));
     }
 
     /**
@@ -78,5 +94,15 @@ public class Autor {
      */
     public boolean possuiLivrosVinculados() {
         return !this.livros.isEmpty();
+    }
+
+    /**
+     * Método responsável por calcular a idade do Autor, de acordo com a data de nascimento e a data final informada.
+     * A data final pode ser a data de morte do Autor, ou a data atual.
+     *
+     * @return anos de idade que autor teve, ou tem atualmente.
+     */
+    private static Integer calcularIdade(LocalDate dataNascimento, LocalDate dataFinal) {
+        return Period.between(dataNascimento, dataFinal).getYears();
     }
 }

@@ -1,9 +1,9 @@
 package biblioteca.utils;
 
+import biblioteca.backend.enums.EPadraoData;
 import biblioteca.backend.exceptions.ValidacaoException;
 import lombok.experimental.UtilityClass;
 
-import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -87,13 +87,24 @@ public class StringUtils {
      * @return Uma data convertida para LocalDate.
      * @throws ValidacaoException se a data não estiver em um formato válido.
      */
-    public static LocalDate converterStringParaLocalDate(String data, String nomeDoCampo, Component parent) {
+    public static LocalDate converterCampoStringParaLocalDate(String data, String nomeDoCampo, Component parent) {
         if (isDataInvalida(data)) {
             String mensagem = format("%s inválida! Insira a data de publicação no formato dd/MM/yyyy.", nomeDoCampo);
             showMessageDialog(parent, mensagem, "Erro de Formato", ERROR_MESSAGE);
             throw new ValidacaoException(mensagem);
         }
         return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    /**
+     * Método responsável por converter uma String em um objeto LocalDate, de acordo com seu padrão em Inglês.
+     * <p>
+     * A data será convertida para um LocalDate, quando a String estiver em algum dos formatos mapeados pelo enum EPadraoData.
+     *
+     * @return Uma data convertida para LocalDate.
+     */
+    public static LocalDate converterDataEmStringEmInglesParaLocalDate(String data) {
+       return EPadraoData.converterDataEmPadrao(data);
     }
 
     /**
@@ -117,6 +128,11 @@ public class StringUtils {
         return null;
     }
 
+    /**
+     * Método responsável por efetuar a validação dos campos String obrigatórios, de acordo com os campos passados por parâmetro.
+     *
+     * @throws ValidacaoException se possuir algum campo obrigatório inválido.
+     */
     public static void validarCamposStringObrigatorios(Component parent, String... campos) {
         boolean possuiCampoInvalido = Arrays.stream(campos)
                 .anyMatch(StringUtils::isBlank);

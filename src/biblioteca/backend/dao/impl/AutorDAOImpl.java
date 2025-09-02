@@ -7,6 +7,7 @@ import lombok.extern.java.Log;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,21 +25,28 @@ public class AutorDAOImpl implements IAutorDAO {
 
     /**
      * Método responsável por salvar/atualizar um Autor no banco de dados.
+     *
+     * @return O autor salvo no banco de dados, atualizado.
      */
     @Override
-    public void salvar(Autor autor) {
+    public Autor salvar(Autor autor) {
         EntityManager entityManager = getEntityManager();
         try {
             iniciarTransacao(entityManager);
+            Autor autorSalvo;
             if (autor.getId() == null) {
                 entityManager.persist(autor);
+                autorSalvo = autor;
             } else {
-                entityManager.merge(autor);
+                autorSalvo = entityManager.merge(autor);
             }
             commitarTransacao(entityManager);
+
+            return autorSalvo;
         } catch (Exception ex) {
             desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
+            return null;
         } finally {
             fecharTransacao(entityManager);
         }
@@ -151,6 +159,29 @@ public class AutorDAOImpl implements IAutorDAO {
                     .getResultList();
         } catch (Exception ex) {
             return emptyList();
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por buscar os Autores de acordo com os nomes deles no banco de dados.
+     *
+     * @return Uma Lista de Autores.
+     */
+    @Override
+    public List<Autor> findByNomes(List<String> nomes) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.createQuery(
+                            "SELECT a FROM Autor a "
+                                    + "LEFT JOIN FETCH a.livros "
+                                    + "WHERE UPPER(a.nome) IN :nomes ",
+                            Autor.class)
+                    .setParameter("nomes", nomes)
+                    .getResultList();
+        } catch (Exception ex) {
+            return Collections.emptyList();
         } finally {
             fecharTransacao(entityManager);
         }

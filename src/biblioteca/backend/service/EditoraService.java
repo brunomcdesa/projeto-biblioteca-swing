@@ -32,10 +32,12 @@ public class EditoraService {
     /**
      * Método responsável por converter a request em uma entidade,
      * e salvar esta nova entidade no banco de dados.
+     *
+     * @return A editora salva.
      */
-    public void salvar(EditoraRequest editoraRequest) {
+    public Editora salvar(EditoraRequest editoraRequest) {
         Editora autor = Editora.converterDeRequest(editoraRequest);
-        editoraDAO.salvar(autor);
+        return editoraDAO.salvar(autor);
     }
 
     /**
@@ -101,6 +103,17 @@ public class EditoraService {
         return editoraDAO.listarTodos().stream()
                 .map(editora -> montarSelectResponse(editora.getId(), editora.getNome()))
                 .collect(toList());
+    }
+
+    /**
+     * Método responsável por buscar a editora de acordo com o nome dela no banco de dados, e retornar ela caso já esteja cadastrada.
+     * Caso não esteja cadastrada, deve ser criada uma nova editora com o nome infomado e retornar esta nova editora.
+     *
+     * @return Uma Editora já existente no banco de acordo co o nome, ou uma Editora recém criada com o nome novo.
+     */
+    public Editora buscarEditoraOuCriarEditora(String nomeEditora) {
+        return editoraDAO.findByNome(nomeEditora)
+                .orElseGet(() -> this.salvar(new EditoraRequest(nomeEditora)));
     }
 
     /**

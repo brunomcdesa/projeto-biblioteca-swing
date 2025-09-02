@@ -158,7 +158,7 @@ public class TelaPesquisaLivro extends JFrame {
 
             Integer id = converterStringEmInteger(idText, "ID", this);
             LocalDate dataPublicacao = isNotBlank(dataPublicacaoText)
-                    ? converterStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this)
+                    ? converterCampoStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this)
                     : null;
             Integer idLivroParecido = converterStringEmInteger(idLivroParecidoText, "ID do Livro", this);
 

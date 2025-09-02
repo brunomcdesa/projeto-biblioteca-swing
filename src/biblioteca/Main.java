@@ -1,5 +1,6 @@
 package biblioteca;
 
+import biblioteca.backend.client.OpenLibraryClient;
 import biblioteca.backend.dao.contract.IAutorDAO;
 import biblioteca.backend.dao.contract.IEditoraDAO;
 import biblioteca.backend.dao.contract.ILivroDAO;
@@ -14,6 +15,8 @@ import biblioteca.backend.service.EditoraService;
 import biblioteca.backend.service.LivroService;
 import biblioteca.backend.utils.JpaUtil;
 import biblioteca.telas.TelaPrincipal;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
 
 import javax.swing.*;
 
@@ -37,9 +40,13 @@ public class Main {
         EditoraService editoraService = new EditoraService(editoraDAO);
         EditoraFacade editoraFacade = new EditoraFacade(editoraService);
 
+        OkHttpClient okHttpClient = new OkHttpClient();
+        ObjectMapper objectMapper = new ObjectMapper();
+        OpenLibraryClient client = new OpenLibraryClient(okHttpClient, objectMapper);
+
         ILivroDAO livroDAO = new LivroDAOImpl();
         LivroService livroService = new LivroService(livroDAO);
-        LivroFacade livroFacade =  new LivroFacade(livroService, autorService, editoraService);
+        LivroFacade livroFacade =  new LivroFacade(livroService, autorService, editoraService, client);
 
         SwingUtilities.invokeLater(() -> {
             TelaPrincipal tela = new TelaPrincipal(autorFacade, editoraFacade, livroFacade);

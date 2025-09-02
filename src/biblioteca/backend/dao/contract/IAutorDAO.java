@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public interface IAutorDAO {
 
-    void salvar(Autor autor);
+    Autor salvar(Autor autor);
 
     List<Autor> listarTodos();
 
@@ -25,4 +25,6 @@ public interface IAutorDAO {
     void deletar(Integer id);
 
     List<Autor> findByIdIn(List<Integer> id);
+
+    List<Autor> findByNomes(List<String> nomes);
 }

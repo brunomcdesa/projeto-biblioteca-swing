@@ -25,19 +25,23 @@ public class EditoraDAOImpl implements IEditoraDAO {
      * Método responsável por salvar/atualizar uma Editora no banco de dados.
      */
     @Override
-    public void salvar(Editora editora) {
+    public Editora salvar(Editora editora) {
         EntityManager entityManager = getEntityManager();
         try {
             iniciarTransacao(entityManager);
+            Editora editoraSalva;
             if (editora.getId() == null) {
                 entityManager.persist(editora);
+                editoraSalva = editora;
             } else {
-                entityManager.merge(editora);
+                editoraSalva = entityManager.merge(editora);
             }
             commitarTransacao(entityManager);
+            return editoraSalva;
         } catch (Exception ex) {
             desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
+            return null;
         } finally {
             fecharTransacao(entityManager);
         }
@@ -128,6 +132,29 @@ public class EditoraDAOImpl implements IEditoraDAO {
         } catch (Exception ex) {
             desfazerAlteracoesTransacao(entityManager);
             log.severe(ex.getMessage());
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por buscar a Editora de acordo com o nome dela no banco de dados.
+     *
+     * @return Um valor Opcional de Editora.
+     */
+    @Override
+    public Optional<Editora> findByNome(String nome) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT DISTINCT e FROM Editora e "
+                                    + "LEFT JOIN FETCH e.livros "
+                                    + "WHERE e.nome = :nome",
+                            Editora.class)
+                    .setParameter("nome", nome)
+                    .getSingleResult());
+        } catch (Exception ex) {
+            return Optional.empty();
         } finally {
             fecharTransacao(entityManager);
         }

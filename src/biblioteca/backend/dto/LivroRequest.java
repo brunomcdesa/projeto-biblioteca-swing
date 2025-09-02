@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+import static biblioteca.utils.StringUtils.converterDataEmStringEmInglesParaLocalDate;
+
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Livro.
  *
@@ -27,4 +29,17 @@ public class LivroRequest {
     private LocalDate dataPublicacao;
     private Integer editoraId;
     private List<Integer> autoresIds;
+
+    /**
+     * Método responsável por converter um DTO OpenLibraryLivroResponse em um LivroResponse.
+     *
+     * @return Um LivroRequest convertido do DTO OpenLibraryLivroResponse.
+     */
+    public static LivroRequest converterDeOpenLibraryResponse(OpenLibraryLivroResponse livroResponse) {
+        return LivroRequest.builder()
+                .titulo(livroResponse.getTitulo())
+                .isbn(livroResponse.getIsbn().get(0))
+                .dataPublicacao(converterDataEmStringEmInglesParaLocalDate(livroResponse.getDataPublicacao()))
+                .build();
+    }
 }

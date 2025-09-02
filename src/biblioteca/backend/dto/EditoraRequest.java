@@ -19,4 +19,9 @@ public class EditoraRequest {
 
     private String nome;
     private String cnpj;
+
+    public EditoraRequest(String nome) {
+        this.nome = nome;
+        this.cnpj = null;
+    }
 }

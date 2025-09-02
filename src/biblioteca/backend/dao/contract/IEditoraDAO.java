@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public interface IEditoraDAO {
 
-    void salvar(Editora editora);
+    Editora salvar(Editora editora);
 
     List<Editora> listarTodos();
 
@@ -23,4 +23,6 @@ public interface IEditoraDAO {
     Optional<Editora> findById(Integer id);
 
     void deletar(Integer id);
+
+    Optional<Editora> findByNome(String nome);
 }

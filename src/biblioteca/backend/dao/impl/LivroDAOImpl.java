@@ -188,4 +188,27 @@ public class LivroDAOImpl implements ILivroDAO {
             fecharTransacao(entityManager);
         }
     }
+
+    /**
+     * Método responsável por verificar diretamente no banco de dados, se existe algum livro com o mesmo ISBN informado.
+     *
+     * @return true se existir algum livro já cadastrado com o ISBN. false se não existir nenhum livro cadastrado com o mesmo ISBN.
+     */
+    @Override
+    public boolean existsByIsbn(String isbn) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT l FROM Livro l "
+                                    + "WHERE l.isbn = :isbn",
+                            Livro.class)
+                    .setParameter("isbn", isbn)
+                    .getSingleResult())
+                    .isPresent();
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
 }

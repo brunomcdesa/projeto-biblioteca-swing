@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static biblioteca.backend.dto.SelectResponse.montarSelectResponse;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Classe de serviço para Autor.
@@ -35,10 +36,12 @@ public class AutorService {
     /**
      * Método responsável por converter a request em uma entidade,
      * e salvar esta nova entidade no banco de dados.
+     *
+     * @return O autor salvo no banco de dados
      */
-    public void salvar(AutorRequest autorRequest) {
+    public Autor salvar(AutorRequest autorRequest) {
         Autor autor = Autor.converterDeRequest(autorRequest);
-        autorDAO.salvar(autor);
+        return autorDAO.salvar(autor);
     }
 
     /**
@@ -105,7 +108,7 @@ public class AutorService {
     }
 
     /**
-     * Método responsável por buscar um array dos Autores e converter para o DTO SelectResponse.
+     * Método responsável por buscar uma lista dos Autores e converter para o DTO SelectResponse.
      *
      * @return Uma lista de SelectResponse.
      */
@@ -114,6 +117,26 @@ public class AutorService {
                 .sorted(Comparator.comparing(Autor::getNome))
                 .map(autor -> montarSelectResponse(autor.getId(), autor.getNome()))
                 .collect(toList());
+    }
+
+    /**
+     * Método responsável por buscar os autores de acordo com os nomes deles no banco de dados, e retornar eles caso já estejam cadastrados.
+     * Caso não estejam cadastrados, deve ser criado um novo autor com os nomes infomados e retornar estes novos autores.
+     *
+     * @return Um Set de Autores já existentes no banco de acordo com os nomes, ou um Set de Autores recém criados com os nomes novos.
+     */
+    public Set<Autor> buscarAutoresOuCriarAutores(List<AutorRequest> autoresRequests) {
+        List<String> nomesAutores = autoresRequests.stream()
+                .map(AutorRequest::getNome)
+                .map(String::toUpperCase)
+                .collect(toList());
+        Set<Autor> autores = new HashSet<>(autorDAO.findByNomes(nomesAutores));
+
+        return autores.isEmpty()
+                ? autoresRequests.stream()
+                .map(this::salvar)
+                .collect(toSet())
+                : autores;
     }
 
     /**

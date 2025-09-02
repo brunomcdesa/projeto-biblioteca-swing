@@ -125,7 +125,7 @@ public class TelaFormularioAutor extends JFrame {
 
             Integer idade = converterStringEmInteger(idadeText, "Idade", this);
 
-            AutorRequest request = new AutorRequest(nome, idade);
+            AutorRequest request = new AutorRequest(nome, null, null, null);
 
             if (autor == null) {
                 autorFacade.salvarNovoAutor(request);

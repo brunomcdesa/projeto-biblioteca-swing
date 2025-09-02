@@ -1,7 +1,9 @@
 package biblioteca.backend.facade;
 
+import biblioteca.backend.client.OpenLibraryClient;
 import biblioteca.backend.dto.*;
 import biblioteca.backend.enums.EGenero;
+import biblioteca.backend.exceptions.ValidacaoException;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import biblioteca.backend.service.AutorService;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
+
+import static biblioteca.backend.dto.AutorRequest.converterDeOpenLibraryAutorResponses;
+import static biblioteca.backend.dto.LivroRequest.converterDeOpenLibraryResponse;
 
 /**
  * Classe definida como Facade dos fluxos de Livro.
@@ -26,6 +31,7 @@ public class LivroFacade {
     private final LivroService livroService;
     private final AutorService autorService;
     private final EditoraService editoraService;
+    private final OpenLibraryClient openLibraryClient;
 
     /**
      * Método responsável por salvar um novo livro de acordo com a request recebida.
@@ -105,6 +111,29 @@ public class LivroFacade {
      */
     public List<LivroResponse> listarPorFiltros(LivroFiltros filtros) {
         return livroService.listarTodosPorFiltros(filtros);
+    }
+
+    /**
+     * Método responsável por salvar um novo livro de acordo com o ISBN recebido.
+     * <p>
+     * Realiza uma busca dos dados do livro, da editora e dos autores, de acordo com os dados retornados da busca dos dados do livro por ISBN.
+     *
+     * @throws ValidacaoException caso já existir um livro cadastrado no sistema com o mesmo ISBN.
+     */
+    public void cadastrarLivroPorIsbn(String isbn) {
+        if (livroService.existsByIsbn(isbn)) {
+            throw new ValidacaoException("Já existe um livro com este ISBN no sistema.");
+        }
+
+        openLibraryClient.buscarLivroPorIsbn(isbn)
+                .ifPresent(livro -> {
+                    List<AutorRequest> autoresRequests = converterDeOpenLibraryAutorResponses(openLibraryClient.buscarAutoresPorKeys(livro.getKeysDosAutores()));
+                    Set<Autor> autores = autorService.buscarAutoresOuCriarAutores(autoresRequests);
+                    Editora editora = editoraService.buscarEditoraOuCriarEditora(livro.getEditoras().get(0));
+                    LivroRequest livroRequest = converterDeOpenLibraryResponse(livro);
+
+                    livroService.salvar(livroRequest, editora, autores);
+                });
     }
 
     /**

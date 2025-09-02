@@ -23,7 +23,7 @@ import static javax.swing.JOptionPane.*;
 /**
  * Tela de cadastro de Livro.
  * <p>
- * Esta classe é responsável por renderizar a tela referente a o cadastro de livro,
+ * Esta classe é responsável por renderizar a tela referente ao cadastro de livro,
  * onde vai ser mostrado os campos para que um novo livro seja cadastrado no sistema.
  *
  * @author Bruno Cardoso
@@ -157,7 +157,7 @@ public class TelaFormularioLivro extends JFrame {
                 return;
             }
 
-            LocalDate dataPublicacao = converterStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
+            LocalDate dataPublicacao = converterCampoStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
 
             List<Integer> autoresSelecionadosIds = autoresSelecionados.stream()
                     .map(autor -> (Integer) autor.getValue())

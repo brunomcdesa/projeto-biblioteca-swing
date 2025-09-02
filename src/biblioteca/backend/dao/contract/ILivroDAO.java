@@ -28,4 +28,6 @@ public interface ILivroDAO {
     List<Livro> findByGenero(EGenero genero);
 
     List<Livro> findByGeneroAndIdNot(EGenero genero, Integer id);
+
+    boolean existsByIsbn(String isbn);
 }

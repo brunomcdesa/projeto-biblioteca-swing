@@ -82,6 +82,15 @@ public class LivroService {
     }
 
     /**
+     * Método responsável por verificar se existe um livro cadastrado com o ISBN informado ou não.
+     *
+     * @return true se existir um livro no banco de dados com o mesmo ISBN. false se não existir um livro no banco de dados com o mesmo ISBN.
+     */
+    public boolean existsByIsbn(String isbn) {
+        return livroDAO.existsByIsbn(isbn);
+    }
+
+    /**
      * Método responsável por buscar um Livro pelo ID dele.
      * <p>
      * Caso não encontre nenhum Livro com o mesmo ID, será lançado uma excepion.

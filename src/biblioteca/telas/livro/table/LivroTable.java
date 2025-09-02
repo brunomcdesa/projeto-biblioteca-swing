@@ -1,11 +1,13 @@
 package biblioteca.telas.livro.table;
 
 import biblioteca.backend.dto.LivroResponse;
+import biblioteca.backend.enums.EGenero;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
@@ -51,11 +53,11 @@ public class LivroTable extends AbstractTableModel {
             case 1:
                 return livro.getTitulo();
             case 2:
-                return livro.getDataPublicacao().format(ofPattern("dd/MM/yyyy"));
+                return mapNullComBackup(livro.getDataPublicacao(), data -> data.format(ofPattern("dd/MM/yyyy")), "-");
             case 3:
                 return livro.getIsbn();
             case 4:
-                return livro.getGenero().getDescricao();
+                return mapNullComBackup(livro.getGenero(), EGenero::getDescricao, "-");
             case 5:
                 return livro.getEditora().getNome();
             case 6:

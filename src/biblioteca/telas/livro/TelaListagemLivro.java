@@ -32,6 +32,7 @@ public class TelaListagemLivro extends JFrame {
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
     private final JButton botaoCadastrar = criarBotao("Cadastrar");
+    private final JButton botaoCadastrarPorIsbn = criarBotao("Cadastrar por ISBN");
     private final LivroTable livroTable = new LivroTable();
     private final JTable tabela = new JTable(livroTable);
 
@@ -61,7 +62,7 @@ public class TelaListagemLivro extends JFrame {
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
-               botaoEditar, botaoCadastrar);
+               botaoEditar, botaoCadastrar, botaoCadastrarPorIsbn);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -75,6 +76,7 @@ public class TelaListagemLivro extends JFrame {
         this.configurarAcaoBotaoEditar();
         this.configurarAcaoBotaoDeletar();
         this.configurarAcaoBotaoCadastrar();
+        this.configurarAcaoBotaoCadastrarPorIsbn();
         this.configurarAcaoBotaoPesquisar();
     }
 
@@ -149,6 +151,17 @@ public class TelaListagemLivro extends JFrame {
             TelaFormularioLivro formularioLivro = new TelaFormularioLivro(this, livroFacade);
             formularioLivro.setVisible(true);
             this.setVisible(false);
+        });
+    }
+
+    /**
+     * Efetua a configuração da ação do botão de cadastrar por ISBN, para que redirecione para o formulário de cadastro de livro por ISBN.
+     */
+    private void configurarAcaoBotaoCadastrarPorIsbn() {
+        botaoCadastrarPorIsbn.addActionListener(listener -> {
+            TelaCadastroLivroIsbn telaCadastroLivroIsbn = new TelaCadastroLivroIsbn(livroFacade);
+            telaCadastroLivroIsbn.setLocationRelativeTo(this);
+            telaCadastroLivroIsbn.setVisible(true);
         });
     }
 
