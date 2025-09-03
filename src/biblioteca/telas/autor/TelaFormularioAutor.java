@@ -54,7 +54,7 @@ public class TelaFormularioAutor extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(AutorResponse autor) {
-        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do autor:");
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do Autor (Campos com * são obrigatórios):");
         this.aplicarConfiguracoesFormulario(painelPrincipal, autor);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
@@ -82,12 +82,9 @@ public class TelaFormularioAutor extends JFrame {
         this.campoDataMorte = criarTextField(mapNullComBackup(autor, response -> formatarData(response.getDataMorte()), ""));
         this.campoBiografia = criarTextArea(mapNullComBackup(autor, AutorResponse::getBiografia, ""));
 
-        painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Data de Nascimento:", this.campoDataNascimento));
-        painelFormulario.add(criarLinhaSeparacao());
+        painelFormulario.add(criarLinhaFormulario("Nome *:", this.campoNome));
+        painelFormulario.add(criarLinhaFormulario("Data de Nascimento *:", this.campoDataNascimento));
         painelFormulario.add(criarLinhaFormulario("Data de Morte:", this.campoDataMorte));
-        painelFormulario.add(criarLinhaSeparacao());
         painelFormulario.add(criarLinhaFormulario("Biografia:", this.campoBiografia));
     }
 

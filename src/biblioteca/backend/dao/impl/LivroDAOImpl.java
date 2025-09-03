@@ -2,7 +2,6 @@ package biblioteca.backend.dao.impl;
 
 import biblioteca.backend.dao.contract.ILivroDAO;
 import biblioteca.backend.dto.PredicateResult;
-import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Livro;
 import lombok.extern.java.Log;
 
@@ -147,40 +146,15 @@ public class LivroDAOImpl implements ILivroDAO {
      * @return Todos os livros salvos no banco de dados de um gênero específico.
      */
     @Override
-    public List<Livro> findByGenero(EGenero genero) {
-        EntityManager entityManager = getEntityManager();
-        try {
-            return entityManager.createQuery(
-                            "SELECT l FROM Livro l "
-                                    + "WHERE l.genero = :genero",
-                            Livro.class)
-                    .setParameter("genero", genero)
-                    .getResultList();
-        } catch (Exception ex) {
-            return emptyList();
-        } finally {
-            fecharTransacao(entityManager);
-        }
-    }
-
-    /**
-     * Método responsável por listar todos os Livros salvos no banco de dados com o mesmo gênero que foi
-     * passado por parâmetro, com exceção do livro que possuir o id igual ao passado por parametro.
-     *
-     * @return Todos os livros salvos no banco de dados de um gênero específico.
-     */
-    @Override
-    public List<Livro> findByGeneroAndIdNot(EGenero genero, Integer id) {
+    public List<Livro> findByIdIn(List<Integer> ids) {
         EntityManager entityManager = getEntityManager();
         try {
             return entityManager.createQuery(
                             "SELECT l FROM Livro l "
                                     + "LEFT JOIN FETCH l.livrosParecidos "
-                                    + "WHERE l.genero = :genero "
-                                    + "AND l.id != :id",
+                                    + "WHERE l.id IN (:ids)",
                             Livro.class)
-                    .setParameter("genero", genero)
-                    .setParameter("id", id)
+                    .setParameter("ids", ids)
                     .getResultList();
         } catch (Exception ex) {
             return emptyList();

@@ -25,7 +25,14 @@ public enum EGenero {
     ROMANCE("Romance"),
     SUSPENSE("Suspense"),
     FICCAO_CIENTIFICA("Ficção Científica"),
-    BIOGRAFIA("Biografia");
+    BIOGRAFIA("Biografia"),
+    FANTASIA("Fantasia"),
+    HQ("História em Quadrinhos"),
+    MANGA("Mangá"),
+    AUTO_AJUDA("Auto Ajuda"),
+    ACAO("Ação"),
+    AVENTURA("Aventura"),
+    ENCICLOPEDIA("Enciclopédia");
 
     private final String descricao;
 

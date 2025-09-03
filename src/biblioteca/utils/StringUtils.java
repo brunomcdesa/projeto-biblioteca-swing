@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
+import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static java.lang.String.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -65,7 +66,7 @@ public class StringUtils {
      * @return Uma String de data no formato dd/MM/yyyy. Ex: "28/05/2025".
      */
     public static String formatarData(LocalDate data) {
-        return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        return mapNullComBackup(data, dataValida -> dataValida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), "");
     }
 
     /**
@@ -137,8 +138,8 @@ public class StringUtils {
         boolean possuiCampoInvalido = Arrays.stream(campos)
                 .anyMatch(StringUtils::isBlank);
         if (possuiCampoInvalido) {
-            String mensagem = "Todos os campos são obrigatórios!";
-            showMessageDialog(parent, "Todos os campos são obrigatórios!", "Erro de Validação", ERROR_MESSAGE);
+            String mensagem = "Campos obrigatórios inválidos!";
+            showMessageDialog(parent, mensagem, "Erro de Validação", ERROR_MESSAGE);
             throw new ValidacaoException(mensagem);
         }
     }

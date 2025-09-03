@@ -73,7 +73,7 @@ public class LivroFacade {
     }
 
     /**
-     * Método responsável por buscar os nomes das editoras do sistema, para ser utilizado em um campo Select.
+     * Método responsável por buscar as Editoras do sistema, para ser utilizado em um campo Select.
      *
      * @return Uma lista de SelectResponse.
      */
@@ -82,7 +82,7 @@ public class LivroFacade {
     }
 
     /**
-     * Método responsável por buscar os nomes dos Autores do sistema, para ser utilizado em um campo Multi Select.
+     * Método responsável por buscar os Autores do sistema, para ser utilizado em um campo Multi Select.
      *
      * @return Uma lista de SelectResponse.
      */
@@ -104,5 +104,14 @@ public class LivroFacade {
      */
     public void cadastrarLivroPorIsbn(String isbn) {
         livroService.cadastrarLivroPorIsbn(isbn);
+    }
+
+    /**
+     * Método responsável por buscar os livros para ser utilizado em campos Select.
+     *
+     * @return Uma lista de SelectResponse com dados dos livros.
+     */
+    public List<SelectResponse> getSelectLivros(Integer id) {
+        return livroService.getLivrosSelect(id);
     }
 }

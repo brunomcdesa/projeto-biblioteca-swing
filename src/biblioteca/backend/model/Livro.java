@@ -6,9 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -104,17 +102,6 @@ public class Livro {
                 .editora(editora)
                 .autores(autores)
                 .build();
-    }
-
-    /**
-     * Método responsável por buscar os títulos dos livros parecidos com o livro solicitante.
-     *
-     * @return uma lista de títulos de livros parecidos.
-     */
-    public List<String> getTitulosLivrosParecidos() {
-        return livrosParecidos.stream()
-                .map(Livro::getTitulo)
-                .collect(Collectors.toList());
     }
 
     /**

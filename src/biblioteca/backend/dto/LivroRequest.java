@@ -30,6 +30,7 @@ public class LivroRequest {
     private LocalDate dataPublicacao;
     private Integer editoraId;
     private List<Integer> autoresIds;
+    private List<Integer> livrosSelecionadosIds;
 
     /**
      * Método responsável por converter um DTO OpenLibraryLivroResponse em um LivroResponse.

@@ -103,6 +103,18 @@ public class TelasUtils {
     }
 
     /**
+     * Método responsável por criar um JScrollPane para os campos multi selects.
+
+     * @return um JScrollPane para ser utilizado pelos campos multi select.
+     */
+    public static JScrollPane montarScrollDeCampoMultiSelect(JList<SelectResponse> campoMultiSelect) {
+        JScrollPane scrollCampoMultiSelect = new JScrollPane(campoMultiSelect);
+        scrollCampoMultiSelect.setPreferredSize(new Dimension(180, 100));
+
+        return scrollCampoMultiSelect;
+    }
+
+    /**
      * Método responsável por criar painel principal para os formulários.
      *
      * @return um JPanel para ser utilizado como painel principal dos formulários.
@@ -155,10 +167,14 @@ public class TelasUtils {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setPreferredSize(new Dimension(220, label.getPreferredSize().height));
 
-        painelLinha.add(label, WEST);
+        painelLinha.add(label, NORTH);
         painelLinha.add(componente, CENTER);
 
-        return painelLinha;
+        JPanel painelAuxiliar = new JPanel();
+        painelAuxiliar.setSize(100, 100);
+        painelAuxiliar.add(painelLinha, CENTER);
+
+        return painelAuxiliar;
     }
 
     /**
@@ -254,7 +270,7 @@ public class TelasUtils {
      */
     public static void adicionarConfiguracoesPadroesTela(JFrame tela, JPanel painelPrincipal) {
         tela.add(painelPrincipal);
-        tela.setSize(1000, 600);
+        tela.setSize(1100, 700);
         tela.setLocationRelativeTo(null);
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

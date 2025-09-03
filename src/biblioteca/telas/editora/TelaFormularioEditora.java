@@ -51,7 +51,7 @@ public class TelaFormularioEditora extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(EditoraResponse editora) {
-        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados da Editora:");
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados da Editora (Campos com * são obrigatórios):");
         this.aplicarConfiguracoesFormulario(painelPrincipal, editora);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
@@ -77,9 +77,8 @@ public class TelaFormularioEditora extends JFrame {
         this.campoNome = criarTextField(mapNullComBackup(editora, EditoraResponse::getNome, ""));
         this.campoCnpj = criarTextField(mapNullComBackup(editora, EditoraResponse::getCnpj, ""));
 
-        painelFormulario.add(criarLinhaFormulario("Nome:", this.campoNome));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("CNPJ:", this.campoCnpj));
+        painelFormulario.add(criarLinhaFormulario("Nome *:", this.campoNome));
+        painelFormulario.add(criarLinhaFormulario("CNPJ *:", this.campoCnpj));
     }
 
     /**

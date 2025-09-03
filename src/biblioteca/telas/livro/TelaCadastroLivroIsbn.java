@@ -42,7 +42,7 @@ public class TelaCadastroLivroIsbn extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes() {
-        JPanel painelPrincipal = criarPainelPrincipalFormulario("Informe o ISBN do livro:");
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Informe o ISBN do Livro (Campos com * são obrigatórios):");
         this.aplicarConfiguracoesFormulario(painelPrincipal);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
@@ -70,7 +70,7 @@ public class TelaCadastroLivroIsbn extends JFrame {
     private void configurarCamposFormulario(JPanel painelFormulario) {
         this.campoIsbn = criarTextField("");
 
-        painelFormulario.add(criarLinhaFormulario("ISBN:", campoIsbn));
+        painelFormulario.add(criarLinhaFormulario("ISBN *:", campoIsbn));
     }
 
     /**

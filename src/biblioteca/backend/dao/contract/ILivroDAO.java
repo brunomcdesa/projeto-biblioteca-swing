@@ -1,7 +1,6 @@
 package biblioteca.backend.dao.contract;
 
 import biblioteca.backend.dto.PredicateResult;
-import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.model.Livro;
 
 import java.util.List;
@@ -25,9 +24,7 @@ public interface ILivroDAO {
 
     void deletar(Integer id);
 
-    List<Livro> findByGenero(EGenero genero);
-
-    List<Livro> findByGeneroAndIdNot(EGenero genero, Integer id);
+    List<Livro> findByIdIn(List<Integer> ids);
 
     boolean existsByIsbn(String isbn);
 }

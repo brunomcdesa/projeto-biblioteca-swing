@@ -10,10 +10,7 @@ import biblioteca.backend.model.Editora;
 import biblioteca.backend.model.Livro;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static biblioteca.backend.dto.AutorRequest.converterDeOpenLibraryAutorResponses;
 import static biblioteca.backend.dto.LivroRequest.converterDeOpenLibraryResponse;
@@ -43,7 +40,7 @@ public class LivroService {
     public void salvar(LivroRequest livroRequest) {
         Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
         Set<Autor> autores = this.buscarAutoresPorIds(livroRequest.getAutoresIds());
-        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGenero(livroRequest.getGenero()));
+        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(livroRequest.getLivrosSelecionadosIds()));
         Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores, livrosParecidos);
 
         livroDAO.salvar(novoLivro);
@@ -102,10 +99,12 @@ public class LivroService {
      * Método responsável por editar um livro específico, de acordo com os novos dados da request.
      */
     public void editar(Integer id, LivroRequest livroRequest) {
+        Livro livro = this.findById(id);
+
         Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
         Set<Autor> autores = this.buscarAutoresPorIds(livroRequest.getAutoresIds());
-        Livro livro = this.findById(id);
-        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByGeneroAndIdNot(livroRequest.getGenero(), livro.getId()));
+        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(livroRequest.getLivrosSelecionadosIds()));
+
         livro.atualizarDados(livroRequest, editora, autores, livrosParecidos);
 
         livroDAO.salvar(livro);
@@ -141,6 +140,18 @@ public class LivroService {
     }
 
     /**
+     * Método responsável por buscar os livros para ser utilizado em campos Select.
+     *
+     * @return Uma lista de SelectResponse com dados dos livros.
+     */
+    public List<SelectResponse> getLivrosSelect(Integer id) {
+        return livroDAO.listarTodos().stream()
+                .filter(livro -> !Objects.equals(livro.getId(), id))
+                .map(livro -> SelectResponse.montarSelectResponse(livro.getId(), livro.getTitulo()))
+                .collect(toList());
+    }
+
+    /**
      * Método responsável por buscar um Livro pelo ID dele.
      * <p>
      * Caso não encontre nenhum Livro com o mesmo ID, será lançado uma excepion.
@@ -170,6 +181,11 @@ public class LivroService {
         return autorService.findByIdIn(autoresIds);
     }
 
+    /**
+     * Método responsável por buscar ou criar os autores específicos de acordo as keys deles.
+     *
+     * @return Um Set de Autores.
+     */
     private Set<Autor> buscarAutoresPorKeys(List<String> keysDosAutores) {
         if (!keysDosAutores.isEmpty()) {
             List<AutorRequest> autoresRequests = converterDeOpenLibraryAutorResponses(openLibraryClient.buscarAutoresPorKeys(keysDosAutores));
@@ -178,6 +194,11 @@ public class LivroService {
         return Collections.emptySet();
     }
 
+    /**
+     * Método responsável por buscar uma editora pelo nome.
+     *
+     * @return Uma Editora.
+     */
     private Editora buscarEditoraPorNome(List<String> nomesEditoras) {
         return !nomesEditoras.isEmpty()
                 ? editoraService.buscarEditoraOuCriarEditora(nomesEditoras.get(0))

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static biblioteca.backend.dto.AutorResponse.converterDeAutores;
 import static biblioteca.backend.dto.EditoraResponse.converterDeEditora;
+import static biblioteca.backend.dto.LivroParecidoResponse.converterDeLivros;
 
 /**
  * Classe DTO que representa os dados de retorno para as telas.
@@ -33,7 +34,7 @@ public class LivroResponse {
     private EGenero genero;
     private EditoraResponse editora;
     private List<AutorResponse> autores;
-    private List<String> titulosLivrosParecidos;
+    private List<LivroParecidoResponse> livrosParecidos;
 
     /**
      * Método responsável por realizar a conversão de uma entidade Livro para um DTO LivroResponse.
@@ -49,7 +50,7 @@ public class LivroResponse {
                 .genero(livro.getGenero())
                 .editora(converterDeEditora(livro.getEditora()))
                 .autores(converterDeAutores(livro.getAutores()))
-                .titulosLivrosParecidos(livro.getTitulosLivrosParecidos())
+                .livrosParecidos(converterDeLivros(livro.getLivrosParecidos()))
                 .build();
     }
 
@@ -59,7 +60,7 @@ public class LivroResponse {
      * @return true se o livro possuir livros parecidos. false se o livro não possuir livros parecidos.
      */
     public boolean possuiTitulosParecidos() {
-        return !this.titulosLivrosParecidos.isEmpty();
+        return !this.livrosParecidos.isEmpty();
     }
 
     /**
@@ -87,12 +88,25 @@ public class LivroResponse {
     }
 
     /**
+     * Método responsável por mapear os IDs dos livros parecidos do livro e forma de Objeto.
+     *
+     * @return uma lista de Ids de Livros em forma de Objeto.
+     */
+    public List<Object> getLivrosParecidosIdsObjects() {
+        return this.livrosParecidos.stream()
+                .map(LivroParecidoResponse::getId)
+                .map(id -> (Object) id)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Método responsável por mapear os títulos dos livros parecidos por ordem alfabética.
      *
      * @return uma lista de títulos dos livros parecidos ordenados por ordem alfabética.
      */
     public List<String> getTitulosLivroParecidosOrdenados() {
-        return this.titulosLivrosParecidos.stream()
+        return this.livrosParecidos.stream()
+                .map(LivroParecidoResponse::getTitulo)
                 .sorted()
                 .collect(Collectors.toList());
     }

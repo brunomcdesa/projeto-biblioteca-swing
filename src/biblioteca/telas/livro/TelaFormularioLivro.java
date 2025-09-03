@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static biblioteca.utils.MapUtils.mapNull;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
 import static biblioteca.utils.StringUtils.*;
 import static biblioteca.utils.TelasUtils.*;
@@ -42,6 +43,7 @@ public class TelaFormularioLivro extends JFrame {
     private JComboBox<SelectResponse> campoGenero;
     private JComboBox<SelectResponse> campoEditora;
     private JList<SelectResponse> campoAutores;
+    private JList<SelectResponse> campoLivrosParecidos;
 
     public TelaFormularioLivro(JFrame telaAnterior, LivroFacade livroFacade) {
         this(telaAnterior, livroFacade, null);
@@ -60,7 +62,7 @@ public class TelaFormularioLivro extends JFrame {
      * Inicializa e configura os componentes visuais da tela.
      */
     private void inicializarComponentes(LivroResponse livro) {
-        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do livro:");
+        JPanel painelPrincipal = criarPainelPrincipalFormulario("Preencha os dados do Livro (Campos com * são obrigatórios):");
         this.aplicarConfiguracoesFormulario(painelPrincipal, livro);
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
@@ -72,6 +74,7 @@ public class TelaFormularioLivro extends JFrame {
      */
     private void aplicarConfiguracoesFormulario(JPanel painelPrincipal, LivroResponse livro) {
         JPanel painelFormulario = criarPainelPadrao();
+        painelFormulario.setLayout(new GridLayout(0, 3, 10, 10));
         this.configurarCamposFormulario(livro, painelFormulario);
 
         JPanel painelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -90,22 +93,20 @@ public class TelaFormularioLivro extends JFrame {
         this.campoGenero = criarSelect(this.carregarSelectGenero());
         this.campoEditora = criarSelect(this.carregarSelectEditora());
         this.campoAutores = criarMultiSelect(this.carregarSelectAutores());
-        JScrollPane scrollAutores = new JScrollPane(campoAutores);
-        scrollAutores.setPreferredSize(new Dimension(100, 100));
+        this.campoLivrosParecidos = criarMultiSelect(this.carregarSelectLivros(mapNull(livro, LivroResponse::getId)));
+
+        JScrollPane scrollAutores = montarScrollDeCampoMultiSelect(campoAutores);
+        JScrollPane scrollLivrosParecidos = montarScrollDeCampoMultiSelect(campoLivrosParecidos);
 
         atribuirValoresSelecionadosCamposSelect(livro);
 
-        painelFormulario.add(criarLinhaFormulario("Título:", campoTitulo));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Data de publicação:", campoDataPublicacao));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("ISBN:", campoIsbn));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Gênero:", campoGenero));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Editora:", campoEditora));
-        painelFormulario.add(criarLinhaSeparacao());
-        painelFormulario.add(criarLinhaFormulario("Autores:", scrollAutores));
+        painelFormulario.add(criarLinhaFormulario("Título *:", campoTitulo));
+        painelFormulario.add(criarLinhaFormulario("Data de publicação *:", campoDataPublicacao));
+        painelFormulario.add(criarLinhaFormulario("ISBN *:", campoIsbn));
+        painelFormulario.add(criarLinhaFormulario("Gênero *:", campoGenero));
+        painelFormulario.add(criarLinhaFormulario("Editora *:", campoEditora));
+        painelFormulario.add(criarLinhaFormulario("Autores *:", scrollAutores));
+        painelFormulario.add(criarLinhaFormulario("Livros Parecidos:", scrollLivrosParecidos));
     }
 
     /**
@@ -149,22 +150,21 @@ public class TelaFormularioLivro extends JFrame {
             SelectResponse generoSelecionado = (SelectResponse) campoGenero.getSelectedItem();
             SelectResponse editoraSelecionada = (SelectResponse) campoEditora.getSelectedItem();
             List<SelectResponse> autoresSelecionados = campoAutores.getSelectedValuesList();
+            List<SelectResponse> livrosParecidosSelecionados = campoLivrosParecidos.getSelectedValuesList();
 
             validarCamposStringObrigatorios(this, titulo, dataPublicacaoText, isbn);
             if (generoSelecionado == null || editoraSelecionada == null || autoresSelecionados.isEmpty()) {
-                showMessageDialog(this, "Todos os campos são obrigatórios!",
-                        "Erro de Validação", ERROR_MESSAGE);
+                showMessageDialog(this, "Campos obrigatórios inválidos!", "Erro de Validação", ERROR_MESSAGE);
                 return;
             }
 
             LocalDate dataPublicacao = converterCampoStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
 
-            List<Integer> autoresSelecionadosIds = autoresSelecionados.stream()
-                    .map(autor -> (Integer) autor.getValue())
-                    .collect(Collectors.toList());
+            List<Integer> autoresSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(autoresSelecionados);
+            List<Integer> livrosParecidosSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(livrosParecidosSelecionados);
 
             LivroRequest request = new LivroRequest(titulo, isbn, (EGenero) generoSelecionado.getValue(), dataPublicacao,
-                    (Integer) editoraSelecionada.getValue(), autoresSelecionadosIds);
+                    (Integer) editoraSelecionada.getValue(), autoresSelecionadosIds, livrosParecidosSelecionadosIds);
 
             if (livro == null) {
                 livroFacade.salvarLivro(request);
@@ -200,6 +200,13 @@ public class TelaFormularioLivro extends JFrame {
     }
 
     /**
+     * Carrega os dados que serão utilizados no campo multi select de Livros Parecidos.
+     */
+    private List<SelectResponse> carregarSelectLivros(Integer id) {
+        return livroFacade.getSelectLivros(id);
+    }
+
+    /**
      * Método responsável por atribuir os valores já selecionados nos campos select, para o caso de ser uma edição.
      */
     private void atribuirValoresSelecionadosCamposSelect(LivroResponse livro) {
@@ -207,6 +214,16 @@ public class TelaFormularioLivro extends JFrame {
             atribuirItemSelecionado(campoGenero, livro.getGenero());
             atribuirItemSelecionado(campoEditora, livro.getEditora().getId());
             atribuirItensSelecionados(campoAutores, livro.getAutoresIdsObjects());
+            atribuirItensSelecionados(campoLivrosParecidos, livro.getLivrosParecidosIdsObjects());
         }
+    }
+
+    /**
+     * Método responsável por mapear os atributos value dos valores selecionados no SelectResponse para uma lista de Ids.
+     */
+    private List<Integer> mapearValuesDeSelectResponsesParaIntegers(List<SelectResponse> selectResponses) {
+        return selectResponses.stream()
+                .map(select -> (Integer) select.getValue())
+                .collect(Collectors.toList());
     }
 }
