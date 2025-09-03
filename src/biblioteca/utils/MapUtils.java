@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 
 import java.util.function.Function;
 
+import static biblioteca.utils.StringUtils.isNotBlank;
+
 /**
  * Classe utilitária para operações de mapeamento.
  * <p>
@@ -46,5 +48,16 @@ public class MapUtils {
      */
     public static <T, C> C mapNull(T value, Function<T, C> function) {
         return (value != null) ? function.apply(value) : null;
+    }
+
+    /**
+     * Método genérico com foco em realizar o mapeamento passado como Function, caso a String value não seja uma String Blank.
+     * <p>
+     * Caso o value for Blank, retornará null
+     *
+     * @return Valor do mapeamento realizado pela Function, caso o value não for Blank. Null caso o value for Blank.
+     */
+    public static <C> C mapStringBlankNull(String value, Function<String, C> function) {
+        return isNotBlank(value) ? function.apply(value) : null;
     }
 }

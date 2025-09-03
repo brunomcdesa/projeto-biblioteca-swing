@@ -98,13 +98,13 @@ public class StringUtils {
     }
 
     /**
-     * Método responsável por converter uma String em um objeto LocalDate, de acordo com seu padrão em Inglês.
+     * Método responsável por converter uma String em um objeto LocalDate, de acordo com seu padrão mapeado no enum EPadraoData.
      * <p>
      * A data será convertida para um LocalDate, quando a String estiver em algum dos formatos mapeados pelo enum EPadraoData.
      *
      * @return Uma data convertida para LocalDate.
      */
-    public static LocalDate converterDataEmStringEmInglesParaLocalDate(String data) {
+    public static LocalDate converterDataEmStringParaLocalDate(String data) {
        return EPadraoData.converterDataEmPadrao(data);
     }
 

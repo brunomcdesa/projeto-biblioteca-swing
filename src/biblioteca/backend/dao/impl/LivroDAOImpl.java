@@ -116,6 +116,28 @@ public class LivroDAOImpl implements ILivroDAO {
     }
 
     /**
+     * Método responsável por buscar um Livro de acordo com o ISBN dele no banco de dados.
+     *
+     * @return Um valor Opcional de Livro.
+     */
+    @Override
+    public Optional<Livro> findByIsbn(String isbn) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                                    "SELECT l FROM Livro l "
+                                            + "WHERE l.isbn = :isbn",
+                                    Livro.class)
+                            .setParameter("isbn", isbn)
+                            .getSingleResult());
+        } catch (Exception ex) {
+            return Optional.empty();
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
      * Método responsável por deletar um Livro de acordo com o ID dele no banco de dados.
      */
     @Override

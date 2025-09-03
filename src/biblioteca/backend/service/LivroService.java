@@ -8,12 +8,20 @@ import biblioteca.backend.exceptions.ValidacaoException;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import biblioteca.backend.model.Livro;
+import biblioteca.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 import static biblioteca.backend.dto.AutorRequest.converterDeOpenLibraryAutorResponses;
 import static biblioteca.backend.dto.LivroRequest.converterDeOpenLibraryResponse;
+import static biblioteca.utils.StringUtils.isBlank;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -25,8 +33,11 @@ import static java.util.stream.Collectors.toList;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 @RequiredArgsConstructor
 public class LivroService {
+
+    private static final String CABECALHO_ARQUIVO_IMPORTACAO = "TITULO;DATA_PUBLICACAO;ISBN;GENERO;NOME_EDITORA;CNPJ_EDITORA;NOME_AUTOR;DATA_NASCIMENTO_AUTOR;DATA_MORTE_AUTOR;BIOGRAFIA_AUTOR";
 
     private final ILivroDAO livroDAO;
     private final AutorService autorService;
@@ -52,6 +63,15 @@ public class LivroService {
      */
     public void salvar(LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
         Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores);
+        livroDAO.salvar(novoLivro);
+    }
+
+    /**
+     * Método responsável por converter os dados recebidos por parametro em uma entidade,
+     * e salvar esta nova entidade no banco de dados.
+     */
+    public void salvarPorImportacao(LivroImportacaoDto livroImportacaoDto, Set<Autor> autores, Editora editora) {
+        Livro novoLivro = Livro.montarLivroPorImportacao(livroImportacaoDto, editora, autores);
         livroDAO.salvar(novoLivro);
     }
 
@@ -111,6 +131,17 @@ public class LivroService {
     }
 
     /**
+     * Método responsável por editar um livro específico, de acordo com os novos dados da request da importação.
+     */
+    public void editarPorImportacao(LivroImportacaoDto livroImportacaoDto, Set<Autor> autores, Editora editora) {
+        Livro livro = this.findByIsbn(livroImportacaoDto.getIsbn());
+
+        livro.atualizarDadosPorImportacao(livroImportacaoDto, editora, autores);
+
+        livroDAO.salvar(livro);
+    }
+
+    /**
      * Método responsável por deletar um livro específico do banco de dados.
      */
     public void deletar(Integer id) {
@@ -152,6 +183,35 @@ public class LivroService {
     }
 
     /**
+     * Método responsável por ler o arquivo de importação e realizar a importação dos dados de cada linha do arquivo em dados de um Livro.
+     *
+     * @throws ValidacaoException caso alguma linha do arquivo não possua os campos necessários para realizar a importação.
+     */
+    public void cadastrarLivroPorArquivo(File arquivo) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(arquivo))) {
+            String linhaCabecalho = bufferedReader.readLine();
+            validarCabecalho(linhaCabecalho);
+
+            bufferedReader.lines()
+                    .filter(linha -> !linha.trim().isEmpty())
+                    .map(linha -> {
+                        String[] camposLinha = linha.split(";", -1);
+                        if (camposLinha.length != 10) {
+                            throw new ValidacaoException(format("A linha %s não possui os campos necessários", linha));
+                        }
+                        return LivroImportacaoDto.converterDeArrayString(camposLinha);
+                    })
+                    .forEach(this::cadastrarLivroImportacao);
+        } catch (IOException ex) {
+            throw new ValidacaoException(format("Erro ao ler o arquivo: %s", ex.getMessage()));
+        } catch (ValidacaoException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ValidacaoException(format("Ocorreu um erro inesperado ao processar o arquivo: %s", ex.getMessage()));
+        }
+    }
+
+    /**
      * Método responsável por buscar um Livro pelo ID dele.
      * <p>
      * Caso não encontre nenhum Livro com o mesmo ID, será lançado uma excepion.
@@ -160,6 +220,18 @@ public class LivroService {
      */
     private Livro findById(Integer id) {
         return livroDAO.findById(id)
+                .orElseThrow(() -> new NaoEncontradoException("Livro não encontrado."));
+    }
+
+    /**
+     * Método responsável por buscar um Livro pelo ISBN dele.
+     * <p>
+     * Caso não encontre nenhum Livro com o mesmo ISBN, será lançado uma excepion.
+     *
+     * @return um Livro.
+     */
+    private Livro findByIsbn(String isbn) {
+        return livroDAO.findByIsbn(isbn)
                 .orElseThrow(() -> new NaoEncontradoException("Livro não encontrado."));
     }
 
@@ -203,5 +275,36 @@ public class LivroService {
         return !nomesEditoras.isEmpty()
                 ? editoraService.buscarEditoraOuCriarEditora(nomesEditoras.get(0))
                 : null;
+    }
+
+    /**
+     * Método responsável por validar o cabeçalho do arquivo de importação dos livros.
+     *
+     * @throws ValidacaoException caso a linha do cabeçalho seja uma linha vazia, ou se o cabeçalho informado não for o mesmo do padrão de importação.
+     */
+    private void validarCabecalho(String linha) {
+        if (isBlank(linha)) {
+            throw new ValidacaoException("O arquivo está vazio.");
+        }
+        if (!CABECALHO_ARQUIVO_IMPORTACAO.equalsIgnoreCase(linha)) {
+            throw new ValidacaoException("O cabeçalho do arquivo é inválido ou está ausente. O formato esperado é: " + CABECALHO_ARQUIVO_IMPORTACAO);
+        }
+    }
+
+    /**
+     * Método responsável por efetuar o cadastro do livro ou a edição do livro no fluxo de importação.
+     */
+    private void cadastrarLivroImportacao(LivroImportacaoDto livroImportacaoDto) {
+        List<AutorRequest> autorRequests = new ArrayList<>();
+        autorRequests.add(AutorRequest.converterDeLivroImportacaoDto(livroImportacaoDto));
+        Set<Autor> autores = autorService.buscarAutoresOuCriarAutores(autorRequests);
+        Editora editora = editoraService.buscarEditoraOuCriarEditora(livroImportacaoDto.getNomeEditora());
+        editora.setCnpj(livroImportacaoDto.getCnpjEditora());
+
+        if (livroDAO.existsByIsbn(livroImportacaoDto.getIsbn())) {
+            this.editarPorImportacao(livroImportacaoDto, autores, editora);
+        } else {
+            this.salvarPorImportacao(livroImportacaoDto, autores, editora);
+        }
     }
 }

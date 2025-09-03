@@ -22,6 +22,8 @@ public interface ILivroDAO {
 
     Optional<Livro> findById(Integer id);
 
+    Optional<Livro> findByIsbn(String isbn);
+
     void deletar(Integer id);
 
     List<Livro> findByIdIn(List<Integer> ids);

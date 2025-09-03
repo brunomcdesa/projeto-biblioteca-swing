@@ -1,6 +1,7 @@
 package biblioteca.telas.livro;
 
 import biblioteca.backend.facade.LivroFacade;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
@@ -12,7 +13,17 @@ import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Tela de importação Livro por arquivos TXT e CSV.
+ * <p>
+ * Esta classe é responsável por renderizar a tela referente à importação de livro através do arquivo selecionado.
+ *
+ * @author Bruno Cardoso
+ * @version 1.0
+ */
 @Log
 public class TelaImportacaoLivro extends JFrame {
 
@@ -21,6 +32,7 @@ public class TelaImportacaoLivro extends JFrame {
     private final JButton botaoVoltar = criarBotao("Voltar");
     private final JButton botaoSelecionarArquivo = criarBotao("Selecionar Arquivo");
 
+    private final JLabel labelNomeArquivo = new JLabel();
     private File arquivo;
 
     public TelaImportacaoLivro(LivroFacade livroFacade) {
@@ -40,7 +52,7 @@ public class TelaImportacaoLivro extends JFrame {
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
         add(painelPrincipal);
-        setSize(600, 300);
+        setSize(800, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
@@ -61,7 +73,12 @@ public class TelaImportacaoLivro extends JFrame {
      * Cria e define os campos do formulário.
      */
     private void configurarCamposFormulario(JPanel painelFormulario) {
+        labelNomeArquivo.setText("Nenhum arquivo selecionado");
+        labelNomeArquivo.setHorizontalAlignment(SwingConstants.CENTER);
+        labelNomeArquivo.setPreferredSize(new Dimension(220, labelNomeArquivo.getPreferredSize().height));
+
         painelFormulario.add(criarLinhaFormulario("", botaoSelecionarArquivo));
+        painelFormulario.add(criarLinhaFormulario("Nome do Arquivo:", labelNomeArquivo));
     }
 
     /**
@@ -98,7 +115,19 @@ public class TelaImportacaoLivro extends JFrame {
      */
     private void configurarAcaoBotaoSalvar() {
         botaoSalvar.addActionListener(listener -> {
-                String nomeArqivo = arquivo.getName();
+            if (arquivo == null) {
+                String mensagem = "Por favor, selecione um arquivo.";
+                showMessageDialog(this, mensagem, "Erro", ERROR_MESSAGE);
+                throw new ValueException(mensagem);
+            }
+            try {
+                livroFacade.cadastrarLivroPorImportacao(arquivo);
+                showMessageDialog(this, "Livros importados com sucesso!");
+                this.dispose();
+            } catch (Exception ex) {
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
+                log.severe(ex.getMessage());
+            }
         });
     }
 
@@ -114,6 +143,7 @@ public class TelaImportacaoLivro extends JFrame {
 
             if (resultado == JFileChooser.APPROVE_OPTION) {
                 arquivo = fileChooser.getSelectedFile();
+                labelNomeArquivo.setText(arquivo.getName());
             }
         });
     }

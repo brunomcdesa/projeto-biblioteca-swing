@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static biblioteca.utils.MapUtils.mapNull;
+import static biblioteca.utils.MapUtils.mapStringBlankNull;
 
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Livro.
@@ -41,7 +42,7 @@ public class LivroRequest {
         return LivroRequest.builder()
                 .titulo(livroResponse.getTitulo())
                 .isbn(livroResponse.getIsbn().get(0))
-                .dataPublicacao(mapNull(livroResponse.getDataPublicacao(), StringUtils::converterDataEmStringEmInglesParaLocalDate))
+                .dataPublicacao(mapStringBlankNull(livroResponse.getDataPublicacao(), StringUtils::converterDataEmStringParaLocalDate))
                 .build();
     }
 }

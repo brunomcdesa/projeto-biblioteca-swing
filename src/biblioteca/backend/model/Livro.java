@@ -1,5 +1,6 @@
 package biblioteca.backend.model;
 
+import biblioteca.backend.dto.LivroImportacaoDto;
 import biblioteca.backend.dto.LivroRequest;
 import biblioteca.backend.enums.EGenero;
 import lombok.*;
@@ -105,6 +106,22 @@ public class Livro {
     }
 
     /**
+     * Método responsável por realizar a montar um Livro de acordo com os dados recebidos por parâmetro da importação.
+     *
+     * @return um novo Livro.
+     */
+    public static Livro montarLivroPorImportacao(LivroImportacaoDto livroImportacaoDto, Editora editora, Set<Autor> autores) {
+        return Livro.builder()
+                .titulo(livroImportacaoDto.getTitulo())
+                .dataPublicacao(livroImportacaoDto.getDataPublicacao())
+                .isbn(livroImportacaoDto.getIsbn())
+                .editora(editora)
+                .autores(autores)
+                .build();
+    }
+
+
+    /**
      * Método responsável atualizar os dados do livro solicitante, com base nos parâmetros recebidos.
      */
     public void atualizarDados(LivroRequest request, Editora editora, Set<Autor> autores,
@@ -124,5 +141,17 @@ public class Livro {
      */
     private void atualizarLivrosParecidos(Livro livro) {
         this.livrosParecidos.add(livro);
+    }
+
+    /**
+     * Método responsável atualizar os dados do livro solicitante, com base nos parâmetros recebidos.
+     */
+    public void atualizarDadosPorImportacao(LivroImportacaoDto livroImportacaoDto, Editora editora, Set<Autor> autores) {
+        this.setTitulo(livroImportacaoDto.getTitulo());
+        this.setDataPublicacao(livroImportacaoDto.getDataPublicacao());
+        this.setIsbn(livroImportacaoDto.getIsbn());
+        this.setGenero(livroImportacaoDto.getGenero());
+        this.setEditora(editora);
+        this.setAutores(autores);
     }
 }

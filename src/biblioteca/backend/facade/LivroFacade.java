@@ -8,6 +8,7 @@ import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.service.LivroService;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -113,5 +114,12 @@ public class LivroFacade {
      */
     public List<SelectResponse> getSelectLivros(Integer id) {
         return livroService.getLivrosSelect(id);
+    }
+
+    /**
+     * Método responsável por realizar a importação dos Livros de acordo com o arquivo recebido.
+     */
+    public void cadastrarLivroPorImportacao(File arquivo) {
+        livroService.cadastrarLivroPorArquivo(arquivo);
     }
 }

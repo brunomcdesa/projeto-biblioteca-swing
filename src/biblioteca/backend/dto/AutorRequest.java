@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static biblioteca.utils.MapUtils.mapNull;
+import static biblioteca.utils.MapUtils.mapStringBlankNull;
 
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Autor.
@@ -37,8 +37,8 @@ public class AutorRequest {
     private static AutorRequest converterDeOpenLibraryAutorResponse(OpenLibraryAutorResponse openLibraryAutorResponse) {
         return AutorRequest.builder()
                 .nome(openLibraryAutorResponse.getNome())
-                .dataNascimento(mapNull(openLibraryAutorResponse.getDataNascimento(), StringUtils::converterDataEmStringEmInglesParaLocalDate))
-                .dataMorte(mapNull(openLibraryAutorResponse.getDataMorte(), StringUtils::converterDataEmStringEmInglesParaLocalDate))
+                .dataNascimento(mapStringBlankNull(openLibraryAutorResponse.getDataNascimento(), StringUtils::converterDataEmStringParaLocalDate))
+                .dataMorte(mapStringBlankNull(openLibraryAutorResponse.getDataMorte(), StringUtils::converterDataEmStringParaLocalDate))
                 .biografia(openLibraryAutorResponse.getBiografiaValue())
                 .build();
     }
@@ -52,5 +52,19 @@ public class AutorRequest {
         return openLibraryAutorResponse.stream()
                 .map(AutorRequest::converterDeOpenLibraryAutorResponse)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Método responsável por fazer a conversão dos dados da importação em um AutorRequest.
+     *
+     * @return Um AutorRequest convertido de um LivroImportacaoDto.
+     */
+    public static AutorRequest converterDeLivroImportacaoDto(LivroImportacaoDto livroImportacaoDto) {
+        return AutorRequest.builder()
+                .nome(livroImportacaoDto.getNomeAutor())
+                .dataNascimento(livroImportacaoDto.getDataNascimentoAutor())
+                .dataMorte(livroImportacaoDto.getDataMorteAutor())
+                .biografia(livroImportacaoDto.getBiografiaAutor())
+                .build();
     }
 }

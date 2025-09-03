@@ -27,7 +27,8 @@ public enum EPadraoData {
     PADRAO_DATA_D_MMM_YYYY("d MMM yyyy"),
     PADRAO_DATA_MMMM_D_YYYY("MMMM d, yyyy"),
     PADRAO_DATA_MMM_D_YYYY("MMM d, yyyy"),
-    PADRAO_DATA_YYYY("yyyy");
+    PADRAO_DATA_YYYY("yyyy"),
+    PADRAO_DATA_DD_MM_YYYY("dd/MM/yyyy");
 
     private final String padrao;
 
