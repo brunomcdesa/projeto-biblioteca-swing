@@ -31,6 +31,7 @@ public class TelaListagemLivro extends JFrame {
     private final JButton botaoPesquisar = criarBotao("Pesquisar");
     private final JButton botaoDeletar = criarBotao("Deletar");
     private final JButton botaoEditar = criarBotao("Editar");
+    private final JButton botaoImportar = criarBotao("Importar");
     private final JButton botaoCadastrar = criarBotao("Cadastrar");
     private final JButton botaoCadastrarPorIsbn = criarBotao("Cadastrar por ISBN");
     private final LivroTable livroTable = new LivroTable();
@@ -62,7 +63,7 @@ public class TelaListagemLivro extends JFrame {
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
-               botaoEditar, botaoCadastrar, botaoCadastrarPorIsbn);
+               botaoEditar, botaoImportar, botaoCadastrar, botaoCadastrarPorIsbn);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }
@@ -73,11 +74,12 @@ public class TelaListagemLivro extends JFrame {
     private void configurarAcoesDosBotoes() {
         this.configurarAcaoBotaoVoltar();
         this.configurarAcaoBotaoAtualizar();
+        this.configurarAcaoBotaoPesquisar();
         this.configurarAcaoBotaoEditar();
         this.configurarAcaoBotaoDeletar();
+        this.configurarAcaoBotaoImportar();
         this.configurarAcaoBotaoCadastrar();
         this.configurarAcaoBotaoCadastrarPorIsbn();
-        this.configurarAcaoBotaoPesquisar();
     }
 
     /**
@@ -141,6 +143,17 @@ public class TelaListagemLivro extends JFrame {
                 showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
+        });
+    }
+
+    /**
+     * Efetua a configuração da ação do botão de importar, para que redirecione para o formulário de importação.
+     */
+    private void configurarAcaoBotaoImportar() {
+        botaoImportar.addActionListener(listener -> {
+            TelaImportacaoLivro telaImportacaoLivro = new TelaImportacaoLivro(livroFacade);
+            telaImportacaoLivro.setLocationRelativeTo(this);
+            telaImportacaoLivro.setVisible(true);
         });
     }
 
