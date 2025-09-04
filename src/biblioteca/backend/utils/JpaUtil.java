@@ -36,6 +36,7 @@ public class JpaUtil {
 
     /**
      * Fornece um EntityManager para as operações do DAO.
+     *
      * @return uma instância de EntityManager.
      */
     public static EntityManager getEntityManager() {

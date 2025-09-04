@@ -119,6 +119,29 @@ public class AutorDAOImpl implements IAutorDAO {
     }
 
     /**
+     * Método responsável por buscar o Autor de acordo com o nome dele no banco de dados.
+     *
+     * @return Um valor Opcional de Autor.
+     */
+    @Override
+    public Optional<Autor> findByNome(String nome) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT a FROM Autor a "
+                                    + "LEFT JOIN FETCH a.livros "
+                                    + "WHERE UPPER(a.nome) = UPPER(:nome) ",
+                            Autor.class)
+                    .setParameter("nome", nome)
+                    .getSingleResult());
+        } catch (Exception ex) {
+            return Optional.empty();
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
      * Método responsável por deletar um Autor de acordo com o ID dele no banco de dados.
      */
     @Override

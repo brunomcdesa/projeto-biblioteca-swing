@@ -105,7 +105,7 @@ public class StringUtils {
      * @return Uma data convertida para LocalDate.
      */
     public static LocalDate converterDataEmStringParaLocalDate(String data) {
-       return EPadraoData.converterDataEmPadrao(data);
+        return EPadraoData.converterDataEmPadrao(data);
     }
 
     /**

@@ -14,7 +14,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
  * Esta classe é responsável por realizar o mapeamento
  * e representar os dados da tabela EDITORA, do banco de dados.
  *
- *
  * @author Bruno Cardoso
  * @version 1.0
  */

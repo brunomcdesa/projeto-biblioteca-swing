@@ -7,9 +7,10 @@ import biblioteca.backend.facade.EditoraFacade;
 import javax.swing.*;
 import java.awt.*;
 
-import static biblioteca.utils.StringUtils.*;
-import static biblioteca.utils.TelasUtils.*;
 import static biblioteca.utils.MapUtils.mapNullComBackup;
+import static biblioteca.utils.StringUtils.isCnpjValido;
+import static biblioteca.utils.StringUtils.validarCamposStringObrigatorios;
+import static biblioteca.utils.TelasUtils.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.FlowLayout.RIGHT;
@@ -38,7 +39,7 @@ public class TelaFormularioEditora extends JFrame {
         this(telaAnterior, editoraFacade, null);
     }
 
-    public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade,  EditoraResponse editora) {
+    public TelaFormularioEditora(JFrame telaAnterior, EditoraFacade editoraFacade, EditoraResponse editora) {
         super(mapNullComBackup(editora, "Editar Editora", "Cadastrar Editora"));
         this.telaAnterior = telaAnterior;
         this.editoraFacade = editoraFacade;

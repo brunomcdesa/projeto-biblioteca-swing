@@ -1,7 +1,7 @@
 package biblioteca.telas.livro;
 
+import biblioteca.backend.exceptions.ValidacaoException;
 import biblioteca.backend.facade.LivroFacade;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import lombok.extern.java.Log;
 
 import javax.swing.*;
@@ -118,7 +118,7 @@ public class TelaImportacaoLivro extends JFrame {
             if (arquivo == null) {
                 String mensagem = "Por favor, selecione um arquivo.";
                 showMessageDialog(this, mensagem, "Erro", ERROR_MESSAGE);
-                throw new ValueException(mensagem);
+                throw new ValidacaoException(mensagem);
             }
             try {
                 livroFacade.cadastrarLivroPorImportacao(arquivo);
@@ -136,15 +136,33 @@ public class TelaImportacaoLivro extends JFrame {
      */
     private void configurarAcaoBotaoSelecionarArquivo() {
         botaoSelecionarArquivo.addActionListener(listener -> {
-            FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de Texto (*.txt)", "txt");
+            FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos Suportados (*.txt, *.csv)", "txt", "csv");
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(filtro);
             int resultado = fileChooser.showOpenDialog(this);
 
             if (resultado == JFileChooser.APPROVE_OPTION) {
-                arquivo = fileChooser.getSelectedFile();
+                File arquivoSelecionado = fileChooser.getSelectedFile();
+
+                if (!isExtensaoValida(arquivoSelecionado)) {
+                    showMessageDialog(this, "Extensão de arquivo inválida. Por favor, selecione um arquivo .txt ou .csv.", "Erro de Arquivo", ERROR_MESSAGE);
+                }
+
+                arquivo = arquivoSelecionado;
                 labelNomeArquivo.setText(arquivo.getName());
             }
         });
+    }
+
+    /**
+     * Valida se a extensão do arquivo selecionado é .txt ou .csv.
+     *
+     * @return true se a extensão for válida, false caso contrário.
+     */
+    private boolean isExtensaoValida(File file) {
+        String nomeArquivo = file.getName();
+        String extensao = nomeArquivo.substring(nomeArquivo.lastIndexOf(".") + 1).toLowerCase();
+
+        return extensao.equals("txt") || extensao.equals("csv");
     }
 }

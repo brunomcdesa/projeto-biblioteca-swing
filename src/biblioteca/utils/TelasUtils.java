@@ -104,7 +104,7 @@ public class TelasUtils {
 
     /**
      * Método responsável por criar um JScrollPane para os campos multi selects.
-
+     *
      * @return um JScrollPane para ser utilizado pelos campos multi select.
      */
     public static JScrollPane montarScrollDeCampoMultiSelect(JList<SelectResponse> campoMultiSelect) {

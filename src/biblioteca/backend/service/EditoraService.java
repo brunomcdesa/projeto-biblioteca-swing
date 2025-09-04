@@ -73,6 +73,15 @@ public class EditoraService {
     }
 
     /**
+     * Método responsável por editar uma editora específica durante a importação, de acordo com os novos dados da request.
+     */
+    public Editora editarPorImportacao(Editora editora, EditoraRequest request) {
+        editora.atualizarDados(request);
+
+        return editoraDAO.salvar(editora);
+    }
+
+    /**
      * Método responsável por deletar uma editora específica do banco de dados.
      */
     public void deletar(Integer id) {
@@ -109,11 +118,24 @@ public class EditoraService {
      * Método responsável por buscar a editora de acordo com o nome dela no banco de dados, e retornar ela caso já esteja cadastrada.
      * Caso não esteja cadastrada, deve ser criada uma nova editora com o nome infomado e retornar esta nova editora.
      *
-     * @return Uma Editora já existente no banco de acordo co o nome, ou uma Editora recém criada com o nome novo.
+     * @return Uma Editora já existente no banco de acordo com o nome, ou uma Editora recém criada com o nome novo.
      */
     public Editora buscarEditoraOuCriarEditora(String nomeEditora) {
         return editoraDAO.findByNome(nomeEditora)
                 .orElseGet(() -> this.salvar(new EditoraRequest(nomeEditora)));
+    }
+
+    /**
+     * Método responsável por buscar a editora de acordo com o nome dela no banco de dados, editar de acordo com os dados recebidos na request
+     * e retornar ela caso já esteja cadastrada.
+     * Caso não esteja cadastrada, deve ser criada uma nova editora com o nome infomado e retornar esta nova editora.
+     *
+     * @return Uma Editora já existente no banco de acordo com o nome, ou uma Editora recém criada com o nome novo.
+     */
+    public Editora buscarEEditarEditoraOuCriarEditora(EditoraRequest editoraRequest) {
+        return editoraDAO.findByNome(editoraRequest.getNome())
+                .map(editora -> this.editarPorImportacao(editora, editoraRequest))
+                .orElseGet(() -> this.salvar(editoraRequest));
     }
 
     /**

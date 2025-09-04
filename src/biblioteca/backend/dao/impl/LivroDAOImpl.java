@@ -125,11 +125,11 @@ public class LivroDAOImpl implements ILivroDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                                    "SELECT l FROM Livro l "
-                                            + "WHERE l.isbn = :isbn",
-                                    Livro.class)
-                            .setParameter("isbn", isbn)
-                            .getSingleResult());
+                            "SELECT l FROM Livro l "
+                                    + "WHERE l.isbn = :isbn",
+                            Livro.class)
+                    .setParameter("isbn", isbn)
+                    .getSingleResult());
         } catch (Exception ex) {
             return Optional.empty();
         } finally {
@@ -195,11 +195,11 @@ public class LivroDAOImpl implements ILivroDAO {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                            "SELECT l FROM Livro l "
-                                    + "WHERE l.isbn = :isbn",
-                            Livro.class)
-                    .setParameter("isbn", isbn)
-                    .getSingleResult())
+                                    "SELECT l FROM Livro l "
+                                            + "WHERE l.isbn = :isbn",
+                                    Livro.class)
+                            .setParameter("isbn", isbn)
+                            .getSingleResult())
                     .isPresent();
         } catch (Exception ex) {
             return false;

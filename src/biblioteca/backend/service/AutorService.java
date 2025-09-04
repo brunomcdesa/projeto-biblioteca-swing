@@ -77,6 +77,18 @@ public class AutorService {
     }
 
     /**
+     * Método responsável por editar um autor específico durante a importação, de acordo com os novos dados da request.
+     */
+    public Autor editarPorImportacao(Autor autor, AutorRequest request) {
+        if (request != null) {
+            autor.atualizarDados(request);
+
+            return autorDAO.salvar(autor);
+        }
+        return null;
+    }
+
+    /**
      * Método responsável por deletar um autor específico do banco de dados.
      */
     public void deletar(Integer id) {
@@ -137,6 +149,18 @@ public class AutorService {
                 .map(this::salvar)
                 .collect(toSet())
                 : autores;
+    }
+
+    /**
+     * Método responsável por buscar o autor de acordo com o nome dele no banco de dados, e retornar ele caso já esteja cadastrado.
+     * Caso não esteja cadastrado, deve ser criado um novo autor com o nome infomado e retornar este novo autore.
+     *
+     * @return Um Autor já existentes no banco de acordo co o nome, ou um Autor recém criado com dados da request.
+     */
+    public Autor buscarAutorEEditarOuCriarAutor(AutorRequest autorRequest) {
+        return autorDAO.findByNome(autorRequest.getNome())
+                .map(autor -> this.editarPorImportacao(autor, autorRequest))
+                .orElseGet(() -> this.salvar(autorRequest));
     }
 
     /**

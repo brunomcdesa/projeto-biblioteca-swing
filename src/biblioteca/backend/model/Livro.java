@@ -19,7 +19,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
  * Esta classe é responsável por realizar o mapeamento
  * e representar os dados da tabela LIVRO, do banco de dados.
  *
- *
  * @author Bruno Cardoso
  * @version 1.0
  */
@@ -52,15 +51,15 @@ public class Livro {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "FK_EDITORA", referencedColumnName = "ID",
-        foreignKey = @ForeignKey(name = "FK_EDITORA"))
+            foreignKey = @ForeignKey(name = "FK_EDITORA"))
     private Editora editora;
 
     @ManyToMany
     @JoinTable(name = "LIVRO_AUTOR", joinColumns = {
-        @JoinColumn(name = "FK_LIVRO", referencedColumnName = "ID",
-            foreignKey = @ForeignKey(name = "FK_LIVRO"))}, inverseJoinColumns = {
-        @JoinColumn(name = "FK_AUTOR", referencedColumnName = "ID",
-            foreignKey = @ForeignKey(name = "FK_AUTOR"))})
+            @JoinColumn(name = "FK_LIVRO", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_LIVRO"))}, inverseJoinColumns = {
+            @JoinColumn(name = "FK_AUTOR", referencedColumnName = "ID",
+                    foreignKey = @ForeignKey(name = "FK_AUTOR"))})
     private Set<Autor> autores;
 
     @ManyToMany

@@ -38,9 +38,9 @@ public class OpenLibraryClient {
     /**
      * Método responsável por buscar na API da OPEN LIBRARY os dados do livro que possuir o mesmo ISBN passado por parâmetro.
      *
-     * @throws ValidacaoException caso ocorra algum erro durante a requisição.
-     * @throws NaoEncontradoException caso não encontre o livro na API e seja retornado o status 404.
      * @return Opcional de OpenLibraryLivroResponse, para que retorne os dados da api relevantes para o sistema caso encontre o livro, e Optional vazio caso nao obtenha nenhum dado.
+     * @throws ValidacaoException     caso ocorra algum erro durante a requisição.
+     * @throws NaoEncontradoException caso não encontre o livro na API e seja retornado o status 404.
      */
     public Optional<OpenLibraryLivroResponse> buscarLivroPorIsbn(String isbn) {
         Request request = new Request.Builder()
@@ -72,8 +72,8 @@ public class OpenLibraryClient {
     /**
      * Método responsável por buscar na API da OPEN LIBRARY os dados dos autores que possuirem as mesmas keys que as informadas por parametro.
      *
-     * @throws ValidacaoException caso ocorra algum erro durante a requisição.
      * @return Lista de OpenLibraryAutorResponse, para que retorne os dados da api relevantes para o sistema caso encontre os autores pelas keyus informadas.
+     * @throws ValidacaoException caso ocorra algum erro durante a requisição.
      */
     public List<OpenLibraryAutorResponse> buscarAutoresPorKeys(List<String> autoreskeys) {
         return autoreskeys.stream()

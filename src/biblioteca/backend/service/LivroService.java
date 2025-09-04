@@ -8,7 +8,6 @@ import biblioteca.backend.exceptions.ValidacaoException;
 import biblioteca.backend.model.Autor;
 import biblioteca.backend.model.Editora;
 import biblioteca.backend.model.Livro;
-import biblioteca.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -193,7 +192,7 @@ public class LivroService {
             validarCabecalho(linhaCabecalho);
 
             bufferedReader.lines()
-                    .filter(linha -> !linha.trim().isEmpty())
+                    .filter(linha -> !linha.replace(";", "").trim().isEmpty())
                     .map(linha -> {
                         String[] camposLinha = linha.split(";", -1);
                         if (camposLinha.length != 10) {
@@ -287,7 +286,8 @@ public class LivroService {
             throw new ValidacaoException("O arquivo está vazio.");
         }
         if (!CABECALHO_ARQUIVO_IMPORTACAO.equalsIgnoreCase(linha)) {
-            throw new ValidacaoException("O cabeçalho do arquivo é inválido ou está ausente. O formato esperado é: " + CABECALHO_ARQUIVO_IMPORTACAO);
+            throw new ValidacaoException(format("O cabeçalho do arquivo é inválido ou está ausente. O formato esperado é: \n%s",
+                    CABECALHO_ARQUIVO_IMPORTACAO));
         }
     }
 
@@ -295,11 +295,11 @@ public class LivroService {
      * Método responsável por efetuar o cadastro do livro ou a edição do livro no fluxo de importação.
      */
     private void cadastrarLivroImportacao(LivroImportacaoDto livroImportacaoDto) {
-        List<AutorRequest> autorRequests = new ArrayList<>();
-        autorRequests.add(AutorRequest.converterDeLivroImportacaoDto(livroImportacaoDto));
-        Set<Autor> autores = autorService.buscarAutoresOuCriarAutores(autorRequests);
-        Editora editora = editoraService.buscarEditoraOuCriarEditora(livroImportacaoDto.getNomeEditora());
-        editora.setCnpj(livroImportacaoDto.getCnpjEditora());
+        AutorRequest autorRequest = AutorRequest.converterDeLivroImportacaoDto(livroImportacaoDto);
+        Set<Autor> autores = new HashSet<>();
+        autores.add(autorService.buscarAutorEEditarOuCriarAutor(autorRequest));
+        EditoraRequest editoraRequest = new EditoraRequest(livroImportacaoDto.getNomeEditora(), livroImportacaoDto.getCnpjEditora());
+        Editora editora = editoraService.buscarEEditarEditoraOuCriarEditora(editoraRequest);
 
         if (livroDAO.existsByIsbn(livroImportacaoDto.getIsbn())) {
             this.editarPorImportacao(livroImportacaoDto, autores, editora);

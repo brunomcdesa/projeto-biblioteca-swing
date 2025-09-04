@@ -47,7 +47,7 @@ public class TelaCadastroLivroIsbn extends JFrame {
         this.aplicarConfiguracoesVisuaisBotoes(painelPrincipal);
 
         add(painelPrincipal);
-        setSize(600, 300);
+        setSize(800, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
@@ -111,7 +111,8 @@ public class TelaCadastroLivroIsbn extends JFrame {
             validarCamposStringObrigatorios(this, isbn);
 
             try {
-                livroFacade.cadastrarLivroPorIsbn(isbn);
+                isbn = isbn.replace("-", "");
+                livroFacade.cadastrarLivroPorIsbn(isbn.trim());
                 showMessageDialog(this, "Livro salvo com sucesso!", "Sucesso", INFORMATION_MESSAGE);
                 this.dispose();
             } catch (Exception ex) {

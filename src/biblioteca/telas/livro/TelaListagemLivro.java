@@ -62,8 +62,8 @@ public class TelaListagemLivro extends JFrame {
      * Adiciona configurações visuais dos botoes da tela.
      */
     private void aplicarConfiguracoesVisuaisBotoes(JPanel painelPrincipal) {
-       JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
-               botaoEditar, botaoImportar, botaoCadastrar, botaoCadastrarPorIsbn);
+        JPanel painelBotoes = criarPainelBotoesListagem(botaoVoltar, botaoRecarregarDados, botaoPesquisar, botaoDeletar,
+                botaoEditar, botaoImportar, botaoCadastrar, botaoCadastrarPorIsbn);
 
         painelPrincipal.add(painelBotoes, SOUTH);
     }

@@ -44,7 +44,7 @@ public class LivroImportacaoDto {
                 .titulo(camposLinha[0])
                 .dataPublicacao(mapStringBlankNull(camposLinha[1], StringUtils::converterDataEmStringParaLocalDate))
                 .isbn(mapStringBlankNull(camposLinha[2], isbn -> isbn))
-                .genero(mapStringBlankNull(camposLinha[3], EGenero::valueOf))
+                .genero(mapStringBlankNull(camposLinha[3], EGenero::valueOfName))
                 .nomeEditora(mapStringBlankNull(camposLinha[4], nomeEditora -> nomeEditora))
                 .cnpjEditora(mapStringBlankNull(camposLinha[5], cnpjEditora -> cnpjEditora))
                 .nomeAutor(mapStringBlankNull(camposLinha[6], nomeAutor -> nomeAutor))

@@ -22,6 +22,8 @@ public interface IAutorDAO {
 
     Optional<Autor> findById(Integer id);
 
+    Optional<Autor> findByNome(String nome);
+
     void deletar(Integer id);
 
     List<Autor> findByIdIn(List<Integer> id);
