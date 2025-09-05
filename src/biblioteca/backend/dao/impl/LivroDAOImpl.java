@@ -116,19 +116,21 @@ public class LivroDAOImpl implements ILivroDAO {
     }
 
     /**
-     * Método responsável por buscar um Livro de acordo com o ISBN dele no banco de dados.
+     * Método responsável por buscar um Livro de acordo com os ISBNs dele no banco de dados.
      *
      * @return Um valor Opcional de Livro.
      */
     @Override
-    public Optional<Livro> findByIsbn(String isbn) {
+    public Optional<Livro> findByIsbns(String isbn10, String isbn13) {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
                             "SELECT l FROM Livro l "
-                                    + "WHERE l.isbn = :isbn",
+                                    + "WHERE l.isbn10 = :isbn10 "
+                                    + "OR l.isbn13 = :isbn13",
                             Livro.class)
-                    .setParameter("isbn", isbn)
+                    .setParameter("isbn10", isbn10)
+                    .setParameter("isbn13", isbn13)
                     .getSingleResult());
         } catch (Exception ex) {
             return Optional.empty();
@@ -186,19 +188,72 @@ public class LivroDAOImpl implements ILivroDAO {
     }
 
     /**
-     * Método responsável por verificar diretamente no banco de dados, se existe algum livro com o mesmo ISBN informado.
+     * Método responsável por verificar diretamente no banco de dados, se existe algum livro com o ISBN informado.
      *
-     * @return true se existir algum livro já cadastrado com o ISBN. false se não existir nenhum livro cadastrado com o mesmo ISBN.
+     * @return true se existir algum livro já cadastrado com o ISBN. false se não existir nenhum livro cadastrado com o ISBN.
      */
     @Override
     public boolean existsByIsbn(String isbn) {
         EntityManager entityManager = getEntityManager();
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                                    "SELECT l FROM Livro l "
-                                            + "WHERE l.isbn = :isbn",
+                                    "SELECT DISTINCT l FROM Livro l "
+                                            + "WHERE l.isbn10 = :isbn "
+                                            + "OR l.isbn13 = :isbn",
                                     Livro.class)
                             .setParameter("isbn", isbn)
+                            .getSingleResult())
+                    .isPresent();
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por verificar diretamente no banco de dados, se existe algum livro com algum dos ISBNs informados.
+     *
+     * @return true se existir algum livro já cadastrado com algum dos ISBNs. false se não existir nenhum livro cadastrado com nenhum dos ISBNs.
+     */
+    @Override
+    public boolean existsByIsbns(String isbn10, String isbn13) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                                    "SELECT DISTINCT l FROM Livro l "
+                                            + "WHERE l.isbn10 = :isbn10 "
+                                            + "OR l.isbn13 = :isbn13",
+                                    Livro.class)
+                            .setParameter("isbn10", isbn10)
+                            .setParameter("isbn13", isbn13)
+                            .getSingleResult())
+                    .isPresent();
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por verificar diretamente no banco de dados, se existe algum livro com algum dos ISBNs informados, com exceção do id informado.
+     *
+     * @return true se existir algum livro já cadastrado com algum dos ISBNs, com exceção do id informado. false se não existir nenhum livro cadastrado com nenhum dos ISBNs, com exceção do id informado.
+     */
+    @Override
+    public boolean existsByIsbnsExcetoId(String isbn10, String isbn13, Integer id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                                    "SELECT DISTINCT l FROM Livro l "
+                                            + "WHERE (l.isbn10 = :isbn10 "
+                                            + "OR l.isbn13 = :isbn13) "
+                                            + "AND l.id != :id",
+                                    Livro.class)
+                            .setParameter("isbn10", isbn10)
+                            .setParameter("isbn13", isbn13)
+                            .setParameter("id", id)
                             .getSingleResult())
                     .isPresent();
         } catch (Exception ex) {

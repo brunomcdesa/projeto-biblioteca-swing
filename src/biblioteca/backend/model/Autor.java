@@ -93,7 +93,7 @@ public class Autor {
     }
 
     /**
-     * Método responsável por verifiacar se o Autor possui livros vinculados a ele.
+     * Método responsável por verificar se o Autor possui livros vinculados a ele.
      *
      * @return true se o Autor possuir livros vinculados. false se o Autor não possuir livros vinculados.
      */

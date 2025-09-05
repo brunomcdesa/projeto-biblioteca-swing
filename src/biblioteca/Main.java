@@ -46,7 +46,7 @@ public class Main {
 
         ILivroDAO livroDAO = new LivroDAOImpl();
         LivroService livroService = new LivroService(livroDAO, autorService, editoraService, client);
-        LivroFacade livroFacade =  new LivroFacade(livroService);
+        LivroFacade livroFacade = new LivroFacade(livroService);
 
         SwingUtilities.invokeLater(() -> {
             TelaPrincipal tela = new TelaPrincipal(autorFacade, editoraFacade, livroFacade);

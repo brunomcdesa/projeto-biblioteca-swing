@@ -1,15 +1,16 @@
 package biblioteca.backend.dto;
 
 import biblioteca.backend.enums.EGenero;
-import biblioteca.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.time.LocalDate;
 
 import static biblioteca.utils.MapUtils.mapStringBlankNull;
+import static biblioteca.utils.StringUtils.mapearData;
 
 /**
  * Classe DTO que representa os dados do arquivo de importação de um Livro.
@@ -17,6 +18,7 @@ import static biblioteca.utils.MapUtils.mapStringBlankNull;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,7 +27,8 @@ public class LivroImportacaoDto {
 
     private String titulo;
     private LocalDate dataPublicacao;
-    private String isbn;
+    private String isbn10;
+    private String isbn13;
     private EGenero genero;
     private String nomeEditora;
     private String cnpjEditora;
@@ -42,17 +45,16 @@ public class LivroImportacaoDto {
     public static LivroImportacaoDto converterDeArrayString(String[] camposLinha) {
         return LivroImportacaoDto.builder()
                 .titulo(camposLinha[0])
-                .dataPublicacao(mapStringBlankNull(camposLinha[1], StringUtils::converterDataEmStringParaLocalDate))
-                .isbn(mapStringBlankNull(camposLinha[2], isbn -> isbn))
-                .genero(mapStringBlankNull(camposLinha[3], EGenero::valueOfName))
-                .nomeEditora(mapStringBlankNull(camposLinha[4], nomeEditora -> nomeEditora))
-                .cnpjEditora(mapStringBlankNull(camposLinha[5], cnpjEditora -> cnpjEditora))
-                .nomeAutor(mapStringBlankNull(camposLinha[6], nomeAutor -> nomeAutor))
-                .dataNascimentoAutor(mapStringBlankNull(camposLinha[7], StringUtils::converterDataEmStringParaLocalDate))
-                .dataMorteAutor(mapStringBlankNull(camposLinha[8], StringUtils::converterDataEmStringParaLocalDate))
-                .biografiaAutor(mapStringBlankNull(camposLinha[9], biografia -> biografia))
+                .dataPublicacao(mapearData(camposLinha[1]))
+                .isbn10(mapStringBlankNull(camposLinha[2], isbn -> isbn))
+                .isbn13(mapStringBlankNull(camposLinha[3], isbn -> isbn))
+                .genero(mapStringBlankNull(camposLinha[4], EGenero::valueOfName))
+                .nomeEditora(mapStringBlankNull(camposLinha[5], nomeEditora -> nomeEditora))
+                .cnpjEditora(mapStringBlankNull(camposLinha[6], cnpjEditora -> cnpjEditora))
+                .nomeAutor(mapStringBlankNull(camposLinha[7], nomeAutor -> nomeAutor))
+                .dataNascimentoAutor(mapearData(camposLinha[8]))
+                .dataMorteAutor(mapearData(camposLinha[9]))
+                .biografiaAutor(mapStringBlankNull(camposLinha[10], biografia -> biografia))
                 .build();
     }
-
-
 }

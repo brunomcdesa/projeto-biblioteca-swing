@@ -35,15 +35,16 @@ public class EditoraService {
      *
      * @return A editora salva.
      */
-    public Editora salvar(EditoraRequest editoraRequest) {
-        Editora autor = Editora.converterDeRequest(editoraRequest);
-        return editoraDAO.salvar(autor);
+    public Editora salvar(EditoraRequest request) {
+        this.validarEditoraExistentePorCnpj(editoraDAO.existsByCnpj(request.getCnpj()));
+        Editora editora = Editora.converterDeRequest(request);
+        return editoraDAO.salvar(editora);
     }
 
     /**
      * Método responsável por listar todas as Editoras do sistema.
      *
-     * @return uma lista de Autores.
+     * @return uma lista de Editoras.
      */
     public List<EditoraResponse> listarTodos() {
         return editoraDAO.listarTodos().stream()
@@ -54,7 +55,7 @@ public class EditoraService {
     /**
      * Método responsável por listar todas as Editoras do sistema por filtros.
      *
-     * @return uma lista de Autores de acordo com os filtros passados por parametro.
+     * @return uma lista de Editoras de acordo com os filtros passados por parametro.
      */
     public List<EditoraResponse> listarTodosPorFiltros(EditoraFiltros filtros) {
         return editoraDAO.listarTodosPorPredicate(filtros.toPredicate()).stream()
@@ -66,6 +67,7 @@ public class EditoraService {
      * Método responsável por editar uma editora específica, de acordo com os novos dados da request.
      */
     public void editar(Integer id, EditoraRequest request) {
+        this.validarEditoraExistentePorCnpj(editoraDAO.existsByCnpjExcetoId(request.getCnpj(), id));
         Editora editora = this.findById(id);
         editora.atualizarDados(request);
 
@@ -132,10 +134,10 @@ public class EditoraService {
      *
      * @return Uma Editora já existente no banco de acordo com o nome, ou uma Editora recém criada com o nome novo.
      */
-    public Editora buscarEEditarEditoraOuCriarEditora(EditoraRequest editoraRequest) {
-        return editoraDAO.findByNome(editoraRequest.getNome())
-                .map(editora -> this.editarPorImportacao(editora, editoraRequest))
-                .orElseGet(() -> this.salvar(editoraRequest));
+    public Editora buscarEEditarEditoraOuCriarEditora(EditoraRequest request) {
+        return editoraDAO.findByNome(request.getNome())
+                .map(editora -> this.editarPorImportacao(editora, request))
+                .orElseGet(() -> this.salvar(request));
     }
 
     /**
@@ -146,6 +148,17 @@ public class EditoraService {
     private void validarEditoraComLivrosVinculados(Editora editora) {
         if (editora.possuiLivrosVinculados()) {
             throw new ValidacaoException("Editora possui livros vinculados. Por favor remova o vínculo com os livros antes de excluir a editora.");
+        }
+    }
+
+    /**
+     * Método responsável por validar se já existe uma editora com mesmo cnpj.
+     *
+     * @throws ValidacaoException caso já exista uma editora com mesmo cnpj.
+     */
+    private void validarEditoraExistentePorCnpj(boolean existePorCnpj) {
+        if (existePorCnpj) {
+            throw new ValidacaoException("Já existe uma editora com o mesmo CNPJ.");
         }
     }
 }

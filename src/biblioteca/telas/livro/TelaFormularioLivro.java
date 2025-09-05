@@ -5,6 +5,7 @@ import biblioteca.backend.dto.LivroResponse;
 import biblioteca.backend.dto.SelectResponse;
 import biblioteca.backend.enums.EGenero;
 import biblioteca.backend.facade.LivroFacade;
+import lombok.extern.java.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +31,7 @@ import static javax.swing.JOptionPane.*;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 public class TelaFormularioLivro extends JFrame {
 
     private final JFrame telaAnterior;
@@ -39,7 +41,8 @@ public class TelaFormularioLivro extends JFrame {
 
     private JTextField campoTitulo;
     private JTextField campoDataPublicacao;
-    private JTextField campoIsbn;
+    private JTextField campoIsbn10;
+    private JTextField campoIsbn13;
     private JComboBox<SelectResponse> campoGenero;
     private JComboBox<SelectResponse> campoEditora;
     private JList<SelectResponse> campoAutores;
@@ -89,7 +92,8 @@ public class TelaFormularioLivro extends JFrame {
     private void configurarCamposFormulario(LivroResponse livro, JPanel painelFormulario) {
         this.campoTitulo = criarTextField(mapNullComBackup(livro, LivroResponse::getTitulo, ""));
         this.campoDataPublicacao = criarTextField(mapNullComBackup(livro, livroResponse -> formatarData(livroResponse.getDataPublicacao()), ""));
-        this.campoIsbn = criarTextField(mapNullComBackup(livro, LivroResponse::getIsbn, ""));
+        this.campoIsbn10 = criarTextField(mapNullComBackup(livro, LivroResponse::getIsbn10, ""));
+        this.campoIsbn13 = criarTextField(mapNullComBackup(livro, LivroResponse::getIsbn13, ""));
         this.campoGenero = criarSelect(this.carregarSelectGenero());
         this.campoEditora = criarSelect(this.carregarSelectEditora());
         this.campoAutores = criarMultiSelect(this.carregarSelectAutores());
@@ -102,7 +106,8 @@ public class TelaFormularioLivro extends JFrame {
 
         painelFormulario.add(criarLinhaFormulario("Título *:", campoTitulo));
         painelFormulario.add(criarLinhaFormulario("Data de publicação *:", campoDataPublicacao));
-        painelFormulario.add(criarLinhaFormulario("ISBN *:", campoIsbn));
+        painelFormulario.add(criarLinhaFormulario("ISBN 10*:", campoIsbn10));
+        painelFormulario.add(criarLinhaFormulario("ISBN 13*:", campoIsbn13));
         painelFormulario.add(criarLinhaFormulario("Gênero *:", campoGenero));
         painelFormulario.add(criarLinhaFormulario("Editora *:", campoEditora));
         painelFormulario.add(criarLinhaFormulario("Autores *:", scrollAutores));
@@ -144,37 +149,43 @@ public class TelaFormularioLivro extends JFrame {
      */
     private void configurarAcaoBotaoSalvar(LivroResponse livro) {
         botaoSalvar.addActionListener(listener -> {
-            String titulo = campoTitulo.getText();
-            String dataPublicacaoText = campoDataPublicacao.getText();
-            String isbn = campoIsbn.getText();
-            SelectResponse generoSelecionado = (SelectResponse) campoGenero.getSelectedItem();
-            SelectResponse editoraSelecionada = (SelectResponse) campoEditora.getSelectedItem();
-            List<SelectResponse> autoresSelecionados = campoAutores.getSelectedValuesList();
-            List<SelectResponse> livrosParecidosSelecionados = campoLivrosParecidos.getSelectedValuesList();
+            try {
+                String titulo = campoTitulo.getText();
+                String dataPublicacaoText = campoDataPublicacao.getText();
+                String isbn10 = campoIsbn10.getText();
+                String isbn13 = campoIsbn13.getText();
+                SelectResponse generoSelecionado = (SelectResponse) campoGenero.getSelectedItem();
+                SelectResponse editoraSelecionada = (SelectResponse) campoEditora.getSelectedItem();
+                List<SelectResponse> autoresSelecionados = campoAutores.getSelectedValuesList();
+                List<SelectResponse> livrosParecidosSelecionados = campoLivrosParecidos.getSelectedValuesList();
 
-            validarCamposStringObrigatorios(this, titulo, dataPublicacaoText, isbn);
-            if (generoSelecionado == null || editoraSelecionada == null || autoresSelecionados.isEmpty()) {
-                showMessageDialog(this, "Campos obrigatórios inválidos!", "Erro de Validação", ERROR_MESSAGE);
-                return;
+                validarCamposStringObrigatorios(this, titulo, dataPublicacaoText, isbn10, isbn13);
+                if (generoSelecionado == null || editoraSelecionada == null || autoresSelecionados.isEmpty()) {
+                    showMessageDialog(this, "Campos obrigatórios inválidos!", "Erro de Validação", ERROR_MESSAGE);
+                    return;
+                }
+
+                LocalDate dataPublicacao = converterCampoStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
+
+                List<Integer> autoresSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(autoresSelecionados);
+                List<Integer> livrosParecidosSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(livrosParecidosSelecionados);
+
+                LivroRequest request = new LivroRequest(titulo, isbn10, isbn13, (EGenero) generoSelecionado.getValue(), dataPublicacao,
+                        (Integer) editoraSelecionada.getValue(), autoresSelecionadosIds, livrosParecidosSelecionadosIds);
+
+                if (livro == null) {
+                    livroFacade.salvarLivro(request);
+                } else {
+                    livroFacade.editarLivro(livro.getId(), request);
+                }
+                showMessageDialog(this, "Livro salvo com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+
+                telaAnterior.setVisible(true);
+                this.dispose();
+            } catch (Exception ex) {
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
+                log.severe(ex.getMessage());
             }
-
-            LocalDate dataPublicacao = converterCampoStringParaLocalDate(dataPublicacaoText, "Data de Publicação", this);
-
-            List<Integer> autoresSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(autoresSelecionados);
-            List<Integer> livrosParecidosSelecionadosIds = mapearValuesDeSelectResponsesParaIntegers(livrosParecidosSelecionados);
-
-            LivroRequest request = new LivroRequest(titulo, isbn, (EGenero) generoSelecionado.getValue(), dataPublicacao,
-                    (Integer) editoraSelecionada.getValue(), autoresSelecionadosIds, livrosParecidosSelecionadosIds);
-
-            if (livro == null) {
-                livroFacade.salvarLivro(request);
-            } else {
-                livroFacade.editarLivro(livro.getId(), request);
-            }
-            showMessageDialog(this, "Livro salvo com sucesso!", "Sucesso", INFORMATION_MESSAGE);
-
-            telaAnterior.setVisible(true);
-            this.dispose();
         });
     }
 

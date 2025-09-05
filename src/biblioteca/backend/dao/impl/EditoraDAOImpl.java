@@ -159,4 +159,52 @@ public class EditoraDAOImpl implements IEditoraDAO {
             fecharTransacao(entityManager);
         }
     }
+
+    /**
+     * Método responsável por verificar no banco de dados se existe uma Editora com o mesmo cnpj que o informado.
+     *
+     * @return true se existir alguma Editora com o mesmo cnpj. false se não existir nenhuma Editora com o mesmo cnpj.
+     */
+    @Override
+    public boolean existsByCnpj(String cnpj) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                                    "SELECT DISTINCT e FROM Editora e "
+                                            + "WHERE e.cnpj = :cnpj",
+                                    Editora.class)
+                            .setParameter("cnpj", cnpj)
+                            .getSingleResult())
+                    .isPresent();
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
+
+    /**
+     * Método responsável por verificar no banco de dados se existe uma Editora com o mesmo cnpj que o informado, com exceção do id informado.
+     *
+     * @return true se existir alguma Editora com o mesmo cnpj, com exceção do id informado. false se não existir nenhuma Editora com o mesmo cnpj, com exceção do mesmo id informado.
+     */
+    @Override
+    public boolean existsByCnpjExcetoId(String cnpj, Integer id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                                    "SELECT DISTINCT e FROM Editora e "
+                                            + "WHERE e.cnpj = :cnpj "
+                                            + "AND e.id != :id",
+                                    Editora.class)
+                            .setParameter("cnpj", cnpj)
+                            .setParameter("id", id)
+                            .getSingleResult())
+                    .isPresent();
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            fecharTransacao(entityManager);
+        }
+    }
 }

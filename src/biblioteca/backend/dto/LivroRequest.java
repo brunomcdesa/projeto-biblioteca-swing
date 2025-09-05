@@ -1,7 +1,6 @@
 package biblioteca.backend.dto;
 
 import biblioteca.backend.enums.EGenero;
-import biblioteca.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-import static biblioteca.utils.MapUtils.mapStringBlankNull;
+import static biblioteca.utils.MapUtils.mapNull;
+import static biblioteca.utils.StringUtils.mapearData;
 
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Livro.
@@ -25,7 +25,8 @@ import static biblioteca.utils.MapUtils.mapStringBlankNull;
 public class LivroRequest {
 
     private String titulo;
-    private String isbn;
+    private String isbn10;
+    private String isbn13;
     private EGenero genero;
     private LocalDate dataPublicacao;
     private Integer editoraId;
@@ -40,8 +41,9 @@ public class LivroRequest {
     public static LivroRequest converterDeOpenLibraryResponse(OpenLibraryLivroResponse livroResponse) {
         return LivroRequest.builder()
                 .titulo(livroResponse.getTitulo())
-                .isbn(livroResponse.getIsbn().get(0))
-                .dataPublicacao(mapStringBlankNull(livroResponse.getDataPublicacao(), StringUtils::converterDataEmStringParaLocalDate))
+                .isbn10(mapNull(livroResponse.getIsbn10(), isbns -> isbns.get(0)))
+                .isbn13(mapNull(livroResponse.getIsbn13(), isbns -> isbns.get(0)))
+                .dataPublicacao(mapearData(livroResponse.getDataPublicacao()))
                 .build();
     }
 }

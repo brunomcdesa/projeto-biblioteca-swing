@@ -26,9 +26,6 @@ public class LivroFacade {
 
     /**
      * Método responsável por salvar um novo livro de acordo com a request recebida.
-     * <p>
-     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
-     * junto com a request recebida, chama a service de livro para criar um novo livro.
      */
     public void salvarLivro(LivroRequest livroRequest) {
         livroService.salvar(livroRequest);
@@ -47,9 +44,6 @@ public class LivroFacade {
 
     /**
      * Método responsável por editar um livro específico de acordo com o ID e com a request recebida.
-     * <p>
-     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
-     * junto com o ID e a request recebida, chama a service de livro para editar o livro escolhido pelo usuário.
      */
     public void editarLivro(Integer id, LivroRequest livroRequest) {
         livroService.editar(id, livroRequest);

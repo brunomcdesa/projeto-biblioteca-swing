@@ -1,6 +1,5 @@
 package biblioteca.backend.dto;
 
-import biblioteca.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static biblioteca.utils.MapUtils.mapStringBlankNull;
+import static biblioteca.utils.StringUtils.mapearData;
 
 /**
  * Classe DTO que representa os dados de entrada para salvar/alterar uma entidade Autor.
@@ -37,8 +36,8 @@ public class AutorRequest {
     private static AutorRequest converterDeOpenLibraryAutorResponse(OpenLibraryAutorResponse openLibraryAutorResponse) {
         return AutorRequest.builder()
                 .nome(openLibraryAutorResponse.getNome())
-                .dataNascimento(mapStringBlankNull(openLibraryAutorResponse.getDataNascimento(), StringUtils::converterDataEmStringParaLocalDate))
-                .dataMorte(mapStringBlankNull(openLibraryAutorResponse.getDataMorte(), StringUtils::converterDataEmStringParaLocalDate))
+                .dataNascimento(mapearData(openLibraryAutorResponse.getDataNascimento()))
+                .dataMorte(mapearData(openLibraryAutorResponse.getDataMorte()))
                 .biografia(openLibraryAutorResponse.getBiografiaValue())
                 .build();
     }

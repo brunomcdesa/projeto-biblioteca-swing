@@ -42,8 +42,11 @@ public class Livro {
     @Column(name = "DATA_PUBLICACAO")
     private LocalDate dataPublicacao;
 
-    @Column(name = "ISBN")
-    private String isbn;
+    @Column(name = "ISBN_10")
+    private String isbn10;
+
+    @Column(name = "ISBN_13")
+    private String isbn13;
 
     @Enumerated(STRING)
     @Column(name = "GENERO")
@@ -82,7 +85,8 @@ public class Livro {
                 .titulo(livroRequest.getTitulo())
                 .dataPublicacao(livroRequest.getDataPublicacao())
                 .genero(livroRequest.getGenero())
-                .isbn(livroRequest.getIsbn())
+                .isbn10(livroRequest.getIsbn10())
+                .isbn13(livroRequest.getIsbn13())
                 .editora(editora)
                 .autores(autores)
                 .livrosParecidos(livrosParecidos)
@@ -98,7 +102,8 @@ public class Livro {
         return Livro.builder()
                 .titulo(livroRequest.getTitulo())
                 .dataPublicacao(livroRequest.getDataPublicacao())
-                .isbn(livroRequest.getIsbn())
+                .isbn10(livroRequest.getIsbn10())
+                .isbn13(livroRequest.getIsbn13())
                 .editora(editora)
                 .autores(autores)
                 .build();
@@ -113,7 +118,8 @@ public class Livro {
         return Livro.builder()
                 .titulo(livroImportacaoDto.getTitulo())
                 .dataPublicacao(livroImportacaoDto.getDataPublicacao())
-                .isbn(livroImportacaoDto.getIsbn())
+                .isbn10(livroImportacaoDto.getIsbn10())
+                .isbn13(livroImportacaoDto.getIsbn13())
                 .editora(editora)
                 .autores(autores)
                 .build();
@@ -127,7 +133,8 @@ public class Livro {
                                Set<Livro> livrosParecidos) {
         this.setTitulo(request.getTitulo());
         this.setDataPublicacao(request.getDataPublicacao());
-        this.setIsbn(request.getIsbn());
+        this.setIsbn10(request.getIsbn10());
+        this.setIsbn13(request.getIsbn13());
         this.setGenero(request.getGenero());
         this.setEditora(editora);
         this.setAutores(autores);
@@ -148,7 +155,8 @@ public class Livro {
     public void atualizarDadosPorImportacao(LivroImportacaoDto livroImportacaoDto, Editora editora, Set<Autor> autores) {
         this.setTitulo(livroImportacaoDto.getTitulo());
         this.setDataPublicacao(livroImportacaoDto.getDataPublicacao());
-        this.setIsbn(livroImportacaoDto.getIsbn());
+        this.setIsbn10(livroImportacaoDto.getIsbn10());
+        this.setIsbn13(livroImportacaoDto.getIsbn13());
         this.setGenero(livroImportacaoDto.getGenero());
         this.setEditora(editora);
         this.setAutores(autores);

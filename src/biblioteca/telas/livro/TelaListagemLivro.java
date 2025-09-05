@@ -88,7 +88,7 @@ public class TelaListagemLivro extends JFrame {
     private void configurarAcaoBotaoVoltar() {
         botaoVoltar.addActionListener(listener -> {
             telaAnterior.setVisible(true);
-            dispose();
+            this.dispose();
         });
     }
 
@@ -140,7 +140,7 @@ public class TelaListagemLivro extends JFrame {
                     carregarDados();
                 }
             } catch (Exception ex) {
-                showMessageDialog(this, "Erro ao deletar autor do banco de dados.", "Erro", ERROR_MESSAGE);
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
                 log.severe(ex.getMessage());
             }
         });
@@ -199,7 +199,7 @@ public class TelaListagemLivro extends JFrame {
             List<LivroResponse> livros = livroFacade.listarTodosLivros();
             livroTable.setLivros(livros);
         } catch (Exception ex) {
-            showMessageDialog(this, "Erro ao carregar livros do banco de dados.", "Erro", ERROR_MESSAGE);
+            showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
             log.severe(ex.getMessage());
         }
     }

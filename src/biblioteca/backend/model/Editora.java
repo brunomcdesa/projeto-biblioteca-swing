@@ -53,7 +53,7 @@ public class Editora {
     }
 
     /**
-     * Método responsável por atualizar os dados da entidade Autor, de acordo com os novos dados da request.
+     * Método responsável por atualizar os dados da entidade Editora, de acordo com os novos dados da request.
      */
     public void atualizarDados(EditoraRequest request) {
         this.setNome(request.getNome());
@@ -61,7 +61,7 @@ public class Editora {
     }
 
     /**
-     * Método responsável por verifiacar se a Editora possui livros vinculados a ele.
+     * Método responsável por verificar se a Editora possui livros vinculados a ele.
      *
      * @return true se a Editora possuir livros vinculados. false se a Editora não possuir livros vinculados.
      */

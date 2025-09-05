@@ -21,7 +21,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
  */
 public class LivroTable extends AbstractTableModel {
 
-    private final String[] colunas = {"ID", "Título", "Data de Publicação", "ISBN", "Gênero", "Editora",
+    private final String[] colunas = {"ID", "Título", "Data de Publicação", "ISBN 10", "ISBN 13", "Gênero", "Editora",
             "Autores", "Livros Parecidos"};
     private List<LivroResponse> livros;
 
@@ -55,14 +55,16 @@ public class LivroTable extends AbstractTableModel {
             case 2:
                 return mapNullComBackup(livro.getDataPublicacao(), data -> data.format(ofPattern("dd/MM/yyyy")), "-");
             case 3:
-                return livro.getIsbn();
+                return mapNullComBackup(livro.getIsbn10(), isbn -> isbn, "-");
             case 4:
-                return mapNullComBackup(livro.getGenero(), EGenero::getDescricao, "-");
+                return mapNullComBackup(livro.getIsbn13(), isbn -> isbn, "-");
             case 5:
-                return livro.getEditora().getNome();
+                return mapNullComBackup(livro.getGenero(), EGenero::getDescricao, "-");
             case 6:
-                return !livro.getAutores().isEmpty() ? String.join(", ", livro.getAutoresNomes()) : "-";
+                return livro.getEditora().getNome();
             case 7:
+                return !livro.getAutores().isEmpty() ? String.join(", ", livro.getAutoresNomes()) : "-";
+            case 8:
                 return livro.possuiTitulosParecidos() ? String.join(", ", livro.getTitulosLivroParecidosOrdenados()) : "-";
             default:
                 return null;

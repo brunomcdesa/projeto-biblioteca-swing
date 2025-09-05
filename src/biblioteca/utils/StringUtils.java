@@ -3,6 +3,7 @@ package biblioteca.utils;
 import biblioteca.backend.enums.EPadraoData;
 import biblioteca.backend.exceptions.ValidacaoException;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 import java.awt.*;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import static biblioteca.utils.MapUtils.mapNullComBackup;
+import static biblioteca.utils.MapUtils.mapStringBlankNull;
 import static java.lang.String.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -22,6 +24,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 @UtilityClass
 public class StringUtils {
 
@@ -90,7 +93,7 @@ public class StringUtils {
      */
     public static LocalDate converterCampoStringParaLocalDate(String data, String nomeDoCampo, Component parent) {
         if (isDataInvalida(data)) {
-            String mensagem = format("%s inválida! Insira a data de publicação no formato dd/MM/yyyy.", nomeDoCampo);
+            String mensagem = format("%s inválida! Insira a %s no formato dd/MM/yyyy.", nomeDoCampo, nomeDoCampo);
             showMessageDialog(parent, mensagem, "Erro de Formato", ERROR_MESSAGE);
             throw new ValidacaoException(mensagem);
         }
@@ -106,6 +109,22 @@ public class StringUtils {
      */
     public static LocalDate converterDataEmStringParaLocalDate(String data) {
         return EPadraoData.converterDataEmPadrao(data);
+    }
+
+    /**
+     * Método responsável por converter uma String em um objeto LocalDate.
+     *
+     * @return Uma data convertida para LocalDate.
+     */
+    public static LocalDate mapearData(String data) {
+        return mapStringBlankNull(data, dataMapeada -> {
+            try {
+                return converterDataEmStringParaLocalDate(data);
+            } catch (ValidacaoException ex) {
+                log.severe(ex.getMessage());
+                return null;
+            }
+        });
     }
 
     /**

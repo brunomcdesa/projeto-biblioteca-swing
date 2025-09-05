@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class LivroService {
 
-    private static final String CABECALHO_ARQUIVO_IMPORTACAO = "TITULO;DATA_PUBLICACAO;ISBN;GENERO;NOME_EDITORA;CNPJ_EDITORA;NOME_AUTOR;DATA_NASCIMENTO_AUTOR;DATA_MORTE_AUTOR;BIOGRAFIA_AUTOR";
+    private static final String CABECALHO_ARQUIVO_IMPORTACAO = "TITULO;DATA_PUBLICACAO;ISBN_10;ISBN_13;GENERO;NOME_EDITORA;CNPJ_EDITORA;NOME_AUTOR;DATA_NASCIMENTO_AUTOR;DATA_MORTE_AUTOR;BIOGRAFIA_AUTOR";
 
     private final ILivroDAO livroDAO;
     private final AutorService autorService;
@@ -46,12 +46,16 @@ public class LivroService {
     /**
      * Método responsável por converter a request em uma entidade,
      * e salvar esta nova entidade no banco de dados.
+     * <p>
+     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
+     * junto com a request recebida, chama a service de livro para criar um novo livro.
      */
-    public void salvar(LivroRequest livroRequest) {
-        Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
-        Set<Autor> autores = this.buscarAutoresPorIds(livroRequest.getAutoresIds());
-        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(livroRequest.getLivrosSelecionadosIds()));
-        Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores, livrosParecidos);
+    public void salvar(LivroRequest request) {
+        this.validarLivroCadastradoComMesmoIsbn(livroDAO.existsByIsbns(request.getIsbn10(), request.getIsbn13()));
+        Editora editora = this.buscarEditoraPorId(request.getEditoraId());
+        Set<Autor> autores = this.buscarAutoresPorIds(request.getAutoresIds());
+        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(request.getLivrosSelecionadosIds()));
+        Livro novoLivro = Livro.montarLivro(request, editora, autores, livrosParecidos);
 
         livroDAO.salvar(novoLivro);
     }
@@ -60,8 +64,8 @@ public class LivroService {
      * Método responsável por converter os dados recebidos por parametro em uma entidade,
      * e salvar esta nova entidade no banco de dados.
      */
-    public void salvar(LivroRequest livroRequest, Editora editora, Set<Autor> autores) {
-        Livro novoLivro = Livro.montarLivro(livroRequest, editora, autores);
+    public void salvar(LivroRequest request, Editora editora, Set<Autor> autores) {
+        Livro novoLivro = Livro.montarLivro(request, editora, autores);
         livroDAO.salvar(novoLivro);
     }
 
@@ -116,15 +120,20 @@ public class LivroService {
 
     /**
      * Método responsável por editar um livro específico, de acordo com os novos dados da request.
+     * <p>
+     * Realiza uma busca dos dados de Editora e Autores em suas respectivas services responsáveis, e com estes dados,
+     * junto com o ID e a request recebida, chama a service de livro para editar o livro escolhido pelo usuário.
      */
-    public void editar(Integer id, LivroRequest livroRequest) {
+    public void editar(Integer id, LivroRequest request) {
+        this.validarLivroCadastradoComMesmoIsbn(livroDAO.existsByIsbnsExcetoId(request.getIsbn10(),
+                request.getIsbn13(), id));
         Livro livro = this.findById(id);
 
-        Editora editora = this.buscarEditoraPorId(livroRequest.getEditoraId());
-        Set<Autor> autores = this.buscarAutoresPorIds(livroRequest.getAutoresIds());
-        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(livroRequest.getLivrosSelecionadosIds()));
+        Editora editora = this.buscarEditoraPorId(request.getEditoraId());
+        Set<Autor> autores = this.buscarAutoresPorIds(request.getAutoresIds());
+        Set<Livro> livrosParecidos = new HashSet<>(livroDAO.findByIdIn(request.getLivrosSelecionadosIds()));
 
-        livro.atualizarDados(livroRequest, editora, autores, livrosParecidos);
+        livro.atualizarDados(request, editora, autores, livrosParecidos);
 
         livroDAO.salvar(livro);
     }
@@ -133,7 +142,7 @@ public class LivroService {
      * Método responsável por editar um livro específico, de acordo com os novos dados da request da importação.
      */
     public void editarPorImportacao(LivroImportacaoDto livroImportacaoDto, Set<Autor> autores, Editora editora) {
-        Livro livro = this.findByIsbn(livroImportacaoDto.getIsbn());
+        Livro livro = this.findByIsbn(livroImportacaoDto.getIsbn10(), livroImportacaoDto.getIsbn13());
 
         livro.atualizarDadosPorImportacao(livroImportacaoDto, editora, autores);
 
@@ -155,9 +164,7 @@ public class LivroService {
      * @throws ValidacaoException caso já existir um livro cadastrado no sistema com o mesmo ISBN.
      */
     public void cadastrarLivroPorIsbn(String isbn) {
-        if (livroDAO.existsByIsbn(isbn)) {
-            throw new ValidacaoException("Já existe um livro com este ISBN no sistema.");
-        }
+        this.validarLivroCadastradoComMesmoIsbn(livroDAO.existsByIsbn(isbn));
 
         openLibraryClient.buscarLivroPorIsbn(isbn)
                 .ifPresent(livro -> {
@@ -195,7 +202,7 @@ public class LivroService {
                     .filter(linha -> !linha.replace(";", "").trim().isEmpty())
                     .map(linha -> {
                         String[] camposLinha = linha.split(";", -1);
-                        if (camposLinha.length != 10) {
+                        if (camposLinha.length != 11) {
                             throw new ValidacaoException(format("A linha %s não possui os campos necessários", linha));
                         }
                         return LivroImportacaoDto.converterDeArrayString(camposLinha);
@@ -223,14 +230,14 @@ public class LivroService {
     }
 
     /**
-     * Método responsável por buscar um Livro pelo ISBN dele.
+     * Método responsável por buscar um Livro pelos ISBNs dele.
      * <p>
-     * Caso não encontre nenhum Livro com o mesmo ISBN, será lançado uma excepion.
+     * Caso não encontre nenhum Livro com algum dos ISBNs, será lançado uma excepion.
      *
      * @return um Livro.
      */
-    private Livro findByIsbn(String isbn) {
-        return livroDAO.findByIsbn(isbn)
+    private Livro findByIsbn(String isbn10, String isbn13) {
+        return livroDAO.findByIsbns(isbn10, isbn13)
                 .orElseThrow(() -> new NaoEncontradoException("Livro não encontrado."));
     }
 
@@ -301,10 +308,19 @@ public class LivroService {
         EditoraRequest editoraRequest = new EditoraRequest(livroImportacaoDto.getNomeEditora(), livroImportacaoDto.getCnpjEditora());
         Editora editora = editoraService.buscarEEditarEditoraOuCriarEditora(editoraRequest);
 
-        if (livroDAO.existsByIsbn(livroImportacaoDto.getIsbn())) {
+        if (livroDAO.existsByIsbns(livroImportacaoDto.getIsbn10(), livroImportacaoDto.getIsbn13())) {
             this.editarPorImportacao(livroImportacaoDto, autores, editora);
         } else {
             this.salvarPorImportacao(livroImportacaoDto, autores, editora);
+        }
+    }
+
+    /**
+     * Método responsável por aplicar a validação de caso o livro já tenha sido cadastrado com algum dos ISBNs.
+     */
+    private void validarLivroCadastradoComMesmoIsbn(boolean existePorIsbn) {
+        if (existePorIsbn) {
+            throw new ValidacaoException("Já existe um livro com este ISBN no sistema.");
         }
     }
 }

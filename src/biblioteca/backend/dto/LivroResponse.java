@@ -30,7 +30,8 @@ public class LivroResponse {
     private Integer id;
     private String titulo;
     private LocalDate dataPublicacao;
-    private String isbn;
+    private String isbn10;
+    private String isbn13;
     private EGenero genero;
     private EditoraResponse editora;
     private List<AutorResponse> autores;
@@ -46,7 +47,8 @@ public class LivroResponse {
                 .id(livro.getId())
                 .titulo(livro.getTitulo())
                 .dataPublicacao(livro.getDataPublicacao())
-                .isbn(livro.getIsbn())
+                .isbn10(livro.getIsbn10())
+                .isbn13(livro.getIsbn13())
                 .genero(livro.getGenero())
                 .editora(converterDeEditora(livro.getEditora()))
                 .autores(converterDeAutores(livro.getAutores()))

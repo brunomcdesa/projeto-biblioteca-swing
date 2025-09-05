@@ -25,4 +25,8 @@ public interface IEditoraDAO {
     void deletar(Integer id);
 
     Optional<Editora> findByNome(String nome);
+
+    boolean existsByCnpj(String cnpj);
+
+    boolean existsByCnpjExcetoId(String cnpj, Integer id);
 }

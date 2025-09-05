@@ -83,7 +83,7 @@ public class TelaListagemAutor extends JFrame {
     private void configurarAcaoBotaoVoltar() {
         botaoVoltar.addActionListener(listener -> {
             telaAnterior.setVisible(true);
-            dispose();
+            this.dispose();
         });
     }
 

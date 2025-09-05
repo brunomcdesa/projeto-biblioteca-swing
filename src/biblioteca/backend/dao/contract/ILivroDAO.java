@@ -22,11 +22,15 @@ public interface ILivroDAO {
 
     Optional<Livro> findById(Integer id);
 
-    Optional<Livro> findByIsbn(String isbn);
+    Optional<Livro> findByIsbns(String isbn10, String isbn13);
 
     void deletar(Integer id);
 
     List<Livro> findByIdIn(List<Integer> ids);
 
     boolean existsByIsbn(String isbn);
+
+    boolean existsByIsbns(String isbn10, String isbn13);
+
+    boolean existsByIsbnsExcetoId(String isbn10, String isbn13, Integer id);
 }

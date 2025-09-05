@@ -14,7 +14,7 @@ import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
 /**
- * Enum definido para representar alguns formatos de datas em Ingles mapeados do retorno das datas da API do OPEN LIBRARY.
+ * Enum definido para representar alguns formatos de datas para realizar o mapeamento.
  *
  * @author Bruno Cardoso
  * @version 1.0
@@ -28,7 +28,8 @@ public enum EPadraoData {
     PADRAO_DATA_MMMM_D_YYYY("MMMM d, yyyy"),
     PADRAO_DATA_MMM_D_YYYY("MMM d, yyyy"),
     PADRAO_DATA_YYYY("yyyy"),
-    PADRAO_DATA_DD_MM_YYYY("dd/MM/yyyy");
+    PADRAO_DATA_DD_MM_YYYY("dd/MM/yyyy"),
+    PADRAO_DATA_YYYY_MM_DD("yyyy-MM-dd");
 
     private final String padrao;
 

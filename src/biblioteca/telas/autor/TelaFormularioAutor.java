@@ -113,7 +113,7 @@ public class TelaFormularioAutor extends JFrame {
     private void configurarAcaoBotaoVoltar() {
         botaoVoltar.addActionListener(listener -> {
             telaAnterior.setVisible(true);
-            dispose();
+            this.dispose();
         });
     }
 
@@ -145,7 +145,7 @@ public class TelaFormularioAutor extends JFrame {
             showMessageDialog(this, "Autor salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
             telaAnterior.setVisible(true);
-            dispose();
+            this.dispose();
         });
     }
 }

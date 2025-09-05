@@ -3,6 +3,7 @@ package biblioteca.telas.editora;
 import biblioteca.backend.dto.EditoraRequest;
 import biblioteca.backend.dto.EditoraResponse;
 import biblioteca.backend.facade.EditoraFacade;
+import lombok.extern.java.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ import static javax.swing.JOptionPane.*;
  * @author Bruno Cardoso
  * @version 1.0
  */
+@Log
 public class TelaFormularioEditora extends JFrame {
 
     private final JFrame telaAnterior;
@@ -107,7 +109,7 @@ public class TelaFormularioEditora extends JFrame {
     private void configurarAcaoBotaoVoltar() {
         botaoVoltar.addActionListener(listener -> {
             telaAnterior.setVisible(true);
-            dispose();
+            this.dispose();
         });
     }
 
@@ -117,28 +119,33 @@ public class TelaFormularioEditora extends JFrame {
      */
     private void configurarAcaoBotaoSalvar(EditoraResponse editora) {
         botaoSalvar.addActionListener(listener -> {
-            String nome = campoNome.getText();
-            String cnpj = campoCnpj.getText();
+            try {
+                String nome = campoNome.getText();
+                String cnpj = campoCnpj.getText();
 
-            validarCamposStringObrigatorios(this, nome, cnpj);
+                validarCamposStringObrigatorios(this, nome, cnpj);
 
-            if (!isCnpjValido(cnpj)) {
-                showMessageDialog(this, "CNPJ inválido! Insira o CNPJ com o formato XX.XXX.XXX/XXXX-XX",
-                        "Erro de Formato", ERROR_MESSAGE);
-                return;
+                if (!isCnpjValido(cnpj)) {
+                    showMessageDialog(this, "CNPJ inválido! Insira o CNPJ com o formato XX.XXX.XXX/XXXX-XX",
+                            "Erro de Formato", ERROR_MESSAGE);
+                    return;
+                }
+
+                EditoraRequest request = new EditoraRequest(nome, cnpj);
+
+                if (editora == null) {
+                    editoraFacade.salvarEditora(request);
+                } else {
+                    editoraFacade.editarEditora(editora.getId(), request);
+                }
+                showMessageDialog(this, "Editora salva com sucesso!", "Sucesso", INFORMATION_MESSAGE);
+
+                telaAnterior.setVisible(true);
+                this.dispose();
+            } catch (Exception ex) {
+                showMessageDialog(this, ex.getMessage(), "Erro", ERROR_MESSAGE);
+                log.severe(ex.getMessage());
             }
-
-            EditoraRequest request = new EditoraRequest(nome, cnpj);
-
-            if (editora == null) {
-                editoraFacade.salvarEditora(request);
-            } else {
-                editoraFacade.editarEditora(editora.getId(), request);
-            }
-            showMessageDialog(this, "Editora salva com sucesso!", "Sucesso", INFORMATION_MESSAGE);
-
-            telaAnterior.setVisible(true);
-            dispose();
         });
     }
 }

@@ -36,8 +36,10 @@ public class OpenLibraryLivroResponse {
     private List<String> editoras;
     @JsonProperty("number_of_pages")
     private Integer numeroPaginas;
+    @JsonProperty("isbn_10")
+    private List<String> isbn10;
     @JsonProperty("isbn_13")
-    private List<String> isbn;
+    private List<String> isbn13;
 
     /**
      * Método responsável por mapear o o campo key, do campo de keys dos autores do livro.
